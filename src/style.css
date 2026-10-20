@@ -1,10 +1,11 @@
-* {
+@import "tailwindcss";
+/* Reset CSS - Đã loại bỏ transition: all */
+*, *::before, *::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     user-select: none;
     text-decoration: none;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ========================================================= */
@@ -80,8 +81,9 @@ body {
     background: rgba(10, 16, 30, 0.82);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    cursor: pointer;
     overflow: hidden;
+    /* Chỉ áp dụng transition riêng cho biến đổi cần thiết */
+    transition: transform 0.2s ease, filter 0.2s ease, background-color 0.2s ease;
 }
 
 .box svg {
@@ -131,9 +133,14 @@ body {
     pointer-events: none;
 }
 
-.box:hover {
-    filter: brightness(1.06);
+/* Chỉ các button/card nhỏ mới nảy khi hover */
+.pill-btn:hover,
+.code-card-glass:hover,
+.icon-btn:hover,
+.page-btn:hover {
+    filter: brightness(1.08);
     transform: translateY(-2px);
+    cursor: pointer;
 }
 
 /* --- HEADER --- */
@@ -146,7 +153,6 @@ body {
     align-items: center;
     cursor: default;
 }
-.header-box:hover { transform: none; filter: none; }
 
 .header-inner {
     position: relative;
@@ -171,6 +177,7 @@ body {
     height: 34px;
     border-radius: 50%;
     object-fit: cover;
+    background-color: #1e293b;
 }
 
 .nav-links-box {
@@ -194,6 +201,7 @@ body {
     font-weight: 600;
     color: #94a3b8;
     border: 1px solid transparent;
+    transition: color 0.2s ease, background-color 0.2s ease;
 }
 .nav-links-box a:hover { color: #fff; }
 .nav-links-box a.active {
@@ -235,6 +243,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: color 0.2s ease;
 }
 .header-action-btn:hover { color: #38bdf8; }
 
@@ -279,7 +288,6 @@ body {
     padding: 1.8rem 1.4rem;
     display: block;
 }
-.profile-card:hover { transform: none; filter: none; }
 
 .profile-content {
     position: relative;
@@ -295,13 +303,13 @@ body {
     cursor: default;
     overflow: hidden;
 }
-.avatar-box:hover { transform: none; }
 .avatar-img {
     width: calc(100% - 10px);
     height: calc(100% - 10px);
     border-radius: 50%;
     object-fit: cover;
     z-index: 2;
+    background-color: #1e293b;
 }
 
 .name {
@@ -352,8 +360,8 @@ body {
     position: relative;
     overflow: hidden;
     cursor: default;
+    background-color: #0f172a;
 }
-.banner-glass:hover { transform: none; filter: none; }
 .banner-glass img {
     width: 100%;
     height: 100%;
@@ -392,7 +400,6 @@ body {
 .clock-box {
     cursor: default;
 }
-.clock-box:hover { transform: none; filter: none; }
 .clock-text {
     z-index: 502;
     font-family: 'DSEG7_Classic', monospace, sans-serif;
@@ -412,7 +419,6 @@ body {
     gap: 1.5rem !important;
     cursor: default;
 }
-.source-section:hover { transform: none; filter: none; }
 
 .source-header {
     display: flex;
@@ -480,7 +486,7 @@ body {
     border-radius: 14px;
     overflow: hidden;
     position: relative;
-    background: #000;
+    background: #0f172a; /* Giữ sẵn khung khi ảnh chưa tải xong */
 }
 .card-thumb img {
     width: 100%;
@@ -540,6 +546,7 @@ body {
 .card-meta i {
     cursor: pointer;
     font-size: 0.85rem;
+    transition: color 0.2s ease;
 }
 .card-meta i:hover { color: #38bdf8; }
 
@@ -571,7 +578,6 @@ body {
     gap: 1rem;
     cursor: default;
 }
-.shorts-glass:hover { transform: none; filter: none; }
 
 .shorts-header {
     font-size: 0.95rem;
@@ -615,7 +621,6 @@ body {
     gap: 0.3rem;
     cursor: default;
 }
-.uptime-glass:hover { transform: none; filter: none; }
 .uptime-title {
     font-size: 0.7rem;
     letter-spacing: 1px;
@@ -641,7 +646,6 @@ body {
     align-items: center;
     cursor: default;
 }
-.footer-box:hover { transform: none; filter: none; }
 .footer-text-left {
     z-index: 502;
     font-size: 0.8rem;
@@ -653,11 +657,14 @@ body {
     gap: 1.4rem;
     z-index: 502;
 }
-.footer-icons a { color: #64748b; }
+.footer-icons a { 
+    color: #64748b; 
+    transition: color 0.2s ease;
+}
 .footer-icons a:hover { color: #fff; }
 
 /* ========================================================= */
-/* GIAO DIỆN SÁNG (LIGHT MODE) - KÍNH QUANG HỌC KHÚC XẠ 3D   */
+/* GIAO DIỆN SÁNG (LIGHT MODE)                              */
 /* ========================================================= */
 body.light-mode {
     --color: #E1E1E1;
@@ -670,12 +677,10 @@ body.light-mode {
     color: #2b2b2b !important;
 }
 
-/* Contrast cao tạo độ nảy cho đường phản xạ quang học */
 body.light-mode .fx-layer {
     filter: contrast(3) !important;
 }
 
-/* Cấu trúc Glass Surface chuẩn trên nền sáng */
 body.light-mode .box {
     border: 1px double rgba(51, 51, 51, 0.08) !important;
     box-shadow:
@@ -721,26 +726,7 @@ body.light-mode .box .circle-overlay {
     filter: blur(1px) !important;
 }
 
-body.light-mode .box:hover {
-    filter: brightness(0.96) !important;
-    transform: translateY(-2px);
-}
-
-/* Tắt hover rung lắc cho các container cố định */
-body.light-mode .profile-card:hover,
-body.light-mode .header-box:hover,
-body.light-mode .banner-glass:hover,
-body.light-mode .source-section:hover,
-body.light-mode .shorts-glass:hover,
-body.light-mode .uptime-glass:hover,
-body.light-mode .footer-box:hover,
-body.light-mode .clock-box:hover,
-body.light-mode .avatar-box:hover {
-    transform: none !important;
-    filter: brightness(0.9) !important;
-}
-
-/* Định hình chữ & các chi tiết giao diện trên nền sáng */
+/* Định hình chữ trên nền sáng */
 body.light-mode .name,
 body.light-mode .brand-wrapper,
 body.light-mode .source-title,
@@ -836,7 +822,7 @@ body.light-mode .search-mini-box input::placeholder {
 }
 
 /* ========================================================= */
-/* RESPONSIVE BREAKPOINTS                                   */
+/* RESPONSIVE BREAKPOINTS                                     */
 /* ========================================================= */
 @media (max-width: 1150px) {
     .layout-2col { grid-template-columns: 1fr; }
