@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
-export default function Header() {
+export default function Header({ activeTab, setActiveTab }) {
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
-  const [activeTab, setActiveTab] = useState('Trang chủ');
 
   useEffect(() => {
     if (theme === 'light') {
@@ -17,7 +16,13 @@ export default function Header() {
     setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
   };
 
-  const navItems = ['Trang chủ', 'Về tôi', 'Dự án', 'Công cụ', 'Khoảnh khắc'];
+  const navItems = [
+    { id: 'home', label: 'Trang chủ' },
+    { id: 'about', label: 'Về tôi' },
+    { id: 'projects', label: 'Dự án' },
+    { id: 'tools', label: 'Công cụ' },
+    { id: 'moments', label: 'Khoảnh khắc' }
+  ];
 
   return (
     <header className="header-container">
@@ -26,9 +31,9 @@ export default function Header() {
         <div className="header-glow-left"></div>
 
         <div className="header-inner">
-          <a href="index.html" className="brand-wrapper">
+          <a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('home'); }} className="brand-wrapper">
             <img 
-              src="/img/teoicon.png" 
+              src="/teo.jpeg" 
               alt="Avatar" 
               onError={(e) => { e.target.src = 'https://via.placeholder.com/32'; }} 
             />
@@ -36,14 +41,17 @@ export default function Header() {
           </a>
 
           <nav className="nav-links-box">
-            {navItems.map(tab => (
+            {navItems.map(item => (
               <a
-                key={tab}
-                href={`#${tab}`}
-                className={`nav-tab ${activeTab === tab ? 'active' : ''}`}
-                onClick={() => setActiveTab(tab)}
+                key={item.id}
+                href={`#${item.id}`}
+                className={`nav-tab ${activeTab === item.id ? 'active' : ''}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setActiveTab(item.id);
+                }}
               >
-                {tab}
+                {item.label}
               </a>
             ))}
           </nav>
@@ -56,7 +64,7 @@ export default function Header() {
             <div 
               className="box theme-toggle-box" 
               onClick={toggleTheme}
-              style={{ '--w': '36px', '--h': '36px', '--r': '9999px', '--tr': '20%' }} 
+              style={{ '--w': '36px', '--h': '36px', '--r': '9999px', '--tr': '20%', cursor: 'pointer' }} 
               title="Đổi giao diện Sáng / Tối"
             >
               <div className="circle-overlay"></div>
