@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const sourceCodes = [
   { title: "Cây Thông Noel", lang: "HTML", date: "24/12/2025", img: "https://images.unsplash.com/photo-1543258103-a62bdc069871?w=400&q=80" },
@@ -12,9 +12,22 @@ const sourceCodes = [
   { title: "Web tỏ tình", lang: "HTML", date: "20/11/2025", img: "https://images.unsplash.com/photo-1518895949257-7621c3c786d7?w=400&q=80" }
 ];
 
+// Danh sách logo ảnh thật các công nghệ / ngôn ngữ chuẩn Devicon SVG
+const techLogoSources = [
+  { name: 'JavaScript', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg' },
+  { name: 'React', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg' },
+  { name: 'NodeJS', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg' },
+  { name: 'Python', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg' },
+  { name: 'Docker', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg' },
+  { name: 'CSharp', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg' },
+  { name: 'Go', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original.svg' }
+];
+
 export default function Home() {
   const [time, setTime] = useState('');
+  const canvasRef = useRef(null);
 
+  // Đồng hồ kỹ thuật số
   useEffect(() => {
     const updateClock = () => {
       const now = new Date();
@@ -27,12 +40,323 @@ export default function Home() {
     return () => clearInterval(timer);
   }, []);
 
+  // Mô phỏng bể nước vật lý thực thể thời gian thực
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let animationFrameId;
+
+    let width = (canvas.width = canvas.parentElement.offsetWidth);
+    let height = (canvas.height = canvas.parentElement.offsetHeight);
+
+    const handleResize = () => {
+      if (!canvas.parentElement) return;
+      width = canvas.width = canvas.parentElement.offsetWidth;
+      height = canvas.height = canvas.parentElement.offsetHeight;
+      initSprings();
+    };
+    window.addEventListener('resize', handleResize);
+
+    // 1. CÁC ĐIỂM LÒ XO MẶT NƯỚC (SPRING MESH WATER)
+    const springCount = 70;
+    let springs = [];
+    const tension = 0.025;
+    const dampening = 0.025;
+    const spread = 0.25;
+
+    function initSprings() {
+      springs = [];
+      const baseHeight = height * 0.35; // Mực nước ở 35% chiều cao bể
+      for (let i = 0; i < springCount; i++) {
+        springs.push({
+          x: (i / (springCount - 1)) * width,
+          y: baseHeight,
+          targetY: baseHeight,
+          speed: 0
+        });
+      }
+    }
+    initSprings();
+
+    function splash(index, speed) {
+      if (index >= 0 && index < springs.length) {
+        springs[index].speed = speed;
+      }
+    }
+
+    // 2. TẢI ẢNH LOGO THẬT VÀ KHỞI TẠO CÁC THỰC THỂ LOGO BƠI LỘI TRONG BỂ
+    const loadedLogos = techLogoSources.map(item => {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.src = item.url;
+      return { ...item, img, loaded: false };
+    });
+
+    loadedLogos.forEach(item => {
+      item.img.onload = () => { item.loaded = true; };
+    });
+
+    // Thay thế đàn cá: Các logo ngôn ngữ bơi lội uốn lượn
+    const techEntities = [
+      { logoIndex: 0, x: 50, y: height * 0.55, vx: 1.2, size: 30, rot: 0, rotSpeed: 0.015 },
+      { logoIndex: 1, x: 180, y: height * 0.72, vx: -1.0, size: 34, rot: 0, rotSpeed: -0.012 },
+      { logoIndex: 2, x: 300, y: height * 0.45, vx: 0.9, size: 32, rot: 0, rotSpeed: 0.01 },
+      { logoIndex: 3, x: 120, y: height * 0.85, vx: -0.8, size: 28, rot: 0, rotSpeed: -0.014 },
+      { logoIndex: 4, x: 240, y: height * 0.65, vx: 1.1, size: 32, rot: 0, rotSpeed: 0.012 },
+      { logoIndex: 5, x: 360, y: height * 0.78, vx: -0.85, size: 30, rot: 0, rotSpeed: -0.01 },
+      { logoIndex: 6, x: 420, y: height * 0.50, vx: 0.95, size: 32, rot: 0, rotSpeed: 0.015 }
+    ];
+
+    // 3. KHỞI TẠO BỌT NƯỚC (BUBBLES)
+    const bubbles = Array.from({ length: 22 }, () => ({
+      x: Math.random() * width,
+      y: height + Math.random() * 80,
+      r: Math.random() * 3.5 + 1.5,
+      speedY: Math.random() * 0.9 + 0.6,
+      wobbleSpeed: Math.random() * 0.04 + 0.02,
+      wobbleAmp: Math.random() * 1.4 + 0.6,
+      seed: Math.random() * 100
+    }));
+
+    // 4. KHỞI TẠO RONG BIỂN ĐÁY BỂ (SEAWEEDS)
+    const seaweeds = Array.from({ length: 8 }, (_, i) => ({
+      baseX: 25 + i * (width / 9) + (Math.random() * 15 - 7),
+      height: 60 + Math.random() * 35,
+      swayOffset: Math.random() * Math.PI * 2,
+      segments: 5
+    }));
+
+    let timeStep = 0;
+
+    // VÒNG LẶP RENDER VẬT LÝ NƯỚC
+    const render = () => {
+      timeStep += 0.03;
+      ctx.clearRect(0, 0, width, height);
+
+      // A. Cập nhật lò xo mặt nước
+      for (let i = 0; i < springs.length; i++) {
+        const sp = springs[i];
+        const delta = sp.targetY - sp.y;
+        sp.speed += tension * delta - sp.speed * dampening;
+        sp.y += sp.speed;
+      }
+
+      // Sóng tự tạo nhịp nhàng ngẫu nhiên
+      if (Math.random() < 0.05) {
+        const randIndex = Math.floor(Math.random() * springs.length);
+        splash(randIndex, (Math.random() * 2.5 - 1.25));
+      }
+
+      // Lan truyền lực sóng sang hai bên
+      const leftDeltas = new Array(springs.length).fill(0);
+      const rightDeltas = new Array(springs.length).fill(0);
+      for (let j = 0; j < 3; j++) {
+        for (let i = 0; i < springs.length; i++) {
+          if (i > 0) {
+            leftDeltas[i] = spread * (springs[i].y - springs[i - 1].y);
+            springs[i - 1].speed += leftDeltas[i];
+          }
+          if (i < springs.length - 1) {
+            rightDeltas[i] = spread * (springs[i].y - springs[i + 1].y);
+            springs[i + 1].speed += rightDeltas[i];
+          }
+        }
+      }
+
+      // B. Vẽ Khối nước chính & Độ dốc nước sâu (Deep Ocean Gradient)
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(0, height);
+      ctx.lineTo(springs[0].x, springs[0].y);
+      for (let i = 1; i < springs.length; i++) {
+        const prev = springs[i - 1];
+        const curr = springs[i];
+        const midX = (prev.x + curr.x) / 2;
+        const midY = (prev.y + curr.y) / 2;
+        ctx.quadraticCurveTo(prev.x, prev.y, midX, midY);
+      }
+      ctx.lineTo(springs[springs.length - 1].x, springs[springs.length - 1].y);
+      ctx.lineTo(width, height);
+      ctx.closePath();
+
+      const waterGrad = ctx.createLinearGradient(0, height * 0.3, 0, height);
+      waterGrad.addColorStop(0, 'rgba(14, 165, 233, 0.45)');
+      waterGrad.addColorStop(0.3, 'rgba(2, 132, 199, 0.65)');
+      waterGrad.addColorStop(1, 'rgba(3, 30, 60, 0.88)');
+      ctx.fillStyle = waterGrad;
+      ctx.fill();
+
+      // C. Tia sáng mặt trời tán xạ qua nước (Sun Rays / Caustic Shafts)
+      for (let r = 0; r < 4; r++) {
+        const rayX = width * (0.2 + r * 0.22) + Math.sin(timeStep + r) * 25;
+        const rayGrad = ctx.createLinearGradient(rayX, 0, rayX + 40, height);
+        rayGrad.addColorStop(0, 'rgba(255, 255, 255, 0.16)');
+        rayGrad.addColorStop(0.6, 'rgba(56, 189, 248, 0.04)');
+        rayGrad.addColorStop(1, 'transparent');
+
+        ctx.fillStyle = rayGrad;
+        ctx.beginPath();
+        ctx.moveTo(rayX - 10, springs[0].targetY);
+        ctx.lineTo(rayX + 35, springs[0].targetY);
+        ctx.lineTo(rayX + 85, height);
+        ctx.lineTo(rayX - 55, height);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      // D. Vẽ Rong biển đung đưa đáy bể
+      seaweeds.forEach(sw => {
+        ctx.save();
+        ctx.strokeStyle = '#10b981';
+        ctx.lineWidth = 4.5;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(sw.baseX, height);
+
+        let currX = sw.baseX;
+        let currY = height;
+        const segLen = sw.height / sw.segments;
+
+        for (let s = 1; s <= sw.segments; s++) {
+          const sway = Math.sin(timeStep * 1.5 + sw.swayOffset + s * 0.4) * (s * 4);
+          const nextX = sw.baseX + sway;
+          const nextY = height - s * segLen;
+          ctx.quadraticCurveTo(currX, currY, nextX, nextY);
+          currX = nextX;
+          currY = nextY;
+        }
+        ctx.stroke();
+        ctx.restore();
+      });
+
+      // E. CẬP NHẬT VÀ VẼ LOGO NGÔN NGỮ THẬT BƠI LỘI DƯỚI NƯỚC
+      techEntities.forEach(tech => {
+        tech.x += tech.vx;
+        tech.rot += tech.rotSpeed;
+        const waveY = Math.sin(timeStep * 2.5 + tech.x * 0.03) * 6;
+        const curY = tech.y + waveY;
+
+        // Tự đổi hướng bơi khi ra khỏi mép bể
+        if (tech.vx > 0 && tech.x > width + 40) {
+          tech.x = -40;
+          tech.y = height * (0.42 + Math.random() * 0.43);
+        } else if (tech.vx < 0 && tech.x < -40) {
+          tech.x = width + 40;
+          tech.y = height * (0.42 + Math.random() * 0.43);
+        }
+
+        const logoData = loadedLogos[tech.logoIndex];
+        if (logoData && logoData.loaded) {
+          ctx.save();
+          ctx.translate(tech.x, curY);
+          ctx.rotate(tech.rot);
+
+          // Vòng cầu bóng nước trong suốt bao quanh logo
+          ctx.beginPath();
+          ctx.arc(0, 0, tech.size * 0.68, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.16)';
+          ctx.fill();
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+          ctx.lineWidth = 1.2;
+          ctx.stroke();
+
+          // Bóng mờ phản xạ chiều sâu nước
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+          ctx.shadowBlur = 10;
+          ctx.shadowOffsetY = 4;
+
+          // Vẽ logo ảnh thật
+          ctx.drawImage(
+            logoData.img,
+            -tech.size / 2,
+            -tech.size / 2,
+            tech.size,
+            tech.size
+          );
+
+          ctx.restore();
+        }
+      });
+
+      // F. Cập nhật và vẽ bọt nước sủi tăm
+      bubbles.forEach(b => {
+        b.y -= b.speedY;
+        b.x += Math.sin(timeStep * 2 + b.seed) * b.wobbleAmp * 0.35;
+
+        // Vẽ bong bóng phản quang
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+
+        // Đốm sáng trên bong bóng
+        ctx.beginPath();
+        ctx.arc(b.x - b.r * 0.35, b.y - b.r * 0.35, b.r * 0.25, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+        ctx.fill();
+        ctx.restore();
+
+        // Nổi lên tới mặt nước thì vỡ và tái sinh ở đáy
+        const waterSurfaceY = springs[Math.floor((b.x / width) * (springs.length - 1))]?.y || height * 0.35;
+        if (b.y <= waterSurfaceY) {
+          b.y = height + Math.random() * 40;
+          b.x = Math.random() * width;
+        }
+      });
+
+      // G. Vẽ đường viền sáng óng ánh trên đỉnh mặt nước (Water Surface Foam)
+      ctx.beginPath();
+      ctx.moveTo(springs[0].x, springs[0].y);
+      for (let i = 1; i < springs.length; i++) {
+        const prev = springs[i - 1];
+        const curr = springs[i];
+        const midX = (prev.x + curr.x) / 2;
+        const midY = (prev.y + curr.y) / 2;
+        ctx.quadraticCurveTo(prev.x, prev.y, midX, midY);
+      }
+      ctx.strokeStyle = 'rgba(224, 242, 254, 0.85)';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      ctx.restore();
+      animationFrameId = requestAnimationFrame(render);
+    };
+
+    render();
+
+    // Tương tác chạm hoặc rê chuột tạo sóng nước cuộn trào
+    const handlePointerMove = (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const pointerX = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
+      const index = Math.floor((pointerX / width) * springs.length);
+      splash(index, 7);
+      if (index > 0) splash(index - 1, 4);
+      if (index < springs.length - 1) splash(index + 1, 4);
+    };
+
+    canvas.addEventListener('mousemove', handlePointerMove);
+    canvas.addEventListener('touchmove', handlePointerMove, { passive: true });
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      canvas.removeEventListener('mousemove', handlePointerMove);
+      canvas.removeEventListener('touchmove', handlePointerMove);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
+
   return (
     <>
       <div className="layout-2col">
         {/* CỘT TRÁI */}
         <div className="col-main">
           <div className="hero-grid">
+            {/* PROFILE CARD */}
             <div className="box profile-card" style={{ '--w': '100%', '--h': 'auto', '--r': '24px', '--tr': '20%' }}>
               <div className="circle-overlay"></div>
               <div className="profile-content">
@@ -72,9 +396,21 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="box banner-glass" style={{ '--w': '100%', '--h': '100%', '--r': '24px', '--tr': '15%' }}>
+            {/* BỂ THỦY CUNG VẬT LÝ NƯỚC: LOGO CÔNG NGHỆ THẬT BƠI LỘI */}
+            <div className="box live-aquarium-box" style={{ '--w': '100%', '--h': '100%', '--r': '24px', '--tr': '18%' }}>
               <div className="circle-overlay"></div>
-              <img src="https://images.unsplash.com/photo-151870660439-4636190af475?q=80&w=1200&auto=format&fit=crop" alt="Banner E-Commerce" />
+
+              {/* Canvas hiển thị dòng nước lò xo, logo bơi và ánh sáng mặt trời */}
+              <canvas ref={canvasRef} className="water-canvas"></canvas>
+
+              {/* Lớp kính phản chiếu ánh sáng vát chéo */}
+              <div className="glass-reflection-glare"></div>
+
+              {/* Huy hiệu thông tin tương tác */}
+              <div className="aquarium-badge">
+                <i className="fas fa-water"></i>
+                <span>Chạm / Rê chuột tạo sóng nước</span>
+              </div>
             </div>
           </div>
 
@@ -259,7 +595,7 @@ export default function Home() {
           cursor: pointer;
         }
 
-        /* --- BỐ CỤC 2 CỘT RỘNG RÃI --- */
+        /* BỐ CỤC 2 CỘT RỘNG RÃI */
         .layout-2col {
           display: grid;
           grid-template-columns: 2.3fr 1fr;
@@ -274,7 +610,7 @@ export default function Home() {
           width: 100%;
         }
 
-        /* Hero */
+        /* Hero Grid */
         .hero-grid {
           display: grid;
           grid-template-columns: 320px 1fr;
@@ -356,21 +692,62 @@ export default function Home() {
           font-size: 15px;
         }
 
-        /* Banner */
-        .banner-glass {
+        /* BỂ NƯỚC THỦY CUNG VẬT LÝ THỰC */
+        .live-aquarium-box {
           width: 100% !important;
           min-height: 250px;
           position: relative;
           overflow: hidden;
-          cursor: default;
-          background-color: #0f172a;
+          cursor: crosshair;
+          background: #021226 !important;
         }
 
-        .banner-glass img {
+        .water-canvas {
+          position: absolute;
+          inset: 0;
           width: 100%;
           height: 100%;
-          object-fit: cover;
-          z-index: 2;
+          z-index: 3;
+        }
+
+        .glass-reflection-glare {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.14) 0%,
+            transparent 35%,
+            transparent 70%,
+            rgba(255, 255, 255, 0.05) 100%
+          );
+          pointer-events: none;
+          z-index: 8;
+        }
+
+        .aquarium-badge {
+          position: absolute;
+          top: 14px;
+          right: 14px;
+          z-index: 10;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 4px 12px;
+          background: rgba(3, 7, 18, 0.55);
+          backdrop-filter: blur(8px);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          border-radius: 9999px;
+          font-size: 0.72rem;
+          font-weight: 700;
+          color: #38bdf8;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+          pointer-events: none;
+        }
+
+        body.light-mode .aquarium-badge {
+          background: rgba(255, 255, 255, 0.75);
+          color: #0284c7;
+          border-color: rgba(255, 255, 255, 0.9);
         }
 
         /* Controls & Clock */
@@ -394,9 +771,7 @@ export default function Home() {
           color: #cbd5e1;
           gap: 0.45rem;
         }
-
         .pill-btn span, .pill-btn i { z-index: 10; }
-
         .pill-btn.active {
           color: #fff;
           border-color: rgba(56, 189, 248, 0.5);
@@ -654,9 +1029,7 @@ export default function Home() {
           z-index: 10;
         }
 
-        /* ========================================================= */
-        /* GIAO DIỆN SÁNG (LIGHT MODE)                              */
-        /* ========================================================= */
+        /* LIGHT MODE */
         body.light-mode .box {
           border: 1px double rgba(51, 51, 51, 0.08) !important;
           box-shadow:
@@ -763,10 +1136,10 @@ export default function Home() {
           .grid-3x3 { grid-template-columns: 1fr; }
         }
 
-        /* Responsive Điện thoại (Mobile <= 640px) */
+        /* Responsive Mobile */
         @media (max-width: 640px) {
           .box {
-            --r: 18px; /* Giảm bo góc trên màn hình nhỏ */
+            --r: 18px;
           }
 
           .hero-grid {
@@ -774,9 +1147,9 @@ export default function Home() {
             gap: 1rem;
           }
 
-          .banner-glass {
-            min-height: 160px;
-            max-height: 200px;
+          .live-aquarium-box {
+            min-height: 200px;
+            max-height: 240px;
           }
 
           .profile-card {
@@ -860,7 +1233,6 @@ export default function Home() {
           }
         }
 
-        /* Responsive Màn hình điện thoại nhỏ (<= 380px) */
         @media (max-width: 380px) {
           .box {
             --r: 14px;
