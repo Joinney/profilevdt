@@ -48,12 +48,36 @@ const projectList = [
 export default function Projects() {
   const [isPaused, setIsPaused] = useState(false);
   const [rotationAngle, setRotationAngle] = useState(0);
+  const [radii, setRadii] = useState({ rx: 540, ry: 150 });
+  const containerRef = useRef(null);
   const requestRef = useRef();
-  
-  // BÁN KÍNH ELIP NGANG 3D OÂM TRỌN
-  const radiusX = 460; 
-  const radiusY = 120; 
 
+  // ĐIỀU CHỈNH QUỸ ĐẠO TỰ ĐỘNG THEO MỌI CỠ MÀN HÌNH
+  useEffect(() => {
+    const handleResize = () => {
+      const containerWidth = containerRef.current 
+        ? containerRef.current.offsetWidth 
+        : window.innerWidth;
+
+      if (containerWidth <= 380) {
+        setRadii({ rx: 135, ry: 55 });
+      } else if (containerWidth < 480) {
+        setRadii({ rx: 170, ry: 75 });
+      } else if (containerWidth < 768) {
+        setRadii({ rx: 240, ry: 95 });
+      } else if (containerWidth < 1150) {
+        setRadii({ rx: 390, ry: 120 });
+      } else {
+        setRadii({ rx: 550, ry: 160 });
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // VÒNG LẶP CHUYỂN ĐỘNG XOAY 60FPS
   useEffect(() => {
     let lastTime = performance.now();
     
@@ -74,16 +98,16 @@ export default function Projects() {
   return (
     <div className="projects-orbit-wrapper">
       <style>{`
-        /* BỎ HOÀN TOÀN KHUNG VIỀN MÀNG KÍNH BỌC NGOÀI */
         .projects-orbit-wrapper {
           position: relative;
           width: 100%;
-          min-height: 580px;
+          min-height: 720px;
           display: flex;
           flex-direction: column;
           background: transparent !important;
           border: none !important;
           box-shadow: none !important;
+          overflow: visible;
         }
 
         .source-header-clean {
@@ -92,11 +116,13 @@ export default function Projects() {
           align-items: center;
           width: 100%;
           z-index: 502;
-          margin-bottom: 10px;
+          margin-bottom: 12px;
+          flex-wrap: wrap;
+          gap: 8px;
         }
 
         .source-title-clean {
-          font-size: 1.25rem;
+          font-size: 1.35rem;
           font-weight: 800;
           color: #ffffff;
           display: flex;
@@ -107,7 +133,7 @@ export default function Projects() {
         .source-title-clean::before {
           content: '';
           width: 4px;
-          height: 20px;
+          height: 22px;
           background: #38bdf8;
           border-radius: 2px;
         }
@@ -116,43 +142,47 @@ export default function Projects() {
           color: #2b2b2b !important;
         }
 
-        /* KHUNG CHỨA CẢ CỤM - ĐẨY LÊN CAO NƠI CÂN ĐỐI (-60px) */
+        /* KHUNG CHỨA TOÀN BỘ QUỸ ĐẠO */
         .orbit-container {
           position: relative;
           width: 100%;
-          height: 520px;
+          height: 660px;
           display: flex;
           justify-content: center;
           align-items: center;
-          perspective: 1000px;
-          margin-top: -60px; /* ĐẨY CẢ CỤM LÊN CAO BẰNG MARGIN ÂM */
+          perspective: 1200px;
+          margin-top: -30px;
           z-index: 10;
         }
 
+        /* ĐƯỜNG QUỸ ĐẠO ELIP CHẠY VÒNG */
         .orbit-ellipse-line {
           position: absolute;
-          width: ${radiusX * 2}px;
-          height: ${radiusY * 2}px;
-          border: 2px dashed rgba(56, 189, 248, 0.4);
+          width: calc(var(--rx, 550px) * 2);
+          height: calc(var(--ry, 160px) * 2);
+          border: 2px dashed rgba(56, 189, 248, 0.45);
           border-radius: 50%;
           pointer-events: none;
           transform: rotateX(65deg);
+          transition: width 0.3s ease, height 0.3s ease;
         }
 
         body.light-mode .orbit-ellipse-line {
-          border-color: rgba(2, 132, 199, 0.4);
+          border-color: rgba(2, 132, 199, 0.45);
         }
 
-        /* ẢNH NHÂN VẬT SIÊU TO (580px) GIỮ MÀU SẮC TƯƠI RỰC RỠ 100% GỐC */
+        /* ẢNH NHÂN VẬT TRUNG TÂM (KHÔNG BÓNG ĐEN) */
         .center-avatar-clean {
           position: absolute;
-          z-index: 100;
-          width: 580px;
-          height: 580px;
+          z-index: 150;
+          width: min(750px, 96vw);
+          height: min(750px, 96vw);
+          max-height: 680px;
           display: flex;
           justify-content: center;
           align-items: center;
           pointer-events: none;
+          transition: width 0.3s ease, height 0.3s ease;
         }
 
         .center-avatar-clean img {
@@ -162,61 +192,59 @@ export default function Projects() {
           background: transparent !important;
           border: none !important;
           box-shadow: none !important;
-          filter: none !important; /* XÓA HẲN BỘ LỌC CONTRAST ĐỂ KHÔNG BỊ BIẾN MÀU */
+          filter: none !important; /* XÓA BỎ HOÀN TOÀN BÓNG ĐEN */
         }
 
-        /* THẺ BÀI DỰ ÁN 3D - HIỂN THỊ RÕ NÉT CĂNG */
-        .project-card-orbit {
+        /* THẺ BÀI DỰ ÁN 3D CHUẨN KÍNH GLASSMORPHISM */
+        .project-card-glass {
           position: absolute;
-          width: 215px;
-          padding: 12px;
-          border-radius: 16px;
-          background: #0f172a !important;
-          border: 1px solid rgba(255, 255, 255, 0.25);
-          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
-          transition: transform 0.1s linear, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+          display: flex !important;
+          flex-direction: column !important;
+          align-items: stretch !important;
+          justify-content: flex-start !important;
           cursor: pointer;
+          touch-action: manipulation;
+          transition: transform 0.1s linear, filter 0.2s ease, opacity 0.2s ease;
+          overflow: hidden;
         }
 
-        body.light-mode .project-card-orbit {
-          background: #ffffff !important;
-          border: 1px solid rgba(0, 0, 0, 0.15) !important;
-          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12) !important;
-        }
-
-        body.light-mode .project-title {
-          color: #0f172a !important;
-        }
-
-        body.light-mode .project-desc {
-          color: #475569 !important;
-        }
-
-        .project-card-orbit:hover {
-          border-color: #38bdf8 !important;
-          box-shadow: 0 12px 30px rgba(56, 189, 248, 0.45) !important;
+        .project-card-glass:hover {
+          filter: brightness(1.12);
+          border-color: rgba(56, 189, 248, 0.6) !important;
+          box-shadow:
+              inset 2px -2px 1px -1px rgba(255, 255, 255, 0.7),
+              inset -2px 2px 1px -1px rgba(255, 255, 255, 0.7),
+              0 15px 35px rgba(56, 189, 248, 0.45) !important;
           opacity: 1 !important;
-          z-index: 500 !important;
+          z-index: 600 !important;
         }
 
-        .project-card-orbit .card-thumb {
+        .card-inner-glass {
+          position: relative;
+          z-index: 10;
           width: 100%;
-          height: 100px;
-          border-radius: 10px;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .project-card-glass .card-thumb {
+          width: 100%;
+          height: 105px;
+          border-radius: 12px;
           overflow: hidden;
           margin-bottom: 8px;
-          background: #1e293b;
+          background: #0f172a;
+          border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .project-card-orbit .card-thumb img {
+        .project-card-glass .card-thumb img {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          filter: none !important; /* GIỮ NGUYÊN ĐỘ NÉT RÕ CỦA HÌNH ẢNH THẺ */
         }
 
         .project-title {
-          font-size: 0.92rem;
+          font-size: 0.95rem;
           font-weight: 700;
           color: #ffffff !important;
           margin: 4px 0;
@@ -226,14 +254,14 @@ export default function Projects() {
         }
 
         .project-desc {
-          font-size: 0.72rem;
+          font-size: 0.74rem;
           color: #cbd5e1 !important;
           line-height: 1.35;
           display: -webkit-box;
           -webkit-line-clamp: 2;
           -webkit-box-orient: vertical;
           overflow: hidden;
-          height: 28px;
+          height: 30px;
           margin-bottom: 8px;
         }
 
@@ -244,42 +272,140 @@ export default function Projects() {
         }
 
         .project-techs .tag-badge {
-          font-size: 0.62rem;
-          padding: 2px 6px;
-          background: rgba(56, 189, 248, 0.2);
-          border: 1px solid rgba(56, 189, 248, 0.4);
+          font-size: 0.64rem;
+          padding: 2px 7px;
+          background: rgba(56, 189, 248, 0.15);
+          border: 1px solid rgba(56, 189, 248, 0.35);
           color: #38bdf8;
           font-weight: 600;
           border-radius: 6px;
         }
 
+        /* LIGHT MODE CHO THẺ DỰ ÁN */
+        body.light-mode .project-title {
+          color: #0f172a !important;
+        }
+
+        body.light-mode .project-desc {
+          color: #475569 !important;
+        }
+
         body.light-mode .project-techs .tag-badge {
+          background: rgba(2, 132, 199, 0.1);
+          border-color: rgba(2, 132, 199, 0.3);
           color: #0284c7;
         }
 
+        /* RESPONSIVE TABLET & MOBILE */
         @media (max-width: 768px) {
-          .orbit-container { height: 420px; margin-top: -20px; }
-          .center-avatar-clean { width: 320px; height: 320px; }
-          .project-card-orbit { width: 150px; padding: 8px; }
-          .project-card-orbit .card-thumb { height: 60px; }
+          .projects-orbit-wrapper {
+            min-height: 580px;
+          }
+          .orbit-container {
+            height: 520px;
+            margin-top: -15px;
+          }
+          .center-avatar-clean {
+            width: min(520px, 92vw);
+            height: min(520px, 92vw);
+            max-height: 480px;
+          }
+          .project-card-glass {
+            --w: 145px !important;
+            padding: 8px !important;
+            --r: 14px !important;
+          }
+          .project-card-glass .card-thumb {
+            height: 65px;
+            margin-bottom: 4px;
+          }
+          .project-title {
+            font-size: 0.78rem;
+          }
+          .project-desc {
+            display: none;
+          }
+          .project-techs .tag-badge {
+            font-size: 0.55rem;
+            padding: 1px 4px;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .projects-orbit-wrapper {
+            min-height: 520px;
+          }
+          .orbit-container {
+            height: 460px;
+            margin-top: 0px;
+          }
+          .center-avatar-clean {
+            width: 95vw;
+            height: 95vw;
+            max-height: 420px;
+          }
+          .project-card-glass {
+            --w: 105px !important;
+            padding: 6px !important;
+            --r: 12px !important;
+          }
+          .project-card-glass .card-thumb {
+            height: 48px;
+            border-radius: 6px;
+          }
+          .project-title {
+            font-size: 0.68rem;
+            margin: 2px 0;
+          }
+          .project-techs {
+            gap: 2px;
+          }
+          .project-techs .tag-badge {
+            font-size: 0.5rem;
+            padding: 1px 3px;
+          }
+        }
+
+        @media (max-width: 380px) {
+          .project-card-glass {
+            --w: 92px !important;
+            padding: 5px !important;
+          }
+          .project-card-glass .card-thumb {
+            height: 40px;
+          }
+          .project-title {
+            font-size: 0.6rem;
+          }
+          .project-techs .tag-badge {
+            display: none;
+          }
         }
       `}</style>
 
       <div className="source-header-clean">
         <div className="source-title-clean">DỰ ÁN CỦA TÔI</div>
         <span style={{ fontSize: '0.85rem', color: '#94a3b8', zIndex: 10 }}>
-          Rê chuột vào để tạm dừng xoay
+          Rê chuột hoặc chạm vào để dừng
         </span>
       </div>
 
       <div 
+        ref={containerRef}
         className="orbit-container"
+        style={{
+          '--rx': `${radii.rx}px`,
+          '--ry': `${radii.ry}px`
+        }}
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
+        onTouchStart={() => setIsPaused(true)}
+        onTouchEnd={() => setIsPaused(false)}
       >
+        {/* ĐƯỜNG ELIP 3D */}
         <div className="orbit-ellipse-line"></div>
 
-        {/* ANH NHAN VAT TRUNG TAM CĂN GIỮA KHUNG */}
+        {/* ẢNH NHÂN VẬT GỐC NÉT CĂNG KHÔNG BÓNG ĐEN */}
         <div className="center-avatar-clean">
           <img 
             src="/teoproject.png" 
@@ -288,38 +414,46 @@ export default function Projects() {
           />
         </div>
 
-        {/* CÁC THẺ DỰ ÁN XOAY ELIP NGANG 3D - HIỂN THỊ RÕ NÉT CĂNG */}
+        {/* CÁC THẺ DỰ ÁN KÍNH (.box) XOAY 3D */}
         {projectList.map((item, index) => {
           const stepAngle = (360 / projectList.length) * index;
           const currentAngleRad = ((rotationAngle + stepAngle) * Math.PI) / 180;
 
-          const x = Math.cos(currentAngleRad) * radiusX;
-          const y = Math.sin(currentAngleRad) * radiusY;
+          const x = Math.cos(currentAngleRad) * radii.rx;
+          const y = Math.sin(currentAngleRad) * radii.ry;
 
-          const scale = 0.82 + ((y + radiusY) / (radiusY * 2)) * 0.3;
-          // TĂNG ĐỘ MỜ TỪ 0.92 ĐẾN 1.0 ĐỂ THẺ BÀI LUÔN RÕ NÉT
-          const opacity = 0.92 + ((y + radiusY) / (radiusY * 2)) * 0.08;
-          const zIndex = Math.round(y + 300);
+          const scale = 0.82 + ((y + radii.ry) / (radii.ry * 2 || 1)) * 0.3;
+          const opacity = 0.92 + ((y + radii.ry) / (radii.ry * 2 || 1)) * 0.08;
+          const zIndex = Math.round(150 + (y / (radii.ry || 1)) * 100);
 
           return (
             <div
               key={item.id}
-              className="project-card-orbit"
+              className="box project-card-glass"
               style={{
-                transform: `translate(${x}px, ${y}px) scale(${scale})`,
+                '--w': '215px',
+                '--h': 'auto',
+                '--r': '18px',
+                '--tr': '20%',
+                padding: '10px',
+                transform: `translate3d(${x}px, ${y}px, 0) scale(${scale})`,
                 opacity: opacity,
                 zIndex: zIndex
               }}
             >
-              <div className="card-thumb">
-                <img src={item.img} alt={item.title} />
-              </div>
-              <h4 className="project-title">{item.title}</h4>
-              <p className="project-desc">{item.desc}</p>
-              <div className="project-techs">
-                {item.tech.slice(0, 3).map((t, i) => (
-                  <span key={i} className="tag-badge">{t}</span>
-                ))}
+              <div className="circle-overlay"></div>
+
+              <div className="card-inner-glass">
+                <div className="card-thumb">
+                  <img src={item.img} alt={item.title} />
+                </div>
+                <h4 className="project-title">{item.title}</h4>
+                <p className="project-desc">{item.desc}</p>
+                <div className="project-techs">
+                  {item.tech.slice(0, 3).map((t, i) => (
+                    <span key={i} className="tag-badge">{t}</span>
+                  ))}
+                </div>
               </div>
             </div>
           );
