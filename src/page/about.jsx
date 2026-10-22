@@ -32,11 +32,10 @@ export default function About() {
   ];
 
   return (
-    <div className="about-container-wrapper">
-      {/* BỐ CỤC 2 CỘT TÁCH BIỆT RÕ RÀNG */}
+    <>
       <div className="layout-2col">
         {/* ========================================= */}
-        {/* CỘT CHÍNH (BÊN TRÁI: 2.2fr)               */}
+        {/* CỘT CHÍNH (BÊN TRÁI: 2.3fr)               */}
         {/* ========================================= */}
         <div className="col-main">
           {/* 1. Khối Giới thiệu bản thân */}
@@ -44,13 +43,13 @@ export default function About() {
             <div className="circle-overlay"></div>
             
             <div className="about-hero-grid">
-              <div className="box about-avatar-box" style={{ '--w': '100px', '--h': '100px', '--r': '9999px', '--tr': '25%' }}>
+              <div className="box about-avatar-box" style={{ '--w': '96px', '--h': '96px', '--r': '9999px', '--tr': '30%' }}>
                 <div className="circle-overlay"></div>
                 <img 
                   src="/teo.jpeg" 
                   alt="Võ Duy Toàn" 
                   className="avatar-img" 
-                  onError={(e) => { e.target.src = 'https://via.placeholder.com/100'; }} 
+                  onError={(e) => { e.target.src = 'https://via.placeholder.com/96'; }} 
                 />
               </div>
 
@@ -104,59 +103,71 @@ export default function About() {
           </div>
 
           {/* 3. Khối Học vấn & Hành trình */}
-          <div className="box source-section" style={{ '--w': '100%', '--h': 'auto', '--r': '26px', padding: '1.8rem' }}>
+          <div className="box source-section" style={{ '--w': '100%', '--h': 'auto', '--r': '24px', '--tr': '20%' }}>
             <div className="circle-overlay"></div>
             
-            <div className="source-header" style={{ marginBottom: '1.2rem' }}>
+            <div className="source-header">
               <div className="source-title">HÀNH TRÌNH PHÁT TRIỂN</div>
             </div>
 
             <div className="about-timeline">
               <div className="timeline-card">
-                <div className="timeline-marker">
+                <div className="box timeline-marker" style={{ '--w': '38px', '--h': '38px', '--r': '50%' }}>
+                  <div className="circle-overlay"></div>
                   <i className="fas fa-graduation-cap"></i>
                 </div>
-                <div className="timeline-body">
-                  <div className="timeline-head">
-                    <h4>Đại học Nguyễn Tất Thành (NTTU)</h4>
-                    <span className="timeline-tag">2022 - 2026</span>
+                <div className="box timeline-body" style={{ '--w': '100%', '--h': 'auto', '--r': '16px', '--tr': '12%' }}>
+                  <div className="circle-overlay"></div>
+                  <div className="timeline-content-inner">
+                    <div className="timeline-head">
+                      <h4>Đại học Nguyễn Tất Thành (NTTU)</h4>
+                      <span className="timeline-tag">2022 - 2026</span>
+                    </div>
+                    <p className="timeline-sub">Cử nhân Kỹ thuật Phần mềm • GPA: 3.2 / 4.0</p>
+                    <p className="timeline-text">
+                      Nghiên cứu cấu trúc dữ liệu và giải thuật, nguyên lý hệ thống phân tán, kiến trúc hướng dịch vụ (SOA), quy trình CI/CD và phương pháp phát triển Agile/Scrum.
+                    </p>
                   </div>
-                  <p className="timeline-sub">Cử nhân Kỹ thuật Phần mềm • GPA: 3.2 / 4.0</p>
-                  <p className="timeline-text">
-                    Nghiên cứu cấu trúc dữ liệu và giải thuật, nguyên lý hệ thống phân tán, kiến trúc hướng dịch vụ (SOA), quy trình CI/CD và phương pháp phát triển Agile/Scrum.
-                  </p>
                 </div>
               </div>
 
               <div className="timeline-card">
-                <div className="timeline-marker">
+                <div className="box timeline-marker" style={{ '--w': '38px', '--h': '38px', '--r': '50%' }}>
+                  <div className="circle-overlay"></div>
                   <i className="fas fa-laptop-code"></i>
                 </div>
-                <div className="timeline-body">
-                  <div className="timeline-head">
-                    <h4>ETECHS Company</h4>
-                    <span className="timeline-tag">03/2026 - 05/2026</span>
+                <div className="box timeline-body" style={{ '--w': '100%', '--h': 'auto', '--r': '16px', '--tr': '12%' }}>
+                  <div className="circle-overlay"></div>
+                  <div className="timeline-content-inner">
+                    <div className="timeline-head">
+                      <h4>ETECHS Company</h4>
+                      <span className="timeline-tag">03/2026 - 05/2026</span>
+                    </div>
+                    <p className="timeline-sub">Backend Developer Intern</p>
+                    <p className="timeline-text">
+                      Thiết kế và tối ưu RESTful API, triển khai xác thực JWT/OAuth2, kết nối CSDL PostgreSQL & NoSQL, đồng thời đóng gói container Docker cho môi trường staging.
+                    </p>
                   </div>
-                  <p className="timeline-sub">Backend Developer Intern</p>
-                  <p className="timeline-text">
-                    Thiết kế và tối ưu RESTful API, triển khai xác thực JWT/OAuth2, kết nối CSDL PostgreSQL & NoSQL, đồng thời đóng gói container Docker cho môi trường staging.
-                  </p>
                 </div>
               </div>
 
               <div className="timeline-card">
-                <div className="timeline-marker">
+                <div className="box timeline-marker" style={{ '--w': '38px', '--h': '38px', '--r': '50%' }}>
+                  <div className="circle-overlay"></div>
                   <i className="fas fa-rocket"></i>
                 </div>
-                <div className="timeline-body">
-                  <div className="timeline-head">
-                    <h4>Dự Án Nghiên Cứu & Độc Lập</h4>
-                    <span className="timeline-tag">Hiện tại</span>
+                <div className="box timeline-body" style={{ '--w': '100%', '--h': 'auto', '--r': '16px', '--tr': '12%' }}>
+                  <div className="circle-overlay"></div>
+                  <div className="timeline-content-inner">
+                    <div className="timeline-head">
+                      <h4>Dự Án Nghiên Cứu & Độc Lập</h4>
+                      <span className="timeline-tag">Hiện tại</span>
+                    </div>
+                    <p className="timeline-sub">Architect & Lead Developer</p>
+                    <p className="timeline-text">
+                      Trực tiếp phát triển nền tảng thương mại điện tử Polyglot Microservices <strong>Demi Mart</strong>, Game đối kháng 2D Unity <strong>Glitchverse</strong> và hệ thống giám sát nông nghiệp thông minh <strong>G3TD Smart Greenhouse IoT</strong>.
+                    </p>
                   </div>
-                  <p className="timeline-sub">Architect & Lead Developer</p>
-                  <p className="timeline-text">
-                    Trực tiếp phát triển nền tảng thương mại điện tử Polyglot Microservices <strong>Demi Mart</strong>, Game đối kháng 2D Unity <strong>Glitchverse</strong> và hệ thống giám sát nông nghiệp thông minh <strong>G3TD Smart Greenhouse IoT</strong>.
-                  </p>
                 </div>
               </div>
             </div>
@@ -168,11 +179,11 @@ export default function About() {
         {/* ========================================= */}
         <div className="col-side">
           {/* 4. Khối Kỹ năng kỹ thuật */}
-          <div className="box shorts-glass" style={{ '--w': '100%', '--h': 'auto', '--r': '26px', padding: '1.6rem' }}>
+          <div className="box shorts-glass" style={{ '--w': '100%', '--h': 'auto', '--r': '24px', '--tr': '20%' }}>
             <div className="circle-overlay"></div>
             
             <div className="shorts-header">
-              <i className="fas fa-layer-group" style={{ color: '#38bdf8' }}></i> 
+              <i className="fas fa-layer-group"></i> 
               <span>Kỹ Năng Kỹ Thuật</span>
             </div>
 
@@ -194,11 +205,11 @@ export default function About() {
           </div>
 
           {/* 5. Khối Nguyên tắc làm việc */}
-          <div className="box uptime-glass" style={{ '--w': '100%', '--h': 'auto', '--r': '24px', alignItems: 'flex-start', padding: '1.5rem' }}>
+          <div className="box uptime-glass" style={{ '--w': '100%', '--h': 'auto', '--r': '20px', '--tr': '15%' }}>
             <div className="circle-overlay"></div>
             
-            <div className="uptime-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <i className="fas fa-compass" style={{ color: '#38bdf8' }}></i>
+            <div className="uptime-title">
+              <i className="fas fa-compass"></i>
               <span>NGUYÊN TẮC LÀM VIỆC</span>
             </div>
             
@@ -221,42 +232,171 @@ export default function About() {
       </div>
 
       <style>{`
-        .about-container-wrapper {
-          width: 100%;
+        /* ========================================================= */
+        /* HỆ THỐNG KÍNH THỰC THỂ (GLASS SURFACE PRIMITIVE)          */
+        /* ========================================================= */
+        .box {
+          --w: 100%;
+          --h: auto;
+          --r: 28px;
+          --tr: 25%;
+          z-index: 10;
+          position: relative;
+          width: var(--w);
+          height: var(--h);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border-radius: var(--r);
+          border: 1px double rgba(255, 255, 255, 0.16);
+
+          box-shadow:
+              inset 2px -2px 1px -1px rgba(255, 255, 255, 0.5),
+              inset -2px 2px 1px -1px rgba(255, 255, 255, 0.5),
+              inset 6px -6px 2px -6px rgba(255, 255, 255, 0.3),
+              inset -6px 6px 2px -6px rgba(255, 255, 255, 0.3),
+              inset 0 0 3px rgba(0, 0, 0, 0.95),
+              0 12px 35px rgba(0, 0, 0, 0.7);
+
+          background: rgba(10, 16, 30, 0.82);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          overflow: hidden;
+          transition: transform 0.2s ease, filter 0.2s ease, background-color 0.2s ease;
         }
 
-        /* BỐ CỤC 2 CỘT TÁCH BIỆT */
+        .box svg {
+          filter: drop-shadow(0 20px 3px rgba(0, 0, 0, 0.3));
+        }
+
+        .box:before {
+          content: '';
+          position: absolute;
+          z-index: 1;
+          top: 35%;
+          left: 50%;
+          transform: translateX(-50%);
+          width: calc(100% - 16px);
+          height: calc(100% - 16px);
+          border-radius: var(--r);
+          border: 1px solid rgba(255, 255, 255, 0.18);
+          filter: blur(8px);
+          pointer-events: none;
+        }
+
+        .box:after {
+          z-index: 1;
+          content: '';
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          border-radius: var(--r);
+          filter: blur(2px);
+          background: linear-gradient(
+              45deg,
+              rgba(255, 255, 255, 0.22) 0%,
+              transparent var(--tr),
+              transparent calc(100% - var(--tr)),
+              rgba(255, 255, 255, 0.15) 100%
+          );
+          pointer-events: none;
+        }
+
+        .box .circle-overlay {
+          position: absolute;
+          z-index: 1;
+          inset: 4px;
+          border: 1px solid rgba(255, 255, 255, 0.18);
+          border-radius: var(--r);
+          filter: blur(1px);
+          pointer-events: none;
+        }
+
+        .about-btn-link:hover,
+        .about-stat-item:hover,
+        .timeline-body:hover {
+          filter: brightness(1.08);
+          transform: translateY(-2px);
+          cursor: pointer;
+        }
+
+        /* ========================================================= */
+        /* LIGHT MODE CỦA KÍNH THỰC THỂ                              */
+        /* ========================================================= */
+        body.light-mode .box {
+          border: 1px double rgba(51, 51, 51, 0.08) !important;
+          box-shadow:
+              inset 2px -2px 1px -1px rgba(255, 255, 255, 0.9),
+              inset -2px 2px 1px -1px rgba(255, 255, 255, 0.9),
+              inset 6px -6px 1px -6px rgba(255, 255, 255, 0.55),
+              inset -6px 6px 1px -6px rgba(255, 255, 255, 0.55),
+              inset 0 0 2px rgba(0, 0, 0, 0.8),
+              0 4px 8px rgba(0, 0, 0, 0.2) !important;
+          background: rgba(255, 255, 255, 0.04) !important;
+          backdrop-filter: blur(2px) !important;
+          -webkit-backdrop-filter: blur(2px) !important;
+        }
+
+        body.light-mode .box:before {
+          border: 1px solid rgba(0, 0, 0, 0.9) !important;
+          filter: blur(8px) !important;
+        }
+
+        body.light-mode .box:after {
+          filter: blur(3px) !important;
+          background: linear-gradient(
+              45deg,
+              rgba(255, 255, 255, 0.8) 0%,
+              transparent var(--tr),
+              transparent calc(100% - var(--tr)),
+              rgba(255, 255, 255, 0.8) 100%
+          ) !important;
+        }
+
+        body.light-mode .box .circle-overlay {
+          border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        }
+
+        /* ========================================================= */
+        /* BỐ CỤC 2 CỘT RỘNG RÃI                                    */
+        /* ========================================================= */
         .layout-2col {
           display: grid;
-          grid-template-columns: 2.2fr 1fr;
+          grid-template-columns: 2.3fr 1fr;
           gap: 1.5rem;
           width: 100%;
-          align-items: start;
         }
 
         .col-main, .col-side {
           display: flex;
           flex-direction: column;
-          gap: 1.5rem; /* Khoảng cách rộng giữa các khối kính */
+          gap: 1.5rem;
           width: 100%;
         }
 
         /* 1. Profile Hero */
+        .profile-card {
+          width: 100% !important;
+          cursor: default;
+          padding: 1.6rem 1.4rem;
+          display: block;
+        }
+
         .about-hero-grid {
           position: relative;
           z-index: 10;
           display: grid;
           grid-template-columns: auto 1fr;
-          gap: 1.8rem;
+          gap: 1.5rem;
           align-items: center;
           width: 100%;
-          padding: 1.8rem 1.6rem;
         }
 
         .about-avatar-box {
           cursor: default;
-          flex-shrink: 0;
           overflow: hidden;
+          flex-shrink: 0;
         }
 
         .about-avatar-box .avatar-img {
@@ -283,9 +423,9 @@ export default function About() {
           font-size: 0.72rem;
           font-weight: 700;
           color: #38bdf8;
-          background: rgba(56, 189, 248, 0.1);
-          border: 1px solid rgba(56, 189, 248, 0.3);
-          padding: 4px 12px;
+          background: rgba(56, 189, 248, 0.12);
+          border: 1px solid rgba(56, 189, 248, 0.35);
+          padding: 3px 12px;
           border-radius: 9999px;
         }
 
@@ -304,48 +444,41 @@ export default function About() {
         }
 
         .about-hero-info .name {
-          font-size: 1.65rem;
-          font-weight: 900;
-          color: #ffffff;
+          font-size: 1.6rem;
+          font-weight: 800;
+          color: #fff;
           line-height: 1.2;
         }
 
         .about-hero-info .role {
-          font-size: 0.85rem;
-          font-weight: 700;
-          letter-spacing: 1.5px;
+          font-size: 0.82rem;
           text-transform: uppercase;
+          letter-spacing: 1px;
+          font-weight: 600;
           color: #38bdf8;
         }
 
         .about-bio {
-          font-size: 0.88rem;
+          font-size: 0.86rem;
           line-height: 1.65;
           color: #cbd5e1;
-          margin-top: 2px;
         }
 
         .about-contact-links {
           display: flex;
           gap: 0.6rem;
           flex-wrap: wrap;
-          margin-top: 0.6rem;
+          margin-top: 0.4rem;
         }
 
         .about-btn-link {
-          padding: 0 1.1rem;
+          padding: 0 1.2rem;
           font-size: 0.8rem;
           font-weight: 700;
           color: #cbd5e1;
           gap: 0.5rem;
-          cursor: pointer;
         }
         .about-btn-link i, .about-btn-link span { z-index: 10; }
-        .about-btn-link:hover {
-          color: #ffffff;
-          filter: brightness(1.15);
-          transform: translateY(-2px);
-        }
 
         /* 2. Grid 4 Stats */
         .about-stats-grid {
@@ -378,7 +511,7 @@ export default function About() {
           display: block;
           font-size: 1.05rem;
           font-weight: 800;
-          color: #ffffff;
+          color: #fff;
           line-height: 1.2;
         }
 
@@ -392,6 +525,41 @@ export default function About() {
         }
 
         /* 3. Timeline */
+        .source-section {
+          width: 100% !important;
+          padding: 2rem !important;
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem !important;
+          cursor: default;
+        }
+
+        .source-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          z-index: 10;
+          width: 100%;
+        }
+
+        .source-title {
+          font-size: 1.25rem;
+          font-weight: 900;
+          color: #fff;
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+          letter-spacing: 0.5px;
+        }
+
+        .source-title:before {
+          content: '';
+          width: 4px;
+          height: 22px;
+          background: #38bdf8;
+          border-radius: 2px;
+        }
+
         .about-timeline {
           position: relative;
           z-index: 10;
@@ -420,32 +588,24 @@ export default function About() {
         }
 
         .timeline-marker {
-          width: 38px;
-          height: 38px;
-          border-radius: 50%;
-          background: #0b1329;
-          border: 1.5px solid #38bdf8;
-          color: #38bdf8;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 0.85rem;
           flex-shrink: 0;
-          box-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
+          color: #38bdf8;
+          font-size: 0.85rem;
         }
+        .timeline-marker i { z-index: 10; }
 
         .timeline-body {
           flex: 1;
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: 16px;
-          padding: 1.1rem 1.3rem;
-          transition: border-color 0.2s ease, background 0.2s ease;
+          padding: 1.1rem 1.3rem !important;
+          align-items: stretch !important;
         }
 
-        .timeline-body:hover {
-          border-color: rgba(56, 189, 248, 0.35);
-          background: rgba(255, 255, 255, 0.05);
+        .timeline-content-inner {
+          position: relative;
+          z-index: 10;
+          width: 100%;
+          display: flex;
+          flex-direction: column;
         }
 
         .timeline-head {
@@ -489,14 +649,36 @@ export default function About() {
         }
 
         /* 4. Cột phải: Kỹ năng */
+        .shorts-glass {
+          width: 100% !important;
+          padding: 1.5rem !important;
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+          cursor: default;
+        }
+
+        .shorts-header {
+          font-size: 0.95rem;
+          font-weight: 800;
+          color: #fff;
+          z-index: 10;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .shorts-header i {
+          color: #38bdf8;
+        }
+
         .skill-groups-container {
           position: relative;
           z-index: 10;
           display: flex;
           flex-direction: column;
-          gap: 1.2rem;
+          gap: 1.1rem;
           width: 100%;
-          margin-top: 0.5rem;
         }
 
         .skill-group-block {
@@ -527,13 +709,48 @@ export default function About() {
           gap: 6px;
         }
 
+        .skill-tags-flow .tag-badge {
+          font-size: 0.68rem;
+          padding: 3px 10px;
+          border-radius: 9999px;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          color: #cbd5e1;
+        }
+
         /* 5. Cột phải: Nguyên tắc */
+        .uptime-glass {
+          width: 100% !important;
+          padding: 1.3rem !important;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start !important;
+          gap: 0.8rem;
+          cursor: default;
+        }
+
+        .uptime-title {
+          font-size: 0.75rem;
+          letter-spacing: 1px;
+          font-weight: 800;
+          text-transform: uppercase;
+          color: #64748b;
+          z-index: 10;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .uptime-title i {
+          color: #38bdf8;
+        }
+
         .work-principles-list {
           position: relative;
           z-index: 10;
           list-style: none;
           padding: 0;
-          margin: 0.8rem 0 0 0;
+          margin: 0;
           display: flex;
           flex-direction: column;
           gap: 0.8rem;
@@ -556,53 +773,88 @@ export default function About() {
           flex-shrink: 0;
         }
 
-        /* LIGHT MODE */
-        body.light-mode .about-hero-info .name,
+        /* ========================================================= */
+        /* MÀU CHỮ LIGHT MODE: ĐEN & CAM                             */
+        /* ========================================================= */
+        body.light-mode .name,
+        body.light-mode .source-title,
         body.light-mode .stat-val,
-        body.light-mode .timeline-head h4 {
-          color: #1e293b !important;
+        body.light-mode .timeline-head h4,
+        body.light-mode .shorts-header,
+        body.light-mode .about-btn-link {
+          color: #0f172a !important;
+          filter: drop-shadow(0 20px 3px rgba(102, 102, 102, 0.15));
+        }
+
+        body.light-mode .role,
+        body.light-mode .stat-icon,
+        body.light-mode .timeline-marker,
+        body.light-mode .shorts-header i,
+        body.light-mode .skill-group-title i,
+        body.light-mode .uptime-title i,
+        body.light-mode .work-principles-list li i {
+          color: #ea580c !important;
+        }
+
+        body.light-mode .source-title:before,
+        body.light-mode .status-dot {
+          background: #ea580c !important;
+          box-shadow: 0 0 8px #ea580c !important;
+        }
+
+        body.light-mode .about-status-badge,
+        body.light-mode .timeline-tag {
+          color: #ea580c !important;
+          background: rgba(234, 88, 12, 0.12) !important;
+          border-color: rgba(234, 88, 12, 0.35) !important;
+        }
+
+        body.light-mode .stat-label,
+        body.light-mode .timeline-sub,
+        body.light-mode .skill-group-title,
+        body.light-mode .uptime-title {
+          color: #64748b !important;
         }
 
         body.light-mode .about-bio,
         body.light-mode .timeline-text,
         body.light-mode .work-principles-list li {
-          color: #475569 !important;
+          color: #334155 !important;
         }
 
-        body.light-mode .about-btn-link {
-          color: #475569;
-        }
-        body.light-mode .about-btn-link:hover {
-          color: #000000;
-        }
-
-        body.light-mode .timeline-marker {
-          background: #f1f5f9;
-          border-color: #0284c7;
-          color: #0284c7;
+        body.light-mode .about-bio strong,
+        body.light-mode .timeline-text strong,
+        body.light-mode .work-principles-list li strong {
+          color: #0f172a !important;
         }
 
-        body.light-mode .timeline-body {
-          background: rgba(0, 0, 0, 0.02);
-          border-color: rgba(0, 0, 0, 0.08);
+        body.light-mode .skill-tags-flow .tag-badge {
+          background: rgba(0, 0, 0, 0.05) !important;
+          border-color: rgba(0, 0, 0, 0.1) !important;
+          color: #334155 !important;
         }
 
-        /* RESPONSIVE */
+        body.light-mode .about-timeline:before {
+          background: rgba(0, 0, 0, 0.1) !important;
+        }
+
+        /* ========================================================= */
+        /* RESPONSIVE                                                */
+        /* ========================================================= */
         @media (max-width: 1150px) {
-          .layout-2col {
-            grid-template-columns: 1fr; /* Xuống 1 cột trên màn hình nhỏ */
-          }
-          .about-stats-grid {
-            grid-template-columns: repeat(2, 1fr);
-          }
+          .layout-2col { grid-template-columns: 1fr; }
+          .about-stats-grid { grid-template-columns: repeat(2, 1fr); }
         }
 
         @media (max-width: 640px) {
+          .box {
+            --r: 18px;
+          }
+
           .about-hero-grid {
             grid-template-columns: 1fr;
             text-align: center;
             justify-items: center;
-            padding: 1.2rem;
             gap: 1rem;
           }
 
@@ -629,16 +881,22 @@ export default function About() {
           }
 
           .timeline-marker {
-            width: 32px;
-            height: 32px;
-            font-size: 0.75rem;
+            --w: 32px !important;
+            --h: 32px !important;
+            font-size: 0.75rem !important;
           }
 
           .about-timeline:before {
             left: 15px;
           }
         }
+
+        @media (max-width: 380px) {
+          .box {
+            --r: 14px;
+          }
+        }
       `}</style>
-    </div>
+    </>
   );
 }

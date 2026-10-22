@@ -141,7 +141,6 @@ export default function Projects() {
     pausedIdRef.current = pausedCardId;
   }, [pausedCardId]);
 
-  // Responsive bán kính vòng xoay 3D
   useEffect(() => {
     const handleResize = () => {
       const containerWidth = containerRef.current 
@@ -166,7 +165,6 @@ export default function Projects() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Vòng lặp xoay độc lập: chỉ dừng thẻ đang được chạm
   useEffect(() => {
     let lastTime = performance.now();
     
@@ -192,7 +190,6 @@ export default function Projects() {
     return () => cancelAnimationFrame(requestRef.current);
   }, []);
 
-  // Click vào thẻ trên vòng xoay -> Cuộn mượt xuống xem chi tiết
   const handleSelectProject = (idx) => {
     setActiveDetailIndex(idx);
     if (detailSectionRef.current) {
@@ -225,7 +222,6 @@ export default function Projects() {
         >
           <div className="orbit-ellipse-line"></div>
 
-          {/* Ảnh nhân vật trung tâm không bóng đen */}
           <div className="center-avatar-clean">
             <img 
               src="/teoproject.png" 
@@ -234,7 +230,6 @@ export default function Projects() {
             />
           </div>
 
-          {/* Các thẻ dự án xoay 3D */}
           {projectList.map((item, index) => {
             const currentAngleDeg = cardAngles[index] || 0;
             const currentAngleRad = (currentAngleDeg * Math.PI) / 180;
@@ -298,13 +293,13 @@ export default function Projects() {
       </section>
 
       {/* ========================================================= */}
-      {/* PHẦN 2: LĂN XUỐNG DƯỚI - TRÌNH CHIẾU DỰ ÁN CHI TIẾT        */}
+      {/* PHẦN 2: TRÌNH CHIẾU DỰ ÁN CHI TIẾT                       */}
       {/* ========================================================= */}
       <section ref={detailSectionRef} className="box project-detail-section">
         <div className="circle-overlay"></div>
 
         <div className="detail-inner-grid">
-          {/* CỘT TRÁI: THÔNG TIN CHI TIẾT */}
+          {/* CỘT TRÁI */}
           <div className="detail-info-col">
             <div className="detail-meta-header">
               <span className="detail-counter-badge">
@@ -319,7 +314,6 @@ export default function Projects() {
             <p className="detail-project-sub">{currentProject.subtitle}</p>
             <p className="detail-project-desc">{currentProject.desc}</p>
 
-            {/* Ngăn xếp công nghệ */}
             <div className="detail-section-block">
               <span className="detail-block-title">NGĂN XẾP CÔNG NGHỆ</span>
               <div className="detail-tech-chips">
@@ -329,7 +323,6 @@ export default function Projects() {
               </div>
             </div>
 
-            {/* Tính năng chính (2 cột) */}
             <div className="detail-section-block">
               <span className="detail-block-title">TÍNH NĂNG CHÍNH</span>
               <div className="detail-features-grid">
@@ -342,7 +335,6 @@ export default function Projects() {
               </div>
             </div>
 
-            {/* Nút thao tác */}
             <div className="detail-action-buttons">
               <a 
                 href={currentProject.demoUrl} 
@@ -370,10 +362,9 @@ export default function Projects() {
             </div>
           </div>
 
-          {/* CỘT PHẢI: MOCKUP VÀ FLOATING TAGS ÔM GỌN */}
+          {/* CỘT PHẢI */}
           <div className="detail-mockup-col">
             <div className="mockup-frame-wrapper">
-              {/* Thẻ tag nổi lơ lửng được định vị theo khung ảnh */}
               {currentProject.floatingTags.map((tag, idx) => (
                 <div 
                   key={idx} 
@@ -390,7 +381,6 @@ export default function Projects() {
                 </div>
               ))}
 
-              {/* Tấm Mockup kính */}
               <div className="box mockup-display-card">
                 <div className="circle-overlay"></div>
                 <img 
@@ -403,7 +393,7 @@ export default function Projects() {
           </div>
         </div>
 
-        {/* Thanh chuyển đổi phân trang */}
+        {/* Thanh phân trang */}
         <div className="detail-pagination-bar">
           <button 
             className="box page-arrow-btn"
@@ -445,14 +435,14 @@ export default function Projects() {
           width: 100%;
           display: flex;
           flex-direction: column;
-          gap: 2.5rem;
+          gap: 2.2rem;
         }
 
         /* --- PHẦN 1: VÒNG XOAY 3D --- */
         .projects-orbit-wrapper {
           position: relative;
           width: 100%;
-          min-height: 680px;
+          min-height: 640px;
           display: flex;
           flex-direction: column;
           background: transparent !important;
@@ -475,7 +465,7 @@ export default function Projects() {
         .source-title-clean {
           font-size: 1.35rem;
           font-weight: 800;
-          color: #ffffff;
+          color: var(--text-heading);
           display: flex;
           align-items: center;
           gap: 10px;
@@ -485,20 +475,20 @@ export default function Projects() {
           content: '';
           width: 4px;
           height: 22px;
-          background: #38bdf8;
+          background: var(--accent-color);
           border-radius: 2px;
         }
 
         .orbit-hint-text {
           font-size: 0.82rem;
-          color: #94a3b8;
+          color: var(--text-muted);
           z-index: 10;
         }
 
         .orbit-container {
           position: relative;
           width: 100%;
-          height: 620px;
+          height: 580px;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -511,7 +501,7 @@ export default function Projects() {
           position: absolute;
           width: calc(var(--rx, 550px) * 2);
           height: calc(var(--ry, 160px) * 2);
-          border: 2px dashed rgba(56, 189, 248, 0.45);
+          border: 2px dashed var(--orbit-line);
           border-radius: 50%;
           pointer-events: none;
           transform: rotateX(65deg);
@@ -521,14 +511,13 @@ export default function Projects() {
         .center-avatar-clean {
           position: absolute;
           z-index: 150;
-          width: min(720px, 94vw);
-          height: min(720px, 94vw);
-          max-height: 640px;
+          width: min(680px, 92vw);
+          height: min(680px, 92vw);
+          max-height: 600px;
           display: flex;
           justify-content: center;
           align-items: center;
           pointer-events: none;
-          transition: width 0.3s ease, height 0.3s ease;
         }
 
         .center-avatar-clean img {
@@ -557,19 +546,16 @@ export default function Projects() {
 
         .project-card-glass.is-card-paused,
         .project-card-glass:hover {
-          filter: brightness(1.15) !important;
-          border-color: rgba(56, 189, 248, 0.8) !important;
-          box-shadow:
-              inset 2px -2px 1px -1px rgba(255, 255, 255, 0.8),
-              inset -2px 2px 1px -1px rgba(255, 255, 255, 0.8),
-              0 18px 40px rgba(56, 189, 248, 0.5) !important;
+          filter: brightness(1.1) !important;
+          border-color: var(--accent-color) !important;
+          box-shadow: 0 16px 36px var(--accent-glow) !important;
           opacity: 1 !important;
           z-index: 700 !important;
         }
 
         .project-card-glass.is-card-selected {
-          border-color: #38bdf8 !important;
-          box-shadow: 0 0 25px rgba(56, 189, 248, 0.7) !important;
+          border-color: var(--accent-color) !important;
+          box-shadow: 0 0 25px var(--accent-glow) !important;
         }
 
         .card-inner-glass {
@@ -600,7 +586,7 @@ export default function Projects() {
         .project-title {
           font-size: 0.95rem;
           font-weight: 700;
-          color: #ffffff !important;
+          color: var(--text-heading) !important;
           margin: 4px 0;
           white-space: nowrap;
           overflow: hidden;
@@ -609,7 +595,7 @@ export default function Projects() {
 
         .project-desc {
           font-size: 0.74rem;
-          color: #cbd5e1 !important;
+          color: var(--text-muted) !important;
           line-height: 1.35;
           display: -webkit-box;
           -webkit-line-clamp: 2;
@@ -628,21 +614,21 @@ export default function Projects() {
         .project-techs .tag-badge {
           font-size: 0.64rem;
           padding: 2px 7px;
-          background: rgba(56, 189, 248, 0.15);
-          border: 1px solid rgba(56, 189, 248, 0.35);
-          color: #38bdf8;
+          background: var(--tag-bg);
+          border: 1px solid var(--tag-border);
+          color: var(--accent-color);
           font-weight: 600;
           border-radius: 6px;
         }
 
-        /* --- PHẦN 2: KHỐI TRÌNH CHIẾU DỰ ÁN CHI TIẾT --- */
+        /* --- PHẦN 2: CHI TIẾT DỰ ÁN --- */
         .project-detail-section {
           width: 100% !important;
-          padding: 2.2rem !important;
-          border-radius: 28px !important;
+          padding: 2rem !important;
+          border-radius: 24px !important;
           display: flex;
           flex-direction: column;
-          gap: 2rem;
+          gap: 1.8rem;
           cursor: default;
         }
 
@@ -651,16 +637,15 @@ export default function Projects() {
           z-index: 10;
           display: grid;
           grid-template-columns: 1.15fr 1fr;
-          gap: 2.5rem;
+          gap: 2.2rem;
           align-items: center;
           width: 100%;
         }
 
-        /* Cột thông tin trái */
         .detail-info-col {
           display: flex;
           flex-direction: column;
-          gap: 1.2rem;
+          gap: 1.1rem;
         }
 
         .detail-meta-header {
@@ -673,7 +658,7 @@ export default function Projects() {
         .detail-counter-badge {
           font-size: 0.75rem;
           font-weight: 800;
-          color: #38bdf8;
+          color: var(--accent-color);
           letter-spacing: 1.5px;
           text-transform: uppercase;
         }
@@ -686,15 +671,15 @@ export default function Projects() {
           font-weight: 700;
           padding: 3px 10px;
           border-radius: 9999px;
-          background: rgba(56, 189, 248, 0.12);
-          border: 1px solid rgba(56, 189, 248, 0.28);
-          color: #cbd5e1;
+          background: var(--tag-bg);
+          border: 1px solid var(--tag-border);
+          color: var(--text-heading);
         }
 
         .detail-project-title {
-          font-size: 2.2rem;
+          font-size: 2rem;
           font-weight: 900;
-          color: #ffffff;
+          color: var(--text-heading);
           line-height: 1.15;
           letter-spacing: -0.5px;
         }
@@ -702,27 +687,27 @@ export default function Projects() {
         .detail-project-sub {
           font-size: 0.95rem;
           font-weight: 700;
-          color: #38bdf8;
+          color: var(--accent-color);
           line-height: 1.4;
         }
 
         .detail-project-desc {
-          font-size: 0.88rem;
-          line-height: 1.7;
-          color: #94a3b8;
+          font-size: 0.86rem;
+          line-height: 1.65;
+          color: var(--text-body);
         }
 
         .detail-section-block {
           display: flex;
           flex-direction: column;
-          gap: 0.6rem;
+          gap: 0.5rem;
         }
 
         .detail-block-title {
           font-size: 0.72rem;
           font-weight: 800;
           letter-spacing: 1.2px;
-          color: #64748b;
+          color: var(--text-muted);
           text-transform: uppercase;
         }
 
@@ -737,9 +722,9 @@ export default function Projects() {
           font-weight: 700;
           padding: 4px 12px;
           border-radius: 9999px;
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          color: #f1f5f9;
+          background: var(--chip-bg);
+          border: 1px solid var(--chip-border);
+          color: var(--text-heading);
         }
 
         .detail-features-grid {
@@ -754,15 +739,15 @@ export default function Projects() {
           gap: 8px;
           font-size: 0.82rem;
           font-weight: 600;
-          color: #cbd5e1;
+          color: var(--text-body);
         }
 
         .feature-bullet-dot {
           width: 6px;
           height: 6px;
           border-radius: 50%;
-          background: #38bdf8;
-          box-shadow: 0 0 6px #38bdf8;
+          background: var(--accent-color);
+          box-shadow: 0 0 6px var(--accent-color);
           flex-shrink: 0;
         }
 
@@ -770,39 +755,40 @@ export default function Projects() {
           display: flex;
           gap: 0.8rem;
           flex-wrap: wrap;
-          margin-top: 0.6rem;
+          margin-top: 0.4rem;
         }
 
         .detail-btn-primary {
           padding: 0 1.4rem;
           font-size: 0.85rem;
           font-weight: 800;
-          color: #ffffff;
-          background: rgba(56, 189, 248, 0.25) !important;
-          border-color: rgba(56, 189, 248, 0.6) !important;
+          color: #ffffff !important;
+          background: var(--btn-primary-bg) !important;
+          border-color: var(--accent-color) !important;
           gap: 0.6rem;
           cursor: pointer;
         }
         .detail-btn-primary i, .detail-btn-primary span { z-index: 10; }
         .detail-btn-primary:hover {
-          background: rgba(56, 189, 248, 0.4) !important;
-          box-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
+          filter: brightness(1.15);
+          box-shadow: 0 0 20px var(--accent-glow);
         }
 
         .detail-btn-secondary {
           padding: 0 1.3rem;
           font-size: 0.85rem;
           font-weight: 700;
-          color: #cbd5e1;
+          color: var(--text-heading);
           gap: 0.6rem;
           cursor: pointer;
         }
         .detail-btn-secondary i, .detail-btn-secondary span { z-index: 10; }
         .detail-btn-secondary:hover {
-          color: #ffffff;
+          color: var(--accent-color);
+          border-color: var(--accent-color) !important;
         }
 
-        /* Cột Mockup & Floating tags phải */
+        /* Mockup Frame */
         .detail-mockup-col {
           display: flex;
           justify-content: center;
@@ -813,7 +799,7 @@ export default function Projects() {
         .mockup-frame-wrapper {
           position: relative;
           width: 100%;
-          max-width: 440px;
+          max-width: 420px;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -821,11 +807,11 @@ export default function Projects() {
 
         .mockup-display-card {
           width: 100% !important;
-          height: 480px;
-          border-radius: 28px !important;
+          height: 440px;
+          border-radius: 24px !important;
           overflow: hidden;
-          padding: 12px !important;
-          box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7);
+          padding: 10px !important;
+          box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5);
         }
 
         .mockup-img {
@@ -834,25 +820,25 @@ export default function Projects() {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          border-radius: 20px;
+          border-radius: 18px;
         }
 
-        /* Thẻ tag nổi lơ lửng: Co gọn ôm sát chữ như ảnh mẫu */
+        /* Thẻ tag nổi lơ lửng */
         .floating-tag-badge {
           position: absolute;
           z-index: 30;
           width: max-content !important;
           max-width: max-content !important;
           white-space: nowrap;
-          padding: 7px 16px !important;
+          padding: 6px 14px !important;
           border-radius: 9999px !important;
-          font-size: 0.78rem;
+          font-size: 0.76rem;
           font-weight: 700;
-          color: #ffffff;
+          color: var(--text-heading) !important;
           display: inline-flex !important;
           align-items: center;
           gap: 8px;
-          box-shadow: 0 12px 28px rgba(0, 0, 0, 0.65);
+          box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
           animation: floatSway 4s ease-in-out infinite alternate;
           pointer-events: none;
         }
@@ -861,38 +847,23 @@ export default function Projects() {
           width: 7px;
           height: 7px;
           border-radius: 50%;
-          background: #38bdf8;
-          box-shadow: 0 0 8px #38bdf8;
+          background: var(--accent-color);
+          box-shadow: 0 0 8px var(--accent-color);
           z-index: 10;
           flex-shrink: 0;
         }
         .floating-tag-badge span { z-index: 10; }
 
-        /* Tọa độ đặt thẻ tag nổi gác mép viền ảnh chuẩn thiết kế */
-        .float-pos-1 {
-          top: 35px;
-          left: -20px;
-          animation-delay: 0s;
-        }
-
-        .float-pos-2 {
-          top: 48%;
-          right: -25px;
-          animation-delay: 1.5s;
-        }
-
-        .float-pos-3 {
-          bottom: 40px;
-          left: -15px;
-          animation-delay: 2.8s;
-        }
+        .float-pos-1 { top: 30px; left: -15px; animation-delay: 0s; }
+        .float-pos-2 { top: 48%; right: -20px; animation-delay: 1.5s; }
+        .float-pos-3 { bottom: 35px; left: -10px; animation-delay: 2.8s; }
 
         @keyframes floatSway {
           0% { transform: translateY(0px) rotate(0deg); }
-          100% { transform: translateY(-10px) rotate(1deg); }
+          100% { transform: translateY(-8px) rotate(1deg); }
         }
 
-        /* Pagination Bar chuyển đổi dự án */
+        /* Pagination Bar */
         .detail-pagination-bar {
           position: relative;
           z-index: 10;
@@ -907,11 +878,11 @@ export default function Projects() {
 
         .page-arrow-btn {
           cursor: pointer;
-          color: #94a3b8;
+          color: var(--text-muted);
           font-size: 0.85rem;
         }
         .page-arrow-btn i { z-index: 10; }
-        .page-arrow-btn:hover { color: #ffffff; }
+        .page-arrow-btn:hover { color: var(--accent-color); }
 
         .pagination-pills-list {
           display: flex;
@@ -922,9 +893,9 @@ export default function Projects() {
           width: 32px;
           height: 32px;
           border-radius: 50%;
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          background: rgba(255, 255, 255, 0.04);
-          color: #94a3b8;
+          border: 1px solid var(--chip-border);
+          background: var(--chip-bg);
+          color: var(--text-muted);
           font-size: 0.78rem;
           font-weight: 800;
           cursor: pointer;
@@ -932,60 +903,15 @@ export default function Projects() {
         }
 
         .page-dot-pill:hover {
-          color: #ffffff;
-          border-color: rgba(56, 189, 248, 0.4);
+          color: var(--text-heading);
+          border-color: var(--accent-color);
         }
 
         .page-dot-pill.active {
-          background: #38bdf8;
-          border-color: #38bdf8;
-          color: #020617;
-          box-shadow: 0 0 14px rgba(56, 189, 248, 0.5);
-        }
-
-        /* LIGHT MODE */
-        body.light-mode .source-title-clean,
-        body.light-mode .detail-project-title {
-          color: #0f172a !important;
-        }
-
-        body.light-mode .orbit-ellipse-line {
-          border-color: rgba(2, 132, 199, 0.45);
-        }
-
-        body.light-mode .detail-project-sub {
-          color: #0284c7 !important;
-        }
-
-        body.light-mode .detail-project-desc {
-          color: #475569 !important;
-        }
-
-        body.light-mode .tech-chip-item {
-          background: rgba(0, 0, 0, 0.04);
-          border-color: rgba(0, 0, 0, 0.1);
-          color: #1e293b;
-        }
-
-        body.light-mode .feature-item {
-          color: #334155;
-        }
-
-        body.light-mode .floating-tag-badge {
-          color: #0f172a;
-          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        body.light-mode .page-dot-pill {
-          background: rgba(0, 0, 0, 0.04);
-          border-color: rgba(0, 0, 0, 0.12);
-          color: #64748b;
-        }
-
-        body.light-mode .page-dot-pill.active {
-          background: #0284c7;
-          border-color: #0284c7;
-          color: #ffffff;
+          background: var(--accent-color) !important;
+          border-color: var(--accent-color) !important;
+          color: #ffffff !important;
+          box-shadow: 0 0 14px var(--accent-glow);
         }
 
         /* RESPONSIVE */
@@ -994,40 +920,19 @@ export default function Projects() {
             grid-template-columns: 1fr;
             gap: 2rem;
           }
-
-          .detail-mockup-col {
-            order: -1;
-          }
-
-          .mockup-display-card {
-            height: 380px;
-          }
-
+          .detail-mockup-col { order: -1; }
+          .mockup-display-card { height: 360px; }
           .float-pos-1 { left: 5px; top: 15px; }
           .float-pos-2 { right: 5px; }
           .float-pos-3 { left: 10px; bottom: 15px; }
         }
 
         @media (max-width: 640px) {
-          .detail-project-title {
-            font-size: 1.6rem;
-          }
-
-          .detail-features-grid {
-            grid-template-columns: 1fr;
-          }
-
-          .mockup-display-card {
-            height: 300px;
-          }
-
-          .floating-tag-badge {
-            display: none;
-          }
-
-          .detail-action-buttons {
-            flex-direction: column;
-          }
+          .detail-project-title { font-size: 1.5rem; }
+          .detail-features-grid { grid-template-columns: 1fr; }
+          .mockup-display-card { height: 280px; }
+          .floating-tag-badge { display: none; }
+          .detail-action-buttons { flex-direction: column; }
         }
       `}</style>
     </div>

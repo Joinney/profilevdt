@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 
@@ -13,8 +13,21 @@ import './style.css';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('home');
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
 
-  // Hàm hiển thị trang tương ứng
+  useEffect(() => {
+    if (theme === 'light') {
+      document.body.classList.add('light-mode');
+    } else {
+      document.body.classList.remove('light-mode');
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
+  };
+
   const renderPage = () => {
     switch (activeTab) {
       case 'about':
@@ -33,13 +46,19 @@ export default function App() {
 
   return (
     <div className="dashboard-container">
-      <Header activeTab={activeTab} setActiveTab={setActiveTab} />
+      <Header 
+        activeTab={activeTab} 
+        setActiveTab={setActiveTab} 
+        theme={theme} 
+        toggleTheme={toggleTheme} 
+      />
       
       <main style={{ minHeight: '80vh', padding: '20px 0' }}>
         {renderPage()}
       </main>
 
-      <Footer />
+      {/* Truyền theme xuống Footer */}
+      <Footer theme={theme} />
     </div>
   );
 }
