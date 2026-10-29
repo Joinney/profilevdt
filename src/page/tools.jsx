@@ -166,8 +166,135 @@ export default function Tools() {
       </div>
 
       <style>{`
+        /* ========================================================= */
+        /* HỆ THỐNG KÍNH THỰC THỂ (GLASS SURFACE PRIMITIVE)          */
+        /* ========================================================= */
+        .box {
+          --w: 100%;
+          --h: auto;
+          --r: 28px;
+          --tr: 25%;
+          z-index: 10;
+          position: relative;
+          width: var(--w);
+          height: var(--h);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border-radius: var(--r);
+          border: 1px double rgba(255, 255, 255, 0.16);
+
+          box-shadow:
+              inset 2px -2px 1px -1px rgba(255, 255, 255, 0.5),
+              inset -2px 2px 1px -1px rgba(255, 255, 255, 0.5),
+              inset 6px -6px 2px -6px rgba(255, 255, 255, 0.3),
+              inset -6px 6px 2px -6px rgba(255, 255, 255, 0.3),
+              inset 0 0 3px rgba(0, 0, 0, 0.95),
+              0 12px 35px rgba(0, 0, 0, 0.7);
+
+          background: rgba(10, 16, 30, 0.82);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          overflow: hidden;
+          transition: transform 0.2s ease, filter 0.2s ease, background-color 0.2s ease;
+        }
+
+        .box svg {
+          filter: drop-shadow(0 20px 3px rgba(0, 0, 0, 0.3));
+        }
+
+        .box:before {
+          content: '';
+          position: absolute;
+          z-index: 1;
+          top: 35%;
+          left: 50%;
+          transform: translateX(-50%);
+          width: calc(100% - 16px);
+          height: calc(100% - 16px);
+          border-radius: var(--r);
+          border: 1px solid rgba(255, 255, 255, 0.18);
+          filter: blur(8px);
+          pointer-events: none;
+        }
+
+        .box:after {
+          z-index: 1;
+          content: '';
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          border-radius: var(--r);
+          filter: blur(2px);
+          background: linear-gradient(
+              45deg,
+              rgba(255, 255, 255, 0.22) 0%,
+              transparent var(--tr),
+              transparent calc(100% - var(--tr)),
+              rgba(255, 255, 255, 0.15) 100%
+          );
+          pointer-events: none;
+        }
+
+        .box .circle-overlay {
+          position: absolute;
+          z-index: 1;
+          inset: 4px;
+          border: 1px solid rgba(255, 255, 255, 0.18);
+          border-radius: var(--r);
+          filter: blur(1px);
+          pointer-events: none;
+        }
+
         .tools-page-wrapper {
           width: 100%;
+        }
+
+        /* Khung Section Kính */
+        .source-section {
+          width: 100% !important;
+          padding: 2rem !important;
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem !important;
+          cursor: default;
+        }
+
+        .source-title {
+          font-size: 1.25rem;
+          font-weight: 900;
+          color: #fff;
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+          letter-spacing: 0.5px;
+        }
+
+        .source-title:before {
+          content: '';
+          width: 4px;
+          height: 22px;
+          background: #38bdf8;
+          border-radius: 2px;
+        }
+
+        .search-mini-box {
+          width: 250px !important;
+          height: 38px !important;
+          padding: 0 1rem;
+          display: flex;
+          align-items: center;
+        }
+
+        .search-mini-box input {
+          background: transparent;
+          border: none;
+          outline: none;
+          font-size: 0.85rem;
+          width: 100%;
+          color: #fff;
+          z-index: 10;
         }
 
         /* Top Bar */
@@ -180,11 +307,7 @@ export default function Tools() {
           width: 100%;
           gap: 1rem;
           flex-wrap: wrap;
-          margin-bottom: 1.2rem;
-        }
-
-        .tools-search-input {
-          padding: 0 1rem;
+          margin-bottom: 0.5rem;
         }
 
         /* Filter Pills */
@@ -216,6 +339,8 @@ export default function Tools() {
 
         .tool-filter-btn:hover {
           color: #ffffff;
+          filter: brightness(1.08);
+          transform: translateY(-2px);
         }
 
         .tool-filter-btn.active {
@@ -389,38 +514,95 @@ export default function Tools() {
           margin: 0;
         }
 
-        /* LIGHT MODE */
+        /* ========================================================= */
+        /* LIGHT MODE CỦA KÍNH THỰC THỂ                              */
+        /* ========================================================= */
+        body.light-mode .box {
+          border: 1px double rgba(51, 51, 51, 0.08) !important;
+          box-shadow:
+              inset 2px -2px 1px -1px rgba(255, 255, 255, 0.9),
+              inset -2px 2px 1px -1px rgba(255, 255, 255, 0.9),
+              inset 6px -6px 1px -6px rgba(255, 255, 255, 0.55),
+              inset -6px 6px 1px -6px rgba(255, 255, 255, 0.55),
+              inset 0 0 2px rgba(0, 0, 0, 0.8),
+              0 4px 8px rgba(0, 0, 0, 0.2) !important;
+          background: rgba(255, 255, 255, 0.04) !important;
+          backdrop-filter: blur(2px) !important;
+          -webkit-backdrop-filter: blur(2px) !important;
+        }
+
+        body.light-mode .box:before {
+          border: 1px solid rgba(0, 0, 0, 0.9) !important;
+          filter: blur(8px) !important;
+        }
+
+        body.light-mode .box:after {
+          filter: blur(3px) !important;
+          background: linear-gradient(
+              45deg,
+              rgba(255, 255, 255, 0.8) 0%,
+              transparent var(--tr),
+              transparent calc(100% - var(--tr)),
+              rgba(255, 255, 255, 0.8) 100%
+          ) !important;
+        }
+
+        body.light-mode .box .circle-overlay {
+          border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        }
+
+        body.light-mode .source-title,
         body.light-mode .tool-category-heading h3,
-        body.light-mode .tool-title-text {
-          color: #1e293b !important;
+        body.light-mode .tool-title-text,
+        body.light-mode .search-mini-box input {
+          color: #0f172a !important;
+          filter: drop-shadow(0 20px 3px rgba(102, 102, 102, 0.15));
+        }
+
+        body.light-mode .source-title:before {
+          background: #ea580c !important;
+          box-shadow: 0 0 8px #ea580c !important;
+        }
+
+        body.light-mode .search-mini-box input::placeholder {
+          color: #94a3b8 !important;
         }
 
         body.light-mode .tool-desc-text {
+          color: #334155 !important;
+        }
+
+        body.light-mode .tool-category-count {
           color: #64748b !important;
+          background: rgba(0, 0, 0, 0.04) !important;
         }
 
         body.light-mode .tool-filter-btn {
-          color: #64748b;
+          color: #64748b !important;
         }
         body.light-mode .tool-filter-btn:hover {
-          color: #1e293b;
+          color: #0f172a !important;
         }
         body.light-mode .tool-filter-btn.active {
-          color: #0284c7 !important;
-          background: rgba(2, 132, 199, 0.12) !important;
-          border-color: rgba(2, 132, 199, 0.35) !important;
+          color: #ea580c !important;
+          border-color: rgba(234, 88, 12, 0.5) !important;
+          background: rgba(234, 88, 12, 0.12) !important;
+        }
+        body.light-mode .tool-filter-btn.active i,
+        body.light-mode .tool-filter-btn.active span {
+          color: #ea580c !important;
         }
 
         body.light-mode .tool-heading-icon {
-          background: rgba(2, 132, 199, 0.1);
-          border-color: rgba(2, 132, 199, 0.2);
-          color: #0284c7;
+          background: rgba(234, 88, 12, 0.12) !important;
+          border-color: rgba(234, 88, 12, 0.35) !important;
+          color: #ea580c !important;
         }
 
         body.light-mode .tool-level-badge {
-          color: #0284c7;
-          background: rgba(2, 132, 199, 0.1);
-          border-color: rgba(2, 132, 199, 0.25);
+          color: #ea580c !important;
+          background: rgba(234, 88, 12, 0.12) !important;
+          border-color: rgba(234, 88, 12, 0.35) !important;
         }
 
         body.light-mode .tool-icon-wrap {
@@ -441,8 +623,12 @@ export default function Tools() {
             grid-template-columns: 1fr;
             gap: 0.8rem;
           }
+          .source-section {
+            padding: 1.1rem !important;
+            gap: 1rem !important;
+          }
         }
       `}</style>
     </div>
   );
-} 
+}

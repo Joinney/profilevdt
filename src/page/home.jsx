@@ -659,8 +659,8 @@ export default function Home() {
           font-size: 0.78rem;
           text-transform: uppercase;
           letter-spacing: 1px;
-          font-weight: 600;
-          color: #64748b;
+          font-weight: 700;
+          color: #38bdf8;
         }
 
         .tag-row {
@@ -674,9 +674,9 @@ export default function Home() {
           font-size: 0.68rem;
           padding: 3px 10px;
           border-radius: 9999px;
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          color: #cbd5e1;
+          background: rgba(56, 189, 248, 0.12);
+          border: 1px solid rgba(56, 189, 248, 0.3);
+          color: #38bdf8;
         }
 
         .social-row {
@@ -745,9 +745,9 @@ export default function Home() {
         }
 
         body.light-mode .aquarium-badge {
-          background: rgba(255, 255, 255, 0.75);
-          color: #0284c7;
-          border-color: rgba(255, 255, 255, 0.9);
+          background: rgba(255, 255, 255, 0.85);
+          color: #ea580c;
+          border-color: rgba(234, 88, 12, 0.35);
         }
 
         /* Controls & Clock */
@@ -1071,14 +1071,34 @@ export default function Home() {
         body.light-mode .shorts-header,
         body.light-mode .clock-text,
         body.light-mode .search-mini-box input {
-          color: #2b2b2b !important;
+          color: #0f172a !important;
           filter: drop-shadow(0 20px 3px rgba(102, 102, 102, 0.15));
         }
 
-        body.light-mode .role,
+        body.light-mode .source-title:before {
+          background: #ea580c !important;
+          box-shadow: 0 0 8px #ea580c !important;
+        }
+
+        body.light-mode .role {
+          color: #ea580c !important;
+        }
+
         body.light-mode .uptime-title,
-        body.light-mode .card-meta {
-          color: #6a6a6a !important;
+        body.light-mode .card-meta,
+        body.light-mode .pill-btn,
+        body.light-mode .page-btn {
+          color: #64748b !important;
+        }
+
+        body.light-mode .card-title-text:hover {
+          color: #ea580c !important;
+        }
+
+        body.light-mode .card-meta i,
+        body.light-mode .shorts-header i,
+        body.light-mode .uptime-title i {
+          color: #ea580c !important;
         }
 
         body.light-mode .avatar-img {
@@ -1086,44 +1106,46 @@ export default function Home() {
         }
 
         body.light-mode .tag-badge {
-          background: rgba(0, 0, 0, 0.05) !important;
-          border-color: rgba(0, 0, 0, 0.1) !important;
-          color: #444444 !important;
+          background: rgba(234, 88, 12, 0.12) !important;
+          border-color: rgba(234, 88, 12, 0.35) !important;
+          color: #ea580c !important;
         }
 
         body.light-mode .social-row .icon-btn i {
-          color: #333333 !important;
+          color: #475569 !important;
+        }
+        body.light-mode .social-row .icon-btn:hover i {
+          color: #ea580c !important;
         }
 
-        body.light-mode .pill-btn {
-          color: #555555 !important;
+        body.light-mode .pill-btn:hover {
+          color: #0f172a !important;
         }
 
         body.light-mode .pill-btn.active {
-          color: #2b2b2b !important;
-          border-color: rgba(0, 0, 0, 0.25) !important;
-          background: rgba(0, 0, 0, 0.06) !important;
+          color: #ea580c !important;
+          border-color: rgba(234, 88, 12, 0.5) !important;
+          background: rgba(234, 88, 12, 0.12) !important;
         }
 
-        body.light-mode .pill-btn.active span {
-          color: #2b2b2b !important;
+        body.light-mode .pill-btn.active span,
+        body.light-mode .pill-btn.active i {
+          color: #ea580c !important;
         }
 
-        body.light-mode .card-meta i {
-          color: #444444 !important;
-        }
-
-        body.light-mode .page-btn {
-          color: #555555 !important;
+        body.light-mode .page-btn:hover {
+          color: #0f172a !important;
         }
 
         body.light-mode .page-btn.active {
-          background: #333333 !important;
+          background: #ea580c !important;
+          border-color: #ea580c !important;
           color: #ffffff !important;
+          box-shadow: 0 0 12px rgba(234, 88, 12, 0.35) !important;
         }
 
         body.light-mode .search-mini-box input::placeholder {
-          color: #888888 !important;
+          color: #94a3b8 !important;
         }
 
         /* Responsive Tablet */

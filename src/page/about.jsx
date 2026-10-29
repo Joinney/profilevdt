@@ -713,9 +713,9 @@ export default function About() {
           font-size: 0.68rem;
           padding: 3px 10px;
           border-radius: 9999px;
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          color: #cbd5e1;
+          background: rgba(56, 189, 248, 0.12);
+          border: 1px solid rgba(56, 189, 248, 0.3);
+          color: #38bdf8;
         }
 
         /* 5. Cột phải: Nguyên tắc */
@@ -829,9 +829,9 @@ export default function About() {
         }
 
         body.light-mode .skill-tags-flow .tag-badge {
-          background: rgba(0, 0, 0, 0.05) !important;
-          border-color: rgba(0, 0, 0, 0.1) !important;
-          color: #334155 !important;
+          background: rgba(234, 88, 12, 0.12) !important;
+          border-color: rgba(234, 88, 12, 0.35) !important;
+          color: #ea580c !important;
         }
 
         body.light-mode .about-timeline:before {

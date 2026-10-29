@@ -196,7 +196,110 @@ export default function Header({ activeTab, setActiveTab, theme, toggleTheme }) 
       </header>
 
       <style>{`
+        /* Đảm bảo Header luôn đồng nhất 100% giống hệt Trang chủ và Về tôi trên mọi trang */
         .header-container { position: relative; width: 100%; z-index: 1000; }
+
+        .header-container .box {
+          border: 1px double rgba(255, 255, 255, 0.16) !important;
+          box-shadow:
+              inset 2px -2px 1px -1px rgba(255, 255, 255, 0.5),
+              inset -2px 2px 1px -1px rgba(255, 255, 255, 0.5),
+              inset 6px -6px 2px -6px rgba(255, 255, 255, 0.3),
+              inset -6px 6px 2px -6px rgba(255, 255, 255, 0.3),
+              inset 0 0 3px rgba(0, 0, 0, 0.95),
+              0 12px 35px rgba(0, 0, 0, 0.7) !important;
+          background: rgba(10, 16, 30, 0.82) !important;
+          backdrop-filter: blur(16px) !important;
+          -webkit-backdrop-filter: blur(16px) !important;
+          overflow: hidden;
+        }
+
+        .header-container .box:before {
+          content: '' !important;
+          position: absolute !important;
+          z-index: 1 !important;
+          top: 35% !important;
+          left: 50% !important;
+          transform: translateX(-50%) !important;
+          width: calc(100% - 16px) !important;
+          height: calc(100% - 16px) !important;
+          border-radius: var(--r) !important;
+          border: 1px solid rgba(255, 255, 255, 0.18) !important;
+          filter: blur(8px) !important;
+          pointer-events: none !important;
+        }
+
+        .header-container .box:after {
+          z-index: 1 !important;
+          content: '' !important;
+          position: absolute !important;
+          inset: 0 !important;
+          width: 100% !important;
+          height: 100% !important;
+          border-radius: var(--r) !important;
+          filter: blur(2px) !important;
+          background: linear-gradient(
+              45deg,
+              rgba(255, 255, 255, 0.22) 0%,
+              transparent var(--tr),
+              transparent calc(100% - var(--tr)),
+              rgba(255, 255, 255, 0.15) 100%
+          ) !important;
+          pointer-events: none !important;
+        }
+
+        .header-container .box .circle-overlay {
+          position: absolute !important;
+          z-index: 1 !important;
+          inset: 4px !important;
+          border: 1px solid rgba(255, 255, 255, 0.18) !important;
+          border-radius: var(--r) !important;
+          filter: blur(1px) !important;
+          pointer-events: none !important;
+        }
+
+        .header-container .nav-tab-box {
+          border: none !important;
+        }
+
+        /* GIAO DIỆN SÁNG (LIGHT MODE) ĐỒNG NHẤT CHO HEADER */
+        body.light-mode .header-container .box {
+          border: 1px double rgba(51, 51, 51, 0.08) !important;
+          box-shadow:
+              inset 2px -2px 1px -1px rgba(255, 255, 255, 0.9),
+              inset -2px 2px 1px -1px rgba(255, 255, 255, 0.9),
+              inset 6px -6px 1px -6px rgba(255, 255, 255, 0.55),
+              inset -6px 6px 1px -6px rgba(255, 255, 255, 0.55),
+              inset 0 0 2px rgba(0, 0, 0, 0.8),
+              0 4px 8px rgba(0, 0, 0, 0.2) !important;
+          background: rgba(255, 255, 255, 0.04) !important;
+          backdrop-filter: blur(2px) !important;
+          -webkit-backdrop-filter: blur(2px) !important;
+        }
+
+        body.light-mode .header-container .box:before {
+          border: 1px solid rgba(0, 0, 0, 0.9) !important;
+          filter: blur(8px) !important;
+        }
+
+        body.light-mode .header-container .box:after {
+          filter: blur(3px) !important;
+          background: linear-gradient(
+              45deg,
+              rgba(255, 255, 255, 0.8) 0%,
+              transparent var(--tr),
+              transparent calc(100% - var(--tr)),
+              rgba(255, 255, 255, 0.8) 100%
+          ) !important;
+        }
+
+        body.light-mode .header-container .box .circle-overlay {
+          border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        }
+
+        body.light-mode .header-container .nav-tab-box {
+          border: none !important;
+        }
         .header-box { width: 100% !important; height: 60px !important; padding: 0 1.8rem; display: flex; justify-content: space-between; align-items: center; cursor: default; }
         .header-inner { position: relative; z-index: 10; width: 100%; display: flex; justify-content: space-between; align-items: center; }
         .brand-wrapper { display: flex; align-items: center; gap: 0.8rem; font-weight: 800; font-size: 1.15rem; cursor: pointer; }
