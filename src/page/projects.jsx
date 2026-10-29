@@ -225,7 +225,7 @@ export default function Projects() {
           <div className="center-avatar-clean">
             <img 
               src="/teoproject.png" 
-              alt="Teo Building Code" 
+              alt="Võ Duy Toàn" 
               onError={(e) => { e.target.src = '/teo.jpeg'; }} 
             />
           </div>

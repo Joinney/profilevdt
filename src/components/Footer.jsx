@@ -102,7 +102,7 @@ export default function Footer({ theme }) {
           {/* 2. THANH BẢN QUYỀN MẶC ĐỊNH (BOTTOM BAR) */}
           <div className="footer-bottom-bar" style={{ borderTopColor: isOpen ? (isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.08)') : 'transparent' }}>
             <div className="footer-copyright" style={{ color: textColor }}>
-              <strong style={{ color: headingColor }}>TEO BUILDING CODE</strong> | © 2026 Designed by Võ Duy Toàn
+              <strong style={{ color: headingColor }}>VÕ DUY TOÀN</strong> | © 2026 Designed by Võ Duy Toàn
             </div>
 
             <div className="footer-social-links">

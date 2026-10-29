@@ -53,7 +53,7 @@ export default function Header({ activeTab, setActiveTab, theme, toggleTheme }) 
                 alt="Avatar" 
                 onError={(e) => { e.target.src = 'https://via.placeholder.com/34'; }} 
               />
-              <span style={{ color: isLight ? '#0f172a' : '#ffffff' }}>Teo Building Code</span>
+              <span style={{ color: isLight ? '#0f172a' : '#ffffff' }}>Võ Duy Toàn</span>
             </a>
 
             {/* Menu Desktop: Nút tab kính chỉ đổi màu chữ */}
@@ -188,7 +188,7 @@ export default function Header({ activeTab, setActiveTab, theme, toggleTheme }) 
               </nav>
 
               <div className="drawer-footer" style={{ borderTopColor: isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.08)', color: '#94a3b8' }}>
-                <span>© 2026 Teo Building Code</span>
+                <span>© 2026 Võ Duy Toàn</span>
               </div>
             </div>
           </div>

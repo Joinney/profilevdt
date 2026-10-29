@@ -27,6 +27,63 @@ export default function Home() {
   const [time, setTime] = useState('');
   const canvasRef = useRef(null);
 
+  // Trạng thái điều khiển Nhân vật 3D đứng xoay
+  const [modelAngle, setModelAngle] = useState(0);
+  const [modelTiltX, setModelTiltX] = useState(0);
+  const [isAutoSpin, setIsAutoSpin] = useState(true);
+  const isDraggingModel = useRef(false);
+  const startDragX = useRef(0);
+  const startAngle = useRef(0);
+
+  // Tự động xoay 3D đung đưa tự nhiên
+  useEffect(() => {
+    if (!isAutoSpin) return;
+    let animId;
+    let startTime = performance.now();
+    const animate = (now) => {
+      const elapsed = (now - startTime) / 1000;
+      // Góc xoay 3D đung đưa mượt mà từ -32 độ sang +32 độ
+      const angle = Math.sin(elapsed * 1.6) * 30;
+      const tilt = Math.cos(elapsed * 1.6) * 4;
+      setModelAngle(angle);
+      setModelTiltX(tilt);
+      animId = requestAnimationFrame(animate);
+    };
+    animId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animId);
+  }, [isAutoSpin]);
+
+  const handleStagePointerDown = (e) => {
+    isDraggingModel.current = true;
+    setIsAutoSpin(false);
+    const clientX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+    startDragX.current = clientX;
+    startAngle.current = modelAngle;
+  };
+
+  const handleStagePointerMove = (e) => {
+    if (!isDraggingModel.current) {
+      if (e.currentTarget && !isAutoSpin) {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const clientX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+        const clientY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
+        const xPercent = (clientX - rect.left) / rect.width - 0.5;
+        const yPercent = (clientY - rect.top) / rect.height - 0.5;
+        setModelAngle(xPercent * 50);
+        setModelTiltX(-yPercent * 12);
+      }
+      return;
+    }
+    const clientX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+    const deltaX = clientX - startDragX.current;
+    const newAngle = Math.max(-55, Math.min(55, startAngle.current + deltaX * 0.6));
+    setModelAngle(newAngle);
+  };
+
+  const handleStagePointerUp = () => {
+    isDraggingModel.current = false;
+  };
+
   // Đồng hồ kỹ thuật số
   useEffect(() => {
     const updateClock = () => {
@@ -370,7 +427,7 @@ export default function Home() {
                   />
                 </div>
                 <div>
-                  <h2 className="name">Teo Building Code</h2>
+                  <h2 className="name">Võ Duy Toàn</h2>
                   <p className="role">Software Engineer</p>
                 </div>
                 <div className="tag-row">
@@ -485,14 +542,101 @@ export default function Home() {
 
         {/* CỘT PHẢI */}
         <div className="col-side">
-          <div className="box shorts-glass" style={{ '--w': '100%', '--h': 'auto', '--r': '24px', '--tr': '20%' }}>
+          {/* KHUNG NHÂN VẬT 3D XOAY (Thay thế khung video TikTok) */}
+          <div className="box character-3d-glass" style={{ '--w': '100%', '--h': 'auto', '--r': '24px', '--tr': '20%' }}>
             <div className="circle-overlay"></div>
-            <div className="shorts-header">
-              <i className="fab fa-tiktok" style={{ color: '#f43f5e' }}></i> Video ngắn
+            
+            {/* Header thẻ 3D */}
+            <div className="character-3d-header">
+              <div className="character-title-wrap">
+                <i className="fas fa-cube"></i>
+                <span>NHÂN VẬT 3D</span>
+              </div>
+              <div className="character-status-badge">
+                <span className="live-dot-pulse"></span>
+                <span>{isAutoSpin ? 'ĐANG XOAY' : 'TƯƠNG TÁC'}</span>
+              </div>
             </div>
-            <div className="shorts-preview" style={{ zIndex: 10 }}>
-              <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop" alt="Short preview" />
-              <div className="shorts-caption">Cây Thông 🎄</div>
+
+            {/* Sân khấu 3D tương tác */}
+            <div 
+              className="character-3d-stage"
+              onMouseDown={handleStagePointerDown}
+              onMouseMove={handleStagePointerMove}
+              onMouseUp={handleStagePointerUp}
+              onMouseLeave={handleStagePointerUp}
+              onTouchStart={handleStagePointerDown}
+              onTouchMove={handleStagePointerMove}
+              onTouchEnd={handleStagePointerUp}
+              title="Kéo hoặc rê chuột để xoay nhân vật 3D"
+            >
+              {/* Vòng quét tia laser Hologram */}
+              <div className="hologram-scan-beam"></div>
+
+              {/* Bục đế Hologram 3D xoay tròn dưới chân */}
+              <div className="pedestal-3d-wrap">
+                <div className="pedestal-disc pedestal-ring-outer"></div>
+                <div className="pedestal-disc pedestal-ring-mid"></div>
+                <div className="pedestal-core-glow"></div>
+              </div>
+
+              {/* Bóng nhân vật dưới sàn chuyển dịch theo góc */}
+              <div 
+                className="character-floor-shadow"
+                style={{
+                  transform: `translateX(${-Math.sin((modelAngle * Math.PI) / 180) * 16}px) scale(${0.9 + Math.cos((modelAngle * Math.PI) / 180) * 0.1})`
+                }}
+              ></div>
+
+              {/* Nhân vật 3D với hiệu ứng phối cảnh xoay */}
+              <div 
+                className="character-model-wrapper"
+                style={{
+                  transform: `rotateY(${modelAngle}deg) rotateX(${modelTiltX}deg)`
+                }}
+              >
+                <img 
+                  src="/teoproject.png" 
+                  alt="Teo 3D Avatar" 
+                  className="character-model-img"
+                  onError={(e) => { e.target.src = '/teo.jpeg'; }} 
+                />
+              </div>
+
+              {/* Huy hiệu thông tin nhân vật */}
+              <div className="character-info-tag">
+                <i className="fas fa-terminal"></i>
+                <span>Võ Duy Toàn</span>
+              </div>
+            </div>
+
+            {/* Thanh điều khiển xoay */}
+            <div className="character-controls-bar">
+              <button 
+                className="box character-ctrl-btn"
+                style={{ '--w': 'auto', '--h': '32px', '--r': '9999px' }}
+                onClick={() => setIsAutoSpin(prev => !prev)}
+                title={isAutoSpin ? 'Tạm dừng xoay' : 'Bật xoay tự động'}
+              >
+                <div className="circle-overlay"></div>
+                <i className={`fas ${isAutoSpin ? 'fa-pause' : 'fa-play'}`}></i>
+                <span>{isAutoSpin ? 'Dừng' : 'Tự xoay'}</span>
+              </button>
+
+              <button 
+                className="box character-ctrl-btn"
+                style={{ '--w': 'auto', '--h': '32px', '--r': '9999px' }}
+                onClick={() => { setModelAngle(0); setModelTiltX(0); setIsAutoSpin(false); }}
+                title="Khôi phục góc nhìn chính diện"
+              >
+                <div className="circle-overlay"></div>
+                <i className="fas fa-rotate-left"></i>
+                <span>Chính diện</span>
+              </button>
+
+              <span className="character-angle-hint">
+                <i className="fas fa-arrows-left-right"></i> {Math.round(modelAngle)}°
+              </span>
             </div>
           </div>
 
@@ -958,49 +1102,251 @@ export default function Home() {
           color: #fff !important;
         }
 
-        /* Cột Phải */
-        .shorts-glass {
+        /* Cột Phải: Khung Nhân Vật 3D */
+        .character-3d-glass {
           width: 100% !important;
-          padding: 1.5rem !important;
+          padding: 1.35rem !important;
           display: flex;
           flex-direction: column;
-          gap: 1rem;
+          gap: 0.9rem;
           cursor: default;
         }
 
-        .shorts-header {
+        .character-3d-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          width: 100%;
+          z-index: 10;
+        }
+
+        .character-title-wrap {
           font-size: 0.95rem;
           font-weight: 800;
-          color: #fff;
-          z-index: 10;
+          color: #ffffff;
           display: flex;
           align-items: center;
-          gap: 0.5rem;
+          gap: 8px;
+          letter-spacing: 0.5px;
+        }
+        .character-title-wrap i {
+          color: var(--accent-color);
+          font-size: 1rem;
         }
 
-        .shorts-preview {
+        .character-status-badge {
+          font-size: 0.68rem;
+          font-weight: 700;
+          color: #38bdf8;
+          background: rgba(56, 189, 248, 0.12);
+          border: 1px solid rgba(56, 189, 248, 0.3);
+          padding: 3px 9px;
+          border-radius: 9999px;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+        }
+
+        .live-dot-pulse {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #38bdf8;
+          box-shadow: 0 0 8px #38bdf8;
+          animation: pulseLive 1.8s infinite;
+        }
+
+        @keyframes pulseLive {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.4; transform: scale(0.75); }
+        }
+
+        /* Sân khấu 3D */
+        .character-3d-stage {
+          position: relative;
           width: 100%;
-          height: 480px;
+          height: 440px;
           border-radius: 18px;
           overflow: hidden;
-          position: relative;
-          background: #020617;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          perspective: 1000px;
+          cursor: grab;
+          user-select: none;
+          touch-action: none;
+          background: radial-gradient(circle at 50% 65%, rgba(56, 189, 248, 0.15) 0%, rgba(10, 16, 30, 0.7) 65%, rgba(3, 7, 18, 0.92) 100%);
+          border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        .shorts-preview img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          opacity: 0.5;
+        .character-3d-stage:active {
+          cursor: grabbing;
         }
 
-        .shorts-caption {
+        /* Bục đế Hologram 3D */
+        .pedestal-3d-wrap {
           position: absolute;
-          bottom: 14px;
-          left: 14px;
-          font-size: 0.85rem;
-          color: #fff;
+          bottom: 25px;
+          width: 220px;
+          height: 90px;
+          transform: rotateX(65deg);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          pointer-events: none;
+        }
+
+        .pedestal-disc {
+          position: absolute;
+          border-radius: 50%;
+        }
+
+        .pedestal-ring-outer {
+          width: 210px;
+          height: 210px;
+          border: 2px dashed rgba(56, 189, 248, 0.5);
+          animation: spinPedestal 12s linear infinite;
+        }
+
+        .pedestal-ring-mid {
+          width: 160px;
+          height: 160px;
+          border: 1px solid rgba(56, 189, 248, 0.35);
+          animation: spinPedestalReverse 8s linear infinite;
+        }
+
+        .pedestal-core-glow {
+          position: absolute;
+          width: 130px;
+          height: 130px;
+          border-radius: 50%;
+          background: radial-gradient(circle, rgba(56, 189, 248, 0.35) 0%, transparent 70%);
+          filter: blur(8px);
+        }
+
+        @keyframes spinPedestal {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+
+        @keyframes spinPedestalReverse {
+          from { transform: rotate(360deg); }
+          to { transform: rotate(0deg); }
+        }
+
+        /* Tia Laser Scan Hologram */
+        .hologram-scan-beam {
+          position: absolute;
+          left: 0;
+          right: 0;
+          height: 2px;
+          background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.7), transparent);
+          box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+          animation: scanBeamMove 4s ease-in-out infinite;
+          pointer-events: none;
+          z-index: 15;
+        }
+
+        @keyframes scanBeamMove {
+          0%, 100% { top: 8%; opacity: 0.15; }
+          50% { top: 86%; opacity: 0.65; }
+        }
+
+        /* Bóng đổ nhân vật */
+        .character-floor-shadow {
+          position: absolute;
+          bottom: 42px;
+          width: 140px;
+          height: 22px;
+          border-radius: 50%;
+          background: rgba(0, 0, 0, 0.65);
+          filter: blur(7px);
+          pointer-events: none;
+          transition: transform 0.08s ease;
+        }
+
+        /* Khung nhân vật 3D */
+        .character-model-wrapper {
+          position: relative;
+          z-index: 10;
+          height: 350px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          transform-style: preserve-3d;
+          pointer-events: none;
+          animation: floatModel 3.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes floatModel {
+          0% { transform: translateY(0px); }
+          100% { transform: translateY(-7px); }
+        }
+
+        .character-model-img {
+          height: 100%;
+          max-height: 345px;
+          object-fit: contain;
+          filter: drop-shadow(0 15px 22px rgba(0, 0, 0, 0.65));
+        }
+
+        /* Tag thông tin nhân vật */
+        .character-info-tag {
+          position: absolute;
+          bottom: 12px;
+          left: 12px;
+          z-index: 20;
+          background: rgba(10, 16, 30, 0.75);
+          backdrop-filter: blur(8px);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          border-radius: 9999px;
+          padding: 4px 11px;
+          font-size: 0.72rem;
           font-weight: 700;
+          color: #cbd5e1;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          pointer-events: none;
+        }
+
+        .character-info-tag i {
+          color: #38bdf8;
+          font-size: 0.75rem;
+        }
+
+        /* Thanh điều khiển */
+        .character-controls-bar {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 0.5rem;
+          width: 100%;
+          z-index: 10;
+          padding-top: 0.1rem;
+        }
+
+        .character-ctrl-btn {
+          padding: 0 0.85rem;
+          font-size: 0.75rem;
+          font-weight: 700;
+          color: #94a3b8;
+          gap: 0.4rem;
+          cursor: pointer;
+        }
+        .character-ctrl-btn i, .character-ctrl-btn span { z-index: 10; }
+        .character-ctrl-btn:hover {
+          color: #ffffff;
+          filter: brightness(1.08);
+        }
+
+        .character-angle-hint {
+          font-size: 0.72rem;
+          color: #64748b;
+          font-weight: 700;
+          display: flex;
+          align-items: center;
+          gap: 5px;
         }
 
         .uptime-glass {
@@ -1068,7 +1414,7 @@ export default function Home() {
         body.light-mode .source-title,
         body.light-mode .uptime-value,
         body.light-mode .card-title-text,
-        body.light-mode .shorts-header,
+        body.light-mode .character-title-wrap,
         body.light-mode .clock-text,
         body.light-mode .search-mini-box input {
           color: #0f172a !important;
@@ -1096,7 +1442,7 @@ export default function Home() {
         }
 
         body.light-mode .card-meta i,
-        body.light-mode .shorts-header i,
+        body.light-mode .character-title-wrap i,
         body.light-mode .uptime-title i {
           color: #ea580c !important;
         }
@@ -1146,6 +1492,57 @@ export default function Home() {
 
         body.light-mode .search-mini-box input::placeholder {
           color: #94a3b8 !important;
+        }
+
+
+        body.light-mode .character-3d-stage {
+          background: radial-gradient(circle at 50% 65%, rgba(234, 88, 12, 0.12) 0%, rgba(255, 255, 255, 0.8) 65%, rgba(240, 240, 240, 0.95) 100%) !important;
+          border-color: rgba(0, 0, 0, 0.08) !important;
+        }
+
+        body.light-mode .pedestal-ring-outer {
+          border-color: rgba(234, 88, 12, 0.45) !important;
+        }
+
+        body.light-mode .pedestal-ring-mid {
+          border-color: rgba(234, 88, 12, 0.3) !important;
+        }
+
+        body.light-mode .pedestal-core-glow {
+          background: radial-gradient(circle, rgba(234, 88, 12, 0.3) 0%, transparent 70%) !important;
+        }
+
+        body.light-mode .hologram-scan-beam {
+          background: linear-gradient(90deg, transparent, rgba(234, 88, 12, 0.7), transparent) !important;
+          box-shadow: 0 0 10px rgba(234, 88, 12, 0.6) !important;
+        }
+
+        body.light-mode .character-status-badge {
+          color: #ea580c !important;
+          background: rgba(234, 88, 12, 0.12) !important;
+          border-color: rgba(234, 88, 12, 0.35) !important;
+        }
+
+        body.light-mode .live-dot-pulse {
+          background: #ea580c !important;
+          box-shadow: 0 0 8px #ea580c !important;
+        }
+
+        body.light-mode .character-info-tag {
+          background: rgba(255, 255, 255, 0.85) !important;
+          border-color: rgba(0, 0, 0, 0.1) !important;
+          color: #0f172a !important;
+        }
+
+        body.light-mode .character-info-tag i {
+          color: #ea580c !important;
+        }
+
+        body.light-mode .character-ctrl-btn {
+          color: #64748b !important;
+        }
+        body.light-mode .character-ctrl-btn:hover {
+          color: #0f172a !important;
         }
 
         /* Responsive Tablet */
@@ -1242,11 +1639,11 @@ export default function Home() {
             height: 160px;
           }
 
-          .shorts-glass {
+          .character-3d-glass {
             padding: 1rem !important;
           }
 
-          .shorts-preview {
+          .character-3d-stage {
             height: 340px;
           }
 
