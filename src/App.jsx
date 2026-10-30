@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import LoadingScreen from './components/LoadingScreen';
 
 // Import các trang
 import Home from './page/home';
@@ -12,6 +13,7 @@ import Moments from './page/moments';
 import './style.css';
 
 export default function App() {
+  const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('home');
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
 
@@ -45,20 +47,29 @@ export default function App() {
   };
 
   return (
-    <div className="dashboard-container">
-      <Header 
-        activeTab={activeTab} 
-        setActiveTab={setActiveTab} 
-        theme={theme} 
-        toggleTheme={toggleTheme} 
-      />
-      
-      <main style={{ minHeight: '80vh', padding: '20px 0' }}>
-        {renderPage()}
-      </main>
+    <>
+      {isLoading && (
+        <LoadingScreen 
+          theme={theme} 
+          onFinish={() => setIsLoading(false)} 
+        />
+      )}
 
-      {/* Truyền theme xuống Footer */}
-      <Footer theme={theme} />
-    </div>
+      <div className="dashboard-container">
+        <Header 
+          activeTab={activeTab} 
+          setActiveTab={setActiveTab} 
+          theme={theme} 
+          toggleTheme={toggleTheme} 
+        />
+        
+        <main style={{ minHeight: '80vh', padding: '20px 0' }}>
+          {renderPage()}
+        </main>
+
+        {/* Truyền theme xuống Footer */}
+        <Footer theme={theme} />
+      </div>
+    </>
   );
 }

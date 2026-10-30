@@ -11,6 +11,8 @@
   "devDependencies": {
     "@vitejs/plugin-react": "^6.1.2",
     "autoprefixer": "^10.6.1",
+    "gifenc": "^1.0.3",
+    "omggif": "^1.0.10",
     "postcss": "^8.5.30",
     "tailwindcss": "^4.3.3",
     "vite": "^8.3.0"

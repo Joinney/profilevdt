@@ -15,69 +15,66 @@ const sourceCodes = [
 // Danh sách logo ảnh thật các công nghệ / ngôn ngữ chuẩn Devicon SVG
 const techLogoSources = [
   { name: 'JavaScript', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg' },
+  { name: 'TypeScript', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg' },
   { name: 'React', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg' },
+  { name: 'NextJS', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg' },
   { name: 'NodeJS', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg' },
   { name: 'Python', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg' },
   { name: 'Docker', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg' },
   { name: 'CSharp', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg' },
-  { name: 'Go', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original.svg' }
+  { name: 'CPlusPlus', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg' },
+  { name: 'Go', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original.svg' },
+  { name: 'Java', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg' },
+  { name: 'Rust', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/rust/rust-original.svg' },
+  { name: 'PHP', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg' },
+  { name: 'HTML5', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg' },
+  { name: 'CSS3', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg' },
+  { name: 'TailwindCSS', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg' },
+  { name: 'VueJS', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vuejs/vuejs-original.svg' },
+  { name: 'PostgreSQL', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg' },
+  { name: 'MongoDB', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg' },
+  { name: 'Redis', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg' },
+  { name: 'Git', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg' },
+  { name: 'Linux', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg' },
+  { name: 'Flutter', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flutter/flutter-original.svg' },
+  { name: 'Unity', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/unity/unity-original.svg' }
 ];
 
 export default function Home() {
   const [time, setTime] = useState('');
   const canvasRef = useRef(null);
 
-  // Trạng thái điều khiển Nhân vật 3D đứng xoay
+  // Trạng thái điều khiển Nhân vật 3D Hologram
   const [modelAngle, setModelAngle] = useState(0);
   const [modelTiltX, setModelTiltX] = useState(0);
   const [isAutoSpin, setIsAutoSpin] = useState(true);
   const isDraggingModel = useRef(false);
   const startDragX = useRef(0);
+  const startDragY = useRef(0);
   const startAngle = useRef(0);
-
-  // Tự động xoay 3D đung đưa tự nhiên
-  useEffect(() => {
-    if (!isAutoSpin) return;
-    let animId;
-    let startTime = performance.now();
-    const animate = (now) => {
-      const elapsed = (now - startTime) / 1000;
-      // Góc xoay 3D đung đưa mượt mà từ -32 độ sang +32 độ
-      const angle = Math.sin(elapsed * 1.6) * 30;
-      const tilt = Math.cos(elapsed * 1.6) * 4;
-      setModelAngle(angle);
-      setModelTiltX(tilt);
-      animId = requestAnimationFrame(animate);
-    };
-    animId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animId);
-  }, [isAutoSpin]);
+  const startTilt = useRef(0);
 
   const handleStagePointerDown = (e) => {
     isDraggingModel.current = true;
     setIsAutoSpin(false);
     const clientX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+    const clientY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
     startDragX.current = clientX;
+    startDragY.current = clientY;
     startAngle.current = modelAngle;
+    startTilt.current = modelTiltX;
   };
 
   const handleStagePointerMove = (e) => {
-    if (!isDraggingModel.current) {
-      if (e.currentTarget && !isAutoSpin) {
-        const rect = e.currentTarget.getBoundingClientRect();
-        const clientX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
-        const clientY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
-        const xPercent = (clientX - rect.left) / rect.width - 0.5;
-        const yPercent = (clientY - rect.top) / rect.height - 0.5;
-        setModelAngle(xPercent * 50);
-        setModelTiltX(-yPercent * 12);
-      }
-      return;
-    }
+    if (!isDraggingModel.current) return;
     const clientX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+    const clientY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
     const deltaX = clientX - startDragX.current;
-    const newAngle = Math.max(-55, Math.min(55, startAngle.current + deltaX * 0.6));
+    const deltaY = clientY - startDragY.current;
+    const newAngle = Math.max(-45, Math.min(45, startAngle.current + deltaX * 0.5));
+    const newTilt = Math.max(-12, Math.min(12, startTilt.current - deltaY * 0.25));
     setModelAngle(newAngle);
+    setModelTiltX(newTilt);
   };
 
   const handleStagePointerUp = () => {
@@ -154,16 +151,20 @@ export default function Home() {
       item.img.onload = () => { item.loaded = true; };
     });
 
-    // Thay thế đàn cá: Các logo ngôn ngữ bơi lội uốn lượn
-    const techEntities = [
-      { logoIndex: 0, x: 50, y: height * 0.55, vx: 1.2, size: 30, rot: 0, rotSpeed: 0.015 },
-      { logoIndex: 1, x: 180, y: height * 0.72, vx: -1.0, size: 34, rot: 0, rotSpeed: -0.012 },
-      { logoIndex: 2, x: 300, y: height * 0.45, vx: 0.9, size: 32, rot: 0, rotSpeed: 0.01 },
-      { logoIndex: 3, x: 120, y: height * 0.85, vx: -0.8, size: 28, rot: 0, rotSpeed: -0.014 },
-      { logoIndex: 4, x: 240, y: height * 0.65, vx: 1.1, size: 32, rot: 0, rotSpeed: 0.012 },
-      { logoIndex: 5, x: 360, y: height * 0.78, vx: -0.85, size: 30, rot: 0, rotSpeed: -0.01 },
-      { logoIndex: 6, x: 420, y: height * 0.50, vx: 0.95, size: 32, rot: 0, rotSpeed: 0.015 }
-    ];
+    // Đàn 24 logo công nghệ & ngôn ngữ bơi lội uốn lượn tự nhiên
+    const techEntities = techLogoSources.map((_, index) => {
+      const speedDirection = index % 2 === 0 ? 1 : -1;
+      const baseSpeed = 0.6 + (index % 5) * 0.14;
+      return {
+        logoIndex: index,
+        x: (index * 65 + 30) % (width || 600),
+        y: height * (0.42 + (index % 7) * 0.07),
+        vx: speedDirection * baseSpeed,
+        size: 26 + (index % 4) * 3,
+        rot: Math.random() * Math.PI,
+        rotSpeed: (index % 2 === 0 ? 1 : -1) * (0.007 + (index % 3) * 0.003)
+      };
+    });
 
     // 3. KHỞI TẠO BỌT NƯỚC (BUBBLES)
     const bubbles = Array.from({ length: 22 }, () => ({
@@ -463,11 +464,7 @@ export default function Home() {
               {/* Lớp kính phản chiếu ánh sáng vát chéo */}
               <div className="glass-reflection-glare"></div>
 
-              {/* Huy hiệu thông tin tương tác */}
-              <div className="aquarium-badge">
-                <i className="fas fa-water"></i>
-                <span>Chạm / Rê chuột tạo sóng nước</span>
-              </div>
+
             </div>
           </div>
 
@@ -542,7 +539,7 @@ export default function Home() {
 
         {/* CỘT PHẢI */}
         <div className="col-side">
-          {/* KHUNG NHÂN VẬT 3D XOAY (Thay thế khung video TikTok) */}
+          {/* KHUNG NHÂN VẬT 3D CYBER HUD CHAMBER (Đúng chuẩn thiết kế) */}
           <div className="box character-3d-glass" style={{ '--w': '100%', '--h': 'auto', '--r': '24px', '--tr': '20%' }}>
             <div className="circle-overlay"></div>
             
@@ -554,13 +551,13 @@ export default function Home() {
               </div>
               <div className="character-status-badge">
                 <span className="live-dot-pulse"></span>
-                <span>{isAutoSpin ? 'ĐANG XOAY' : 'TƯƠNG TÁC'}</span>
+                <span>XOAY 360°</span>
               </div>
             </div>
 
-            {/* Sân khấu 3D tương tác */}
+            {/* Sân khấu Hologram Cyber Chamber 3D */}
             <div 
-              className="character-3d-stage"
+              className="character-3d-stage cyber-chamber"
               onMouseDown={handleStagePointerDown}
               onMouseMove={handleStagePointerMove}
               onMouseUp={handleStagePointerUp}
@@ -568,55 +565,163 @@ export default function Home() {
               onTouchStart={handleStagePointerDown}
               onTouchMove={handleStagePointerMove}
               onTouchEnd={handleStagePointerUp}
-              title="Kéo hoặc rê chuột để xoay nhân vật 3D"
+              title="Kéo hoặc rê chuột để chỉnh góc phối cảnh 3D"
             >
-              {/* Vòng quét tia laser Hologram */}
-              <div className="hologram-scan-beam"></div>
+              {/* 4 Góc Khung HUD Corner Brackets */}
+              <div className="hud-corner-bracket hud-cb-tl"></div>
+              <div className="hud-corner-bracket hud-cb-tr"></div>
+              <div className="hud-corner-bracket hud-cb-bl"></div>
+              <div className="hud-corner-bracket hud-cb-br"></div>
 
-              {/* Bục đế Hologram 3D xoay tròn dưới chân */}
-              <div className="pedestal-3d-wrap">
-                <div className="pedestal-disc pedestal-ring-outer"></div>
-                <div className="pedestal-disc pedestal-ring-mid"></div>
-                <div className="pedestal-core-glow"></div>
+              {/* Sàn Lưới Không Gian 3D (Perspective Cyber Grid Floor) */}
+              <div className="cyber-grid-floor"></div>
+
+              {/* Cột Ống Kính Hologram Phát Sáng (Hologram Capsule Cylinder) */}
+              <div className="hologram-capsule-tube">
+                <div className="capsule-tube-glow"></div>
+                <div className="capsule-scan-ring"></div>
               </div>
 
-              {/* Bóng nhân vật dưới sàn chuyển dịch theo góc */}
-              <div 
-                className="character-floor-shadow"
-                style={{
-                  transform: `translateX(${-Math.sin((modelAngle * Math.PI) / 180) * 16}px) scale(${0.9 + Math.cos((modelAngle * Math.PI) / 180) * 0.1})`
-                }}
-              ></div>
+              {/* Bục Vòng Tròn Hologram Phát Sáng Dưới Chân */}
+              <div className="pedestal-rings-concentric">
+                <div className="pedestal-ring-out"></div>
+                <div className="pedestal-ring-glow"></div>
+                <div className="pedestal-ring-in"></div>
+              </div>
 
-              {/* Nhân vật 3D với hiệu ứng phối cảnh xoay */}
+              {/* HUD BÊN TRÁI: Wireframe Body, 3D Cube, Tech Specs, Waveform */}
+              <div className="hud-left-panel">
+                <div className="hud-wireframe-row">
+                  {/* Wireframe Human Mesh Avatar */}
+                  <div className="hud-wireframe-human">
+                    <svg viewBox="0 0 100 135" className="wireframe-svg" stroke="currentColor" fill="none">
+                      <circle cx="50" cy="18" r="11" strokeWidth="1.2" strokeDasharray="3 2" />
+                      <ellipse cx="50" cy="18" rx="7" ry="11" strokeWidth="0.8" opacity="0.6" />
+                      <line x1="50" y1="29" x2="50" y2="76" strokeWidth="1" opacity="0.7" />
+                      <line x1="36" y1="38" x2="64" y2="38" strokeWidth="1" opacity="0.7" />
+                      <line x1="30" y1="76" x2="70" y2="76" strokeWidth="1" opacity="0.7" />
+                      <polyline points="36,38 22,72" strokeWidth="1.2" />
+                      <polyline points="64,38 78,72" strokeWidth="1.2" />
+                      <polyline points="38,76 34,122" strokeWidth="1.2" />
+                      <polyline points="62,76 66,122" strokeWidth="1.2" />
+                      <circle cx="22" cy="72" r="2.5" fill="currentColor" />
+                      <circle cx="78" cy="72" r="2.5" fill="currentColor" />
+                      <circle cx="34" cy="122" r="2.5" fill="currentColor" />
+                      <circle cx="66" cy="122" r="2.5" fill="currentColor" />
+                      <line x1="16" y1="46" x2="34" y2="46" strokeWidth="0.8" opacity="0.5" />
+                      <line x1="66" y1="46" x2="84" y2="46" strokeWidth="0.8" opacity="0.5" />
+                      <line x1="18" y1="90" x2="32" y2="90" strokeWidth="0.8" opacity="0.5" />
+                      <line x1="68" y1="90" x2="82" y2="90" strokeWidth="0.8" opacity="0.5" />
+                    </svg>
+                  </div>
+
+                  {/* Wireframe 3D Cube */}
+                  <div className="hud-wireframe-cube">
+                    <svg viewBox="0 0 36 36" className="cube-svg" stroke="currentColor" fill="none">
+                      <polygon points="18,4 32,12 18,20 4,12" strokeWidth="1.2" />
+                      <polygon points="4,12 18,20 18,32 4,24" strokeWidth="1.2" opacity="0.7" />
+                      <polygon points="32,12 18,20 18,32 32,24" strokeWidth="1.2" opacity="0.85" />
+                    </svg>
+                  </div>
+                </div>
+
+                {/* Cyber Stepped Line Divider */}
+                <div className="hud-stepped-line">
+                  <div className="stepped-bar-accent"></div>
+                </div>
+
+                {/* Tech Specs List (Đồng bộ chuẩn 1 màu) */}
+                <div className="hud-specs-block">
+                  <div className="spec-item"><span className="spec-k">AXIS YAW:</span> <span className="spec-v">{modelAngle ? Math.round(modelAngle) + '°' : '-25°'}</span></div>
+                  <div className="spec-item"><span className="spec-k">POLYGON:</span> <span className="spec-v">1.2M</span></div>
+                  <div className="spec-item"><span className="spec-k">RENDER:</span> <span className="spec-v">0.04ms</span></div>
+                  <div className="spec-item"><span className="spec-k">CPU TEMP:</span> <span className="spec-v">45°C</span></div>
+                  <div className="spec-item"><span className="spec-k">POWER:</span> <span className="spec-v">120W</span></div>
+                  <div className="spec-item"><span className="spec-k">SYNC:</span> <span className="spec-v">ACTIVE</span></div>
+                </div>
+
+                {/* Dual Waveform Graph (Oscilloscope) */}
+                <div className="hud-waveform-panel">
+                  <svg viewBox="0 0 120 45" className="waveform-svg" stroke="currentColor" fill="none">
+                    <polyline
+                      points="0,35 15,35 24,16 34,40 44,22 56,36 70,10 84,38 96,28 108,35 120,35"
+                      strokeWidth="1.5"
+                    />
+                    <polyline
+                      points="0,28 18,28 28,38 38,14 50,32 62,20 74,35 86,12 98,30 110,28 120,28"
+                      strokeWidth="1.2"
+                      opacity="0.5"
+                      strokeDasharray="3 2"
+                    />
+                  </svg>
+                </div>
+              </div>
+
+              {/* HUD BÊN PHẢI: ASSET LOAD, Matrix Hex Dump, Level Indicators */}
+              <div className="hud-right-panel">
+                <div className="hud-panel-title">ASSET LOAD</div>
+                <div className="hud-hex-code-stream">
+                  <div>HEX 63X: G05 8F</div>
+                  <div>HEX 8CB: 0660AC</div>
+                  <div>HEX 0GB: 08459A</div>
+                  <div>HEX 408: 0818FC</div>
+                  <div>HEX 689: 006420</div>
+                  <div>HEX 64X: 00613A</div>
+                  <div>HEX 02X: 064951</div>
+                  <div>HEX 484: 084600</div>
+                  <div>HEX 48A: 06140F</div>
+                  <div>HEX 68X: 001700</div>
+                  <div>HEX 88X: 68763E</div>
+                  <div>HEX D18: 062804</div>
+                  <div>HEX B88: 675490</div>
+                  <div>HEX P84: 624806</div>
+                </div>
+
+                <div className="hud-panel-title" style={{ marginTop: '8px' }}>ASSET LOAD</div>
+                <div className="hud-progress-track"><div className="hud-progress-fill" style={{ width: '84%' }}></div></div>
+                <div className="hud-progress-track" style={{ marginTop: '4px' }}><div className="hud-progress-fill" style={{ width: '55%' }}></div></div>
+
+                <div className="hud-thermal-meter">
+                  <span className="thermal-deg">25°C</span>
+                  <div className="thermal-bars-group">
+                    <div className="t-bar t-bar-1"></div>
+                    <div className="t-bar t-bar-2"></div>
+                    <div className="t-bar t-bar-3"></div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Nhân vật 3D Đứng Ở Giữa Trong Suốt (Avatar 3D Không Nền) */}
               <div 
                 className="character-model-wrapper"
                 style={{
-                  transform: `rotateY(${modelAngle}deg) rotateX(${modelTiltX}deg)`
+                  transform: (modelAngle || modelTiltX)
+                    ? `perspective(600px) rotateY(${modelAngle}deg) rotateX(${modelTiltX}deg)`
+                    : 'none'
                 }}
               >
                 <img 
-                  src="/teoproject.png" 
-                  alt="Teo 3D Avatar" 
+                  src="/teo_hd_clean.gif?v=20261030_pristine_zero_noise" 
+                  alt="Võ Duy Toàn 3D Avatar" 
                   className="character-model-img"
-                  onError={(e) => { e.target.src = '/teo.jpeg'; }} 
+                  onError={(e) => { e.target.src = '/teo3d.gif'; }} 
                 />
               </div>
 
-              {/* Huy hiệu thông tin nhân vật */}
-              <div className="character-info-tag">
-                <i className="fas fa-terminal"></i>
-                <span>Võ Duy Toàn</span>
+              {/* Capsule Tag Bo Tròn Ở Góc Dưới Trái */}
+              <div className="hud-capsule-tag">
+                <span className="hud-tag-icon">&gt;_</span>
+                <span className="hud-tag-text">Võ Duy Toàn</span>
               </div>
             </div>
 
-            {/* Thanh điều khiển xoay */}
+            {/* Thanh điều khiển góc nhìn */}
             <div className="character-controls-bar">
               <button 
                 className="box character-ctrl-btn"
                 style={{ '--w': 'auto', '--h': '32px', '--r': '9999px' }}
                 onClick={() => setIsAutoSpin(prev => !prev)}
-                title={isAutoSpin ? 'Tạm dừng xoay' : 'Bật xoay tự động'}
+                title={isAutoSpin ? 'Tạm dừng tự xoay' : 'Bật tự xoay'}
               >
                 <div className="circle-overlay"></div>
                 <i className={`fas ${isAutoSpin ? 'fa-pause' : 'fa-play'}`}></i>
@@ -868,31 +973,9 @@ export default function Home() {
           z-index: 8;
         }
 
-        .aquarium-badge {
-          position: absolute;
-          top: 14px;
-          right: 14px;
-          z-index: 10;
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          padding: 4px 12px;
-          background: rgba(3, 7, 18, 0.55);
-          backdrop-filter: blur(8px);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          border-radius: 9999px;
-          font-size: 0.72rem;
-          font-weight: 700;
-          color: #38bdf8;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-          pointer-events: none;
-        }
+        
 
-        body.light-mode .aquarium-badge {
-          background: rgba(255, 255, 255, 0.85);
-          color: #ea580c;
-          border-color: rgba(234, 88, 12, 0.35);
-        }
+        
 
         /* Controls & Clock */
         .controls-row {
@@ -1102,14 +1185,15 @@ export default function Home() {
           color: #fff !important;
         }
 
-        /* Cột Phải: Khung Nhân Vật 3D */
+        /* Cột Phải: Khung Nhân Vật 3D Cyber HUD Chamber */
         .character-3d-glass {
           width: 100% !important;
-          padding: 1.35rem !important;
+          padding: 1.25rem !important;
           display: flex;
           flex-direction: column;
-          gap: 0.9rem;
+          gap: 0.85rem;
           cursor: default;
+          overflow: hidden;
         }
 
         .character-3d-header {
@@ -1161,12 +1245,12 @@ export default function Home() {
           50% { opacity: 0.4; transform: scale(0.75); }
         }
 
-        /* Sân khấu 3D */
-        .character-3d-stage {
+        /* Sân khấu Cyber Chamber */
+        .character-3d-stage.cyber-chamber {
           position: relative;
           width: 100%;
-          height: 440px;
-          border-radius: 18px;
+          height: 470px;
+          border-radius: 20px;
           overflow: hidden;
           display: flex;
           justify-content: center;
@@ -1175,101 +1259,296 @@ export default function Home() {
           cursor: grab;
           user-select: none;
           touch-action: none;
-          background: radial-gradient(circle at 50% 65%, rgba(56, 189, 248, 0.15) 0%, rgba(10, 16, 30, 0.7) 65%, rgba(3, 7, 18, 0.92) 100%);
-          border: 1px solid rgba(255, 255, 255, 0.08);
+          background: radial-gradient(circle at 50% 50%, rgba(10, 25, 45, 0.6) 0%, rgba(3, 7, 18, 0.96) 100%);
+          border: 1px solid rgba(56, 189, 248, 0.15);
         }
 
-        .character-3d-stage:active {
+        .character-3d-stage.cyber-chamber:active {
           cursor: grabbing;
         }
 
-        /* Bục đế Hologram 3D */
-        .pedestal-3d-wrap {
+        /* 4 Góc Khung HUD Brackets */
+        .hud-corner-bracket {
           position: absolute;
-          bottom: 25px;
+          width: 14px;
+          height: 14px;
+          border-color: #38bdf8;
+          border-style: solid;
+          pointer-events: none;
+          z-index: 15;
+          opacity: 0.8;
+        }
+        .hud-cb-tl { top: 12px; left: 12px; border-width: 2px 0 0 2px; }
+        .hud-cb-tr { top: 12px; right: 12px; border-width: 2px 2px 0 0; }
+        .hud-cb-bl { bottom: 12px; left: 12px; border-width: 0 0 2px 2px; }
+        .hud-cb-br { bottom: 12px; right: 12px; border-width: 0 2px 2px 0; }
+
+        /* Sàn Lưới Phối Cảnh Không Gian 3D */
+        .cyber-grid-floor {
+          position: absolute;
+          bottom: 0;
+          left: -15%;
+          width: 130%;
+          height: 220px;
+          background-image: 
+            linear-gradient(rgba(56, 189, 248, 0.25) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(56, 189, 248, 0.25) 1px, transparent 1px);
+          background-size: 28px 28px;
+          transform: perspective(300px) rotateX(68deg);
+          transform-origin: bottom center;
+          mask-image: radial-gradient(ellipse at 50% 85%, black 40%, transparent 85%);
+          -webkit-mask-image: radial-gradient(ellipse at 50% 85%, black 40%, transparent 85%);
+          pointer-events: none;
+          z-index: 2;
+        }
+
+        /* Cột Ống Kính Hologram Phát Sáng */
+        .hologram-capsule-tube {
+          position: absolute;
+          top: 35px;
+          bottom: 40px;
           width: 220px;
-          height: 90px;
-          transform: rotateX(65deg);
+          pointer-events: none;
+          z-index: 4;
+          display: flex;
+          justify-content: center;
+        }
+
+        .capsule-tube-glow {
+          position: absolute;
+          inset: 0;
+          border-left: 2px solid rgba(56, 189, 248, 0.55);
+          border-right: 2px solid rgba(56, 189, 248, 0.55);
+          background: linear-gradient(90deg, rgba(56, 189, 248, 0.12) 0%, transparent 25%, transparent 75%, rgba(56, 189, 248, 0.12) 100%);
+          box-shadow: inset 10px 0 20px -10px rgba(56, 189, 248, 0.4), inset -10px 0 20px -10px rgba(56, 189, 248, 0.4);
+        }
+
+        .capsule-scan-ring {
+          position: absolute;
+          width: 100%;
+          height: 40px;
+          border-radius: 50%;
+          border: 1.5px solid rgba(56, 189, 248, 0.7);
+          box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+          animation: scanCapsuleRing 5s ease-in-out infinite;
+        }
+
+        @keyframes scanCapsuleRing {
+          0%, 100% { top: 5%; opacity: 0.3; }
+          50% { top: 85%; opacity: 0.85; }
+        }
+
+        /* Bục Vòng Tròn Hologram Phát Sáng */
+        .pedestal-rings-concentric {
+          position: absolute;
+          bottom: 30px;
+          width: 210px;
+          height: 80px;
+          transform: rotateX(66deg);
           display: flex;
           justify-content: center;
           align-items: center;
           pointer-events: none;
+          z-index: 3;
         }
 
-        .pedestal-disc {
+        .pedestal-ring-out {
           position: absolute;
+          width: 200px;
+          height: 200px;
           border-radius: 50%;
+          border: 2px dashed rgba(56, 189, 248, 0.6);
+          animation: spinOuterRing 16s linear infinite;
         }
 
-        .pedestal-ring-outer {
-          width: 210px;
-          height: 210px;
-          border: 2px dashed rgba(56, 189, 248, 0.5);
-          animation: spinPedestal 12s linear infinite;
+        .pedestal-ring-glow {
+          position: absolute;
+          width: 165px;
+          height: 165px;
+          border-radius: 50%;
+          border: 2.5px solid #38bdf8;
+          box-shadow: 0 0 16px #38bdf8, inset 0 0 12px #38bdf8;
         }
 
-        .pedestal-ring-mid {
-          width: 160px;
-          height: 160px;
-          border: 1px solid rgba(56, 189, 248, 0.35);
-          animation: spinPedestalReverse 8s linear infinite;
-        }
-
-        .pedestal-core-glow {
+        .pedestal-ring-in {
           position: absolute;
           width: 130px;
           height: 130px;
           border-radius: 50%;
-          background: radial-gradient(circle, rgba(56, 189, 248, 0.35) 0%, transparent 70%);
-          filter: blur(8px);
+          border: 1px solid rgba(56, 189, 248, 0.5);
+          animation: spinOuterRing 10s linear infinite reverse;
         }
 
-        @keyframes spinPedestal {
+        @keyframes spinOuterRing {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
         }
 
-        @keyframes spinPedestalReverse {
-          from { transform: rotate(360deg); }
-          to { transform: rotate(0deg); }
+        /* HUD PANEL TRÁI */
+        .hud-left-panel {
+          position: absolute;
+          top: 18px;
+          left: 18px;
+          z-index: 12;
+          pointer-events: none;
+          display: flex;
+          flex-direction: column;
+          gap: 7px;
+          width: 105px;
         }
 
-        /* Tia Laser Scan Hologram */
-        .hologram-scan-beam {
+        .hud-wireframe-row {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+
+        .hud-wireframe-human {
+          width: 50px;
+          height: 68px;
+          color: #38bdf8;
+          filter: drop-shadow(0 0 4px rgba(56, 189, 248, 0.6));
+        }
+        .wireframe-svg { width: 100%; height: 100%; }
+
+        .hud-wireframe-cube {
+          width: 32px;
+          height: 32px;
+          color: #38bdf8;
+          filter: drop-shadow(0 0 4px rgba(56, 189, 248, 0.6));
+          animation: cubeFloat 3s ease-in-out infinite alternate;
+        }
+        .cube-svg { width: 100%; height: 100%; }
+
+        @keyframes cubeFloat {
+          0% { transform: translateY(0); }
+          100% { transform: translateY(-4px); }
+        }
+
+        .hud-stepped-line {
+          width: 100%;
+          height: 4px;
+          border-bottom: 1.5px solid rgba(56, 189, 248, 0.4);
+          position: relative;
+        }
+        .stepped-bar-accent {
           position: absolute;
           left: 0;
-          right: 0;
-          height: 2px;
-          background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.7), transparent);
-          box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
-          animation: scanBeamMove 4s ease-in-out infinite;
-          pointer-events: none;
-          z-index: 15;
+          bottom: -1.5px;
+          width: 25px;
+          height: 3px;
+          background: #38bdf8;
+          box-shadow: 0 0 6px #38bdf8;
         }
 
-        @keyframes scanBeamMove {
-          0%, 100% { top: 8%; opacity: 0.15; }
-          50% { top: 86%; opacity: 0.65; }
+        .hud-specs-block {
+          display: flex;
+          flex-direction: column;
+          gap: 3px;
+          font-family: monospace, sans-serif;
+          font-size: 0.62rem;
+          line-height: 1.25;
         }
 
-        /* Bóng đổ nhân vật */
-        .character-floor-shadow {
+        .spec-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        .spec-k {
+          color: rgba(56, 189, 248, 0.7);
+          font-weight: 700;
+        }
+        .spec-v {
+          color: #38bdf8;
+          font-weight: 800;
+          text-shadow: 0 0 6px rgba(56, 189, 248, 0.6);
+        }
+
+        .hud-waveform-panel {
+          width: 100px;
+          height: 36px;
+          color: #38bdf8;
+          margin-top: 4px;
+        }
+        .waveform-svg { width: 100%; height: 100%; }
+
+        /* HUD PANEL PHẢI */
+        .hud-right-panel {
           position: absolute;
-          bottom: 42px;
-          width: 140px;
-          height: 22px;
-          border-radius: 50%;
-          background: rgba(0, 0, 0, 0.65);
-          filter: blur(7px);
+          top: 18px;
+          right: 18px;
+          z-index: 12;
           pointer-events: none;
-          transition: transform 0.08s ease;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+          width: 95px;
+          font-family: monospace, sans-serif;
         }
 
-        /* Khung nhân vật 3D */
+        .hud-panel-title {
+          font-size: 0.65rem;
+          font-weight: 800;
+          color: #38bdf8;
+          letter-spacing: 0.8px;
+          text-shadow: 0 0 6px rgba(56, 189, 248, 0.6);
+        }
+
+        .hud-hex-code-stream {
+          font-size: 0.54rem;
+          line-height: 1.25;
+          color: rgba(56, 189, 248, 0.8);
+          display: flex;
+          flex-direction: column;
+          gap: 1.5px;
+        }
+
+        .hud-progress-track {
+          width: 100%;
+          height: 4px;
+          background: rgba(56, 189, 248, 0.15);
+          border-radius: 2px;
+          overflow: hidden;
+        }
+        .hud-progress-fill {
+          height: 100%;
+          background: #38bdf8;
+          box-shadow: 0 0 8px #38bdf8;
+        }
+
+        .hud-thermal-meter {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-top: 5px;
+        }
+        .thermal-deg {
+          font-size: 0.62rem;
+          font-weight: 800;
+          color: #38bdf8;
+        }
+        .thermal-bars-group {
+          display: flex;
+          gap: 3px;
+          align-items: flex-end;
+          height: 20px;
+        }
+        .t-bar {
+          width: 5px;
+          border-radius: 1px;
+          background: #38bdf8;
+          box-shadow: 0 0 6px #38bdf8;
+        }
+        .t-bar-1 { height: 18px; }
+        .t-bar-2 { height: 14px; opacity: 0.75; }
+        .t-bar-3 { height: 9px; opacity: 0.45; }
+
+        /* Nhân vật 3D ở giữa */
         .character-model-wrapper {
           position: relative;
           z-index: 10;
-          height: 350px;
+          height: 360px;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -1283,36 +1562,58 @@ export default function Home() {
           100% { transform: translateY(-7px); }
         }
 
+        .character-model-wrapper {
+          position: relative;
+          z-index: 10;
+          height: 360px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          transform-style: preserve-3d;
+          pointer-events: none;
+          background: transparent !important;
+          animation: floatModel 3.5s ease-in-out infinite alternate;
+        }
+
         .character-model-img {
           height: 100%;
-          max-height: 345px;
+          max-height: 355px;
           object-fit: contain;
-          filter: drop-shadow(0 15px 22px rgba(0, 0, 0, 0.65));
+          background: transparent !important;
+          border: none !important;
+          outline: none !important;
+          box-shadow: none !important;
+          filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.6));
+          image-rendering: auto;
         }
 
-        /* Tag thông tin nhân vật */
-        .character-info-tag {
+        /* Capsule Tag Bo Tròn Ở Góc Dưới Trái */
+        .hud-capsule-tag {
           position: absolute;
-          bottom: 12px;
-          left: 12px;
+          bottom: 14px;
+          left: 14px;
           z-index: 20;
-          background: rgba(10, 16, 30, 0.75);
-          backdrop-filter: blur(8px);
-          border: 1px solid rgba(255, 255, 255, 0.15);
+          background: #ffffff;
+          border: 1px solid rgba(255, 255, 255, 0.4);
           border-radius: 9999px;
-          padding: 4px 11px;
-          font-size: 0.72rem;
-          font-weight: 700;
-          color: #cbd5e1;
+          padding: 5px 14px;
           display: flex;
           align-items: center;
-          gap: 6px;
+          gap: 7px;
+          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
           pointer-events: none;
         }
-
-        .character-info-tag i {
+        .hud-tag-icon {
           color: #38bdf8;
+          font-weight: 900;
+          font-family: monospace;
+          font-size: 0.85rem;
+        }
+        .hud-tag-text {
+          color: #0f172a;
+          font-weight: 800;
           font-size: 0.75rem;
+          letter-spacing: 0.3px;
         }
 
         /* Thanh điều khiển */
@@ -1323,7 +1624,6 @@ export default function Home() {
           gap: 0.5rem;
           width: 100%;
           z-index: 10;
-          padding-top: 0.1rem;
         }
 
         .character-ctrl-btn {
@@ -1495,26 +1795,108 @@ export default function Home() {
         }
 
 
-        body.light-mode .character-3d-stage {
-          background: radial-gradient(circle at 50% 65%, rgba(234, 88, 12, 0.12) 0%, rgba(255, 255, 255, 0.8) 65%, rgba(240, 240, 240, 0.95) 100%) !important;
-          border-color: rgba(0, 0, 0, 0.08) !important;
+        /* LIGHT MODE CHO CYBER CHAMBER: ĐỒNG BỘ 100% SẮC CAM RỰC RỠ */
+        body.light-mode .character-3d-stage.cyber-chamber {
+          background: radial-gradient(circle at 50% 50%, rgba(254, 242, 242, 0.6) 0%, rgba(241, 245, 249, 0.96) 100%) !important;
+          border-color: rgba(234, 88, 12, 0.25) !important;
         }
 
-        body.light-mode .pedestal-ring-outer {
-          border-color: rgba(234, 88, 12, 0.45) !important;
+        body.light-mode .hud-corner-bracket {
+          border-color: #ea580c !important;
         }
 
-        body.light-mode .pedestal-ring-mid {
-          border-color: rgba(234, 88, 12, 0.3) !important;
+        body.light-mode .cyber-grid-floor {
+          background-image: 
+            linear-gradient(rgba(234, 88, 12, 0.25) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(234, 88, 12, 0.25) 1px, transparent 1px) !important;
         }
 
-        body.light-mode .pedestal-core-glow {
-          background: radial-gradient(circle, rgba(234, 88, 12, 0.3) 0%, transparent 70%) !important;
+        body.light-mode .capsule-tube-glow {
+          border-left: 2px solid rgba(234, 88, 12, 0.6) !important;
+          border-right: 2px solid rgba(234, 88, 12, 0.6) !important;
+          background: linear-gradient(90deg, rgba(234, 88, 12, 0.12) 0%, transparent 25%, transparent 75%, rgba(234, 88, 12, 0.12) 100%) !important;
+          box-shadow: inset 10px 0 20px -10px rgba(234, 88, 12, 0.35), inset -10px 0 20px -10px rgba(234, 88, 12, 0.35) !important;
         }
 
-        body.light-mode .hologram-scan-beam {
-          background: linear-gradient(90deg, transparent, rgba(234, 88, 12, 0.7), transparent) !important;
-          box-shadow: 0 0 10px rgba(234, 88, 12, 0.6) !important;
+        body.light-mode .capsule-scan-ring {
+          border-color: rgba(234, 88, 12, 0.7) !important;
+          box-shadow: 0 0 12px rgba(234, 88, 12, 0.6) !important;
+        }
+
+        body.light-mode .pedestal-ring-out {
+          border-color: rgba(234, 88, 12, 0.6) !important;
+        }
+
+        body.light-mode .pedestal-ring-glow {
+          border-color: #ea580c !important;
+          box-shadow: 0 0 16px #ea580c, inset 0 0 12px #ea580c !important;
+        }
+
+        body.light-mode .pedestal-ring-in {
+          border-color: rgba(234, 88, 12, 0.5) !important;
+        }
+
+        body.light-mode .hud-wireframe-human,
+        body.light-mode .hud-wireframe-cube {
+          color: #ea580c !important;
+          filter: drop-shadow(0 0 4px rgba(234, 88, 12, 0.6)) !important;
+        }
+
+        body.light-mode .hud-stepped-line {
+          border-bottom-color: rgba(234, 88, 12, 0.4) !important;
+        }
+        body.light-mode .stepped-bar-accent {
+          background: #ea580c !important;
+          box-shadow: 0 0 6px #ea580c !important;
+        }
+
+        body.light-mode .spec-k {
+          color: rgba(234, 88, 12, 0.8) !important;
+        }
+        body.light-mode .spec-v {
+          color: #ea580c !important;
+          text-shadow: 0 0 6px rgba(234, 88, 12, 0.5) !important;
+        }
+
+        body.light-mode .hud-waveform-panel {
+          color: #ea580c !important;
+        }
+
+        body.light-mode .hud-panel-title {
+          color: #ea580c !important;
+          text-shadow: 0 0 6px rgba(234, 88, 12, 0.5) !important;
+        }
+
+        body.light-mode .hud-hex-code-stream {
+          color: rgba(234, 88, 12, 0.85) !important;
+        }
+
+        body.light-mode .hud-progress-track {
+          background: rgba(234, 88, 12, 0.15) !important;
+        }
+        body.light-mode .hud-progress-fill {
+          background: #ea580c !important;
+          box-shadow: 0 0 8px #ea580c !important;
+        }
+
+        body.light-mode .thermal-deg {
+          color: #ea580c !important;
+        }
+        body.light-mode .t-bar {
+          background: #ea580c !important;
+          box-shadow: 0 0 6px #ea580c !important;
+        }
+
+        body.light-mode .hud-capsule-tag {
+          background: #ffffff !important;
+          border-color: rgba(0, 0, 0, 0.15) !important;
+          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1) !important;
+        }
+        body.light-mode .hud-tag-icon {
+          color: #ea580c !important;
+        }
+        body.light-mode .hud-tag-text {
+          color: #0f172a !important;
         }
 
         body.light-mode .character-status-badge {
@@ -1526,16 +1908,6 @@ export default function Home() {
         body.light-mode .live-dot-pulse {
           background: #ea580c !important;
           box-shadow: 0 0 8px #ea580c !important;
-        }
-
-        body.light-mode .character-info-tag {
-          background: rgba(255, 255, 255, 0.85) !important;
-          border-color: rgba(0, 0, 0, 0.1) !important;
-          color: #0f172a !important;
-        }
-
-        body.light-mode .character-info-tag i {
-          color: #ea580c !important;
         }
 
         body.light-mode .character-ctrl-btn {
@@ -1643,8 +2015,8 @@ export default function Home() {
             padding: 1rem !important;
           }
 
-          .character-3d-stage {
-            height: 340px;
+          .character-3d-stage.cyber-chamber {
+            height: 380px;
           }
 
           .uptime-value {
