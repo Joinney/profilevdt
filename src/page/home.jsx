@@ -1,15 +1,501 @@
 import React, { useState, useEffect, useRef } from 'react';
 
+// Dữ liệu mã nguồn thực tế từ Google Sheets (38 sản phẩm hoàn chỉnh)
 const sourceCodes = [
-  { title: "Cây Thông Noel", lang: "HTML", date: "24/12/2025", img: "https://images.unsplash.com/photo-1543258103-a62bdc069871?w=400&q=80" },
-  { title: "Cây Thông Noel 2", lang: "HTML", date: "24/12/2025", img: "https://images.unsplash.com/photo-1512389142860-9c449e58a543?w=400&q=80" },
-  { title: "Thầy trò rủ nhau đi thỉnh kinh", lang: "HTML", date: "20/12/2025", img: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&q=80" },
-  { title: "Vẽ Tom and Jerry bằng...", lang: "PYTHON", date: "15/12/2025", img: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400&q=80" },
-  { title: "Loopy đáng yêu", lang: "PYTHON", date: "10/12/2025", img: "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=400&q=80" },
-  { title: "I Love You 2d", lang: "HTML", date: "05/12/2025", img: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=400&q=80" },
-  { title: "Change Photo", lang: "HTML", date: "01/12/2025", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80" },
-  { title: "Baw chịu một chút màu mè...", lang: "HTML", date: "28/11/2025", img: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400&q=80" },
-  { title: "Web tỏ tình", lang: "HTML", date: "20/11/2025", img: "https://images.unsplash.com/photo-1518895949257-7621c3c786d7?w=400&q=80" }
+  {
+    "id": 36,
+    "title": "Cây Thông Noel",
+    "category": "3D",
+    "lang": "HTML",
+    "price": "FREE(follow)",
+    "date": "16/12/2025",
+    "img": "https://lh3.googleusercontent.com/d/14LwjFssL9GHow1YWQgKmLa5uTwg93747",
+    "driveLink": "https://drive.google.com/file/d/14LwjFssL9GHow1YWQgKmLa5uTwg93747/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766242220/taivideo.vn_-_Cy_Thng_merrychristmas_code_caythongnoel_noel_foryou_grfxzc.mp4",
+    "demo": "",
+    "download": "https://drive.google.com/drive/folders/1DzJaVRHXL-PwuQJzUrVM9X-izn9HGkkT?usp=sharing"
+  },
+  {
+    "id": 37,
+    "title": "Cây Thông Noel 2",
+    "category": "3D",
+    "lang": "HTML",
+    "price": "20k",
+    "date": "17/12/2025",
+    "img": "https://lh3.googleusercontent.com/d/1pyohzb0G1IAEV_zRaVNZY8z4Mvy0MHG9",
+    "driveLink": "https://drive.google.com/file/d/1pyohzb0G1IAEV_zRaVNZY8z4Mvy0MHG9/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766243312/taivideo.vn_-_Ln_siu_phm_n_code_tinhyeu_xuhuong_merrychristmas_caythongnoel_i80xy2.mp4",
+    "demo": "",
+    "download": "https://drive.google.com/drive/folders/1DzJaVRHXL-PwuQJzUrVM9X-izn9HGkkT?usp=sharing"
+  },
+  {
+    "id": 1,
+    "title": "Thầy trò rủ nhau đi thỉnh kinh",
+    "category": "HOATHINH",
+    "lang": "HTML",
+    "price": "30K",
+    "date": "16/12/2025",
+    "img": "https://lh3.googleusercontent.com/d/1TuPKB-3tPv9SHqi7D_RMdrPgu3gcf_02",
+    "driveLink": "https://drive.google.com/file/d/1TuPKB-3tPv9SHqi7D_RMdrPgu3gcf_02/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1765945480/taivideo.vn_-_Thy_tr_r_nhau_i_thnh_kinh_trn_html_html_website_animation_tayduky_laptrinh_foryou_trend_viral_coder_hoctap_ycrbg0.mp4",
+    "demo": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1765945480/taivideo.vn_-_Thy_tr_r_nhau_i_thnh_kinh_trn_html_html_website_animation_tayduky_laptrinh_foryou_trend_viral_coder_hoctap_ycrbg0.mp4",
+    "download": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1765945480/taivideo.vn_-_Thy_tr_r_nhau_i_thnh_kinh_trn_html_html_website_animation_tayduky_laptrinh_foryou_trend_viral_coder_hoctap_ycrbg0.mp4"
+  },
+  {
+    "id": 2,
+    "title": "Vẽ Tom and Jerry bằng python",
+    "category": "HOATHINH",
+    "lang": "PYTHON",
+    "price": "FREE(follow)",
+    "date": "16/12/2025",
+    "img": "https://lh3.googleusercontent.com/d/1TqyY7jqd8atlBCNhHFtItT-86RivtsbT",
+    "driveLink": "https://drive.google.com/file/d/1TqyY7jqd8atlBCNhHFtItT-86RivtsbT/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1765946494/taivideo.vn_-_V_Tom_and_Jerry_bng_python_laptrinh_foryou_trend_viral_tomandjerry_hoctap_coder_draw_eb8exm.mp4",
+    "demo": "",
+    "download": "gà công nghiệp"
+  },
+  {
+    "id": 3,
+    "title": "Loopy đáng yêu",
+    "category": "HOATHINH",
+    "lang": "PYTHON",
+    "price": "10K",
+    "date": "16/12/2025",
+    "img": "https://lh3.googleusercontent.com/d/1yVnSLgXFk6V-LkRTMj5aVoaTwFIrMi1r",
+    "driveLink": "https://drive.google.com/file/d/1yVnSLgXFk6V-LkRTMj5aVoaTwFIrMi1r/view?usp=drive_link",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1765955326/taivideo.vn_-_Loopy_ng_yu_c_share_cho_nhng_ai_thch_nh_laptrinh_loopy_cute_cute_trending_viral_foryou_draw_tiktok_kjrsbp.mp4",
+    "demo": "",
+    "download": ""
+  },
+  {
+    "id": 4,
+    "title": "I Love Yêu 2d",
+    "category": "To Tinh",
+    "lang": "HTML",
+    "price": "20k",
+    "date": "16/12/2025",
+    "img": "https://lh3.googleusercontent.com/d/1H8HteDzv83ncRNY6-YoireLkTJobe17E",
+    "driveLink": "https://drive.google.com/file/d/1H8HteDzv83ncRNY6-YoireLkTJobe17E/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1765956152/taivideo.vn_-_I_Love_Yu_cute_viral_foryou_love_tiktok_html_xuhuong_beutiful_ndv1cl.mp4",
+    "demo": "",
+    "download": ""
+  },
+  {
+    "id": 5,
+    "title": "Change Photo",
+    "category": "HINHANH",
+    "lang": "HTML",
+    "price": "10K",
+    "date": "16/12/2025",
+    "img": "https://lh3.googleusercontent.com/d/1Hl8Zu5iGJ7_t87ESBGDmzPHk4CzP7o-N",
+    "driveLink": "https://drive.google.com/file/d/1Hl8Zu5iGJ7_t87ESBGDmzPHk4CzP7o-N/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766037666/taivideo.vn_-_Change_Photo_viral_htmlcss_foryou_TeoHocLapTrinh_xuhuong_p39vjf.mp4",
+    "demo": "",
+    "download": ""
+  },
+  {
+    "id": 6,
+    "title": "Baw chiu một chút màu mè cho trang web của minh",
+    "category": "HOATHINH",
+    "lang": "HTML",
+    "price": "10k",
+    "date": "16/12/2025",
+    "img": "https://lh3.googleusercontent.com/d/16Dk6AZiFqOJnrpGJGg09tYn-cS5-_wmk",
+    "driveLink": "https://drive.google.com/file/d/16Dk6AZiFqOJnrpGJGg09tYn-cS5-_wmk/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766038591/taivideo.vn_-_Baw_chiu_mt_cht_mu_m_cho_trang_web_ca_minh_thobaymau_code_html_viral_tiktok_foryou_cuocsong_chill_pkzz21.mp4",
+    "demo": "",
+    "download": ""
+  },
+  {
+    "id": 7,
+    "title": "Web tỏ tình",
+    "category": "To Tinh",
+    "lang": "HTML",
+    "price": "10k",
+    "date": "20/12/2025",
+    "img": "https://lh3.googleusercontent.com/d/1rk21fevsI2d8aDTlcSi9x2JXXn8mfKQE",
+    "driveLink": "https://drive.google.com/file/d/1rk21fevsI2d8aDTlcSi9x2JXXn8mfKQE/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766078570/taivideo.vn_-_Web_t_tnh_code_html_viral_tiktok_foryou_cute_love_laptrinh_frsvxr.mp4",
+    "demo": "",
+    "download": ""
+  },
+  {
+    "id": 8,
+    "title": "Profile Card",
+    "category": "Card",
+    "lang": "HTML",
+    "price": "FREE(follow)",
+    "date": "16/12/2025",
+    "img": "https://lh3.googleusercontent.com/d/10r0eZzN4OcjREdJPVFsj3ZDsVyRo6tIE",
+    "driveLink": "https://drive.google.com/file/d/10r0eZzN4OcjREdJPVFsj3ZDsVyRo6tIE/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766079002/taivideo.vn_-_Tiktok_w8k6vd.mp4",
+    "demo": "",
+    "download": "https://drive.google.com/drive/folders/1AE37Pavc0B4fTiPBjHAnYcnU4iezB988"
+  },
+  {
+    "id": 9,
+    "title": "Nghệ Sĩ Đường Phố",
+    "category": "HOATHINH",
+    "lang": "HTML",
+    "price": "10k",
+    "date": "16/12/2025",
+    "img": "https://lh3.googleusercontent.com/d/1xezHY0Qv8y4HCxVBMcOHQ1JE8z6snJec",
+    "driveLink": "https://drive.google.com/file/d/1xezHY0Qv8y4HCxVBMcOHQ1JE8z6snJec/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766079322/taivideo.vn_-_Tiktok_1_lfhwbs.mp4",
+    "demo": "",
+    "download": ""
+  },
+  {
+    "id": 10,
+    "title": "Box Shoes",
+    "category": "Card",
+    "lang": "HTML",
+    "price": "10k",
+    "date": "16/12/2025",
+    "img": "https://lh3.googleusercontent.com/d/1l6FHdGc2EQnB6Lz0O7BYm1LXLlzgQSfI",
+    "driveLink": "https://drive.google.com/file/d/1l6FHdGc2EQnB6Lz0O7BYm1LXLlzgQSfI/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766079672/taivideo.vn_-_Tiktok_2_lcxgpt.mp4",
+    "demo": "",
+    "download": ""
+  },
+  {
+    "id": 11,
+    "title": "One piece card",
+    "category": "Card",
+    "lang": "HTML",
+    "price": "10k",
+    "date": "20/12/2025",
+    "img": "https://lh3.googleusercontent.com/d/1EHV16jSyccESNgV-HtItIQYqHVCbCxW5",
+    "driveLink": "https://drive.google.com/file/d/1EHV16jSyccESNgV-HtItIQYqHVCbCxW5/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766250130/taivideo.vn_-_Onepiece_card_onepiece_luffy_zoro_sanji_html_3d_viral_foryou_tiktok_ysithh.mp4",
+    "demo": "",
+    "download": ""
+  },
+  {
+    "id": 12,
+    "title": "Text + IMG",
+    "category": "HINHANH",
+    "lang": "HTML",
+    "price": "FREE(follow)",
+    "date": "16/10/2025",
+    "img": "https://lh3.googleusercontent.com/d/1sKobmjNi-4GCW1-lV6t7j-l3Hrv2vJmP",
+    "driveLink": "https://drive.google.com/file/d/1sKobmjNi-4GCW1-lV6t7j-l3Hrv2vJmP/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766250537/taivideo.vn_-_Text_IMG_htmlcss_viral_foryou_tiktok_xuhuong_code_j9yze0.mp4",
+    "demo": "",
+    "download": ""
+  },
+  {
+    "id": 13,
+    "title": "Login cute",
+    "category": "HOATHINH",
+    "lang": "HTML",
+    "price": "30k",
+    "date": "4/9/2025",
+    "img": "https://lh3.googleusercontent.com/d/1LHQL8WgiG9C2VSYNJxSzr8KJ1gbX_Is5",
+    "driveLink": "https://drive.google.com/file/d/1LHQL8WgiG9C2VSYNJxSzr8KJ1gbX_Is5/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766250685/taivideo.vn_-_Login_cute_htmlcss_viral_foryou_tiktok_xuhuong_code_javascript_laptrinh_3d_login_p7bsb8.mp4",
+    "demo": "",
+    "download": ""
+  },
+  {
+    "id": 14,
+    "title": "Tạo Mã QR cho riêng bạn",
+    "category": "TOOL",
+    "lang": "HTML",
+    "price": "...",
+    "date": "4/9/2025",
+    "img": "https://lh3.googleusercontent.com/d/1KySj35ek3C26N8asx3Acts5RBz73oLEs",
+    "driveLink": "https://drive.google.com/file/d/1KySj35ek3C26N8asx3Acts5RBz73oLEs/view?usp=drive_link",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766251070/taivideo.vn_-_To_M_QR_cho_ring_bn_htmlcss_viral_foryou_xuhuong_tiktok_code_laptrinh_QR_cvb3qs.mp4",
+    "demo": "",
+    "download": ""
+  },
+  {
+    "id": 15,
+    "title": "Profile Card 2",
+    "category": "Card",
+    "lang": "HTML",
+    "price": "10k",
+    "date": "4/9/2025",
+    "img": "https://lh3.googleusercontent.com/d/17t2lvix0Y6kzKlY5YQHFxBZWQS0yPjUV",
+    "driveLink": "https://drive.google.com/file/d/17t2lvix0Y6kzKlY5YQHFxBZWQS0yPjUV/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766251273/taivideo.vn_-_Profile_Card_htmlcss_viral_foryou_xuhuong_tiktok_code_laptrinh_card_profile_shumsw.mp4",
+    "demo": "",
+    "download": ""
+  },
+  {
+    "id": 16,
+    "title": "Loading Iron Man 🧍‍♂️",
+    "category": "HOATHINH",
+    "lang": "HTML",
+    "price": "10k",
+    "date": "4/9/2025",
+    "img": "https://lh3.googleusercontent.com/d/1yK6xgw9eYNH8_slLYZbfz5Kihzjtiu7u",
+    "driveLink": "https://drive.google.com/file/d/1yK6xgw9eYNH8_slLYZbfz5Kihzjtiu7u/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766251616/taivideo.vn_-_Loading_Iron_Man_htmlcss_viral_foryou_xuhuong_tiktok_code_laptrinh_loading_ironman_nhfosp.mp4",
+    "demo": "",
+    "download": ""
+  },
+  {
+    "id": 17,
+    "title": "Photo card",
+    "category": "Card",
+    "lang": "HTML",
+    "price": "FREE(follow)",
+    "date": "4/9/2025",
+    "img": "https://lh3.googleusercontent.com/d/1OtIXK171NIC_OGi7dmWLnjLLJfyFUmTV",
+    "driveLink": "https://drive.google.com/file/d/1OtIXK171NIC_OGi7dmWLnjLLJfyFUmTV/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766251852/taivideo.vn_-_Photo_card_htmlcss_viral_foryou_xuhuong_tiktok_code_laptrinh_card_hlesyj.mp4",
+    "demo": "",
+    "download": ""
+  },
+  {
+    "id": 18,
+    "title": "Profile Water",
+    "category": "Card",
+    "lang": "HTML",
+    "price": "30K",
+    "date": "4/9/2025",
+    "img": "https://lh3.googleusercontent.com/d/1U3Vyu_whMIcCAQe_OEdmK5FEyB5lWYJw",
+    "driveLink": "https://drive.google.com/file/d/1U3Vyu_whMIcCAQe_OEdmK5FEyB5lWYJw/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766251959/taivideo.vn_-_Profile_Water_viral_htmlcss_profile_foryou_TeoHocLapTrinh_kiylga.mp4",
+    "demo": "",
+    "download": ""
+  },
+  {
+    "id": 19,
+    "title": "Tuỳ Chình trỏ Chuột",
+    "category": "Card",
+    "lang": "HTML",
+    "price": "FREE(follow)",
+    "date": "4/9/2025",
+    "img": "https://lh3.googleusercontent.com/d/1sOe0rADqQXvoPCWU47oAmQzaWJGXkfBN",
+    "driveLink": "https://drive.google.com/file/d/1sOe0rADqQXvoPCWU47oAmQzaWJGXkfBN/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766252174/taivideo.vn_-_Tu_Chnh_tr_Chut_htmlcss_viral_foryou_TeoHocLapTrinh_xuhuong_ssklaq.mp4",
+    "demo": "",
+    "download": ""
+  },
+  {
+    "id": 20,
+    "title": "Tom khịa dog",
+    "category": "HOATHINH",
+    "lang": "PYTHON",
+    "price": "FREE(follow)",
+    "date": "4/9/2025",
+    "img": "https://lh3.googleusercontent.com/d/1igYL-a31SD0eEoLEsKTtRkg8bczhmESo",
+    "driveLink": "https://drive.google.com/file/d/1igYL-a31SD0eEoLEsKTtRkg8bczhmESo/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766252493/taivideo.vn_-_Tom_kha_dog_drawing_xhteohoclaptrinh_nfa9wu.mp4",
+    "demo": "",
+    "download": ""
+  },
+  {
+    "id": 21,
+    "title": "Error 404 Batman🦇",
+    "category": "404",
+    "lang": "HTML",
+    "price": "15K",
+    "date": "4/9/2025",
+    "img": "https://lh3.googleusercontent.com/d/1KaU825hbwlLf7ST4rtpIftZ0zz3Ls_Mm",
+    "driveLink": "https://drive.google.com/file/d/1KaU825hbwlLf7ST4rtpIftZ0zz3Ls_Mm/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766252593/taivideo.vn_-_Error_404_Batman_teohoclaptrinh_viral_htmlcss_tiktok_foryou_ahhahh.mp4",
+    "demo": "",
+    "download": ""
+  },
+  {
+    "id": 22,
+    "title": "MA CA RONG",
+    "category": "HOATHINH",
+    "lang": "HTML",
+    "price": "10k",
+    "date": "4/9/2025",
+    "img": "https://lh3.googleusercontent.com/d/19UQuh1zL9mAsuQ0EN88CEbwrIWVuTjzQ",
+    "driveLink": "https://drive.google.com/file/d/19UQuh1zL9mAsuQ0EN88CEbwrIWVuTjzQ/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766252758/taivideo.vn_-_Hot_hnh_htmlcss_viral_tiktok_teohoclaptrinh_foryou_wjfvzd.mp4",
+    "demo": "",
+    "download": ""
+  },
+  {
+    "id": 23,
+    "title": "Designer Bicycles",
+    "category": "Card",
+    "lang": "HTML",
+    "price": "10k",
+    "date": "4/9/2025",
+    "img": "https://lh3.googleusercontent.com/d/1DdAjixD4kYTBcBt2kcDWK13Kp1d3_MBu",
+    "driveLink": "https://drive.google.com/file/d/1DdAjixD4kYTBcBt2kcDWK13Kp1d3_MBu/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766252883/taivideo.vn_-_Designer_Bicycles_htmlcss_viral_teohoclaptrinh_tiktok_foryou_j97mvx.mp4",
+    "demo": "",
+    "download": ""
+  },
+  {
+    "id": 24,
+    "title": "Profile Technology",
+    "category": "Card",
+    "lang": "HTML",
+    "price": "30k",
+    "date": "4/9/2025",
+    "img": "https://lh3.googleusercontent.com/d/1ZL1-LaDqwPsWo0kyvYilenlAk9CE-PZX",
+    "driveLink": "https://drive.google.com/file/d/1ZL1-LaDqwPsWo0kyvYilenlAk9CE-PZX/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766253063/taivideo.vn_-_Technology_Profile_htmlcss_viral_teohoclaptrinh_tiktok_foryou_mfglxo.mp4",
+    "demo": "",
+    "download": ""
+  },
+  {
+    "id": 25,
+    "title": "Quack Quack 🦆",
+    "category": "HOATHINH",
+    "lang": "HTML",
+    "price": "FREE(follow)",
+    "date": "4/9/2025",
+    "img": "https://lh3.googleusercontent.com/d/1n6iuClW-j6qGWeKNFKgPflAtVVU3NOzA",
+    "driveLink": "https://drive.google.com/file/d/1n6iuClW-j6qGWeKNFKgPflAtVVU3NOzA/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766253206/taivideo.vn_-_Quack_Quack_htmlcss_viral_teohoclaptrinh_tiktok_foryou_tp7j1a.mp4",
+    "demo": "",
+    "download": ""
+  },
+  {
+    "id": 26,
+    "title": "Card Tiger Beer",
+    "category": "Card",
+    "lang": "HTML",
+    "price": "FREE(follow)",
+    "date": "4/9/2025",
+    "img": "https://lh3.googleusercontent.com/d/1LTjCWokECT_Eqjxuh8r2KegHbq71vkT8",
+    "driveLink": "https://drive.google.com/file/d/1LTjCWokECT_Eqjxuh8r2KegHbq71vkT8/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766253448/taivideo.vn_-_Bia_tiger_viral_teohoclaptrinh_htmlcss_tiktok_foryou_omhfqp.mp4",
+    "demo": "",
+    "download": ""
+  },
+  {
+    "id": 27,
+    "title": "Drinks Menu 🥰",
+    "category": "Card",
+    "lang": "HTML",
+    "price": "10k",
+    "date": "4/9/2025",
+    "img": "https://lh3.googleusercontent.com/d/1-2VCwn7EX3dhqD8F9bjGsFQV-u9XFY_n",
+    "driveLink": "https://drive.google.com/file/d/1-2VCwn7EX3dhqD8F9bjGsFQV-u9XFY_n/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766253865/taivideo.vn_-_Drinks_Menu_teohoclaptrinh_viral_htmlcss_tiktok_foryou_ofqcdg.mp4",
+    "demo": "",
+    "download": ""
+  },
+  {
+    "id": 28,
+    "title": "Lobby Room 💁‍♂️",
+    "category": "HOATHINH",
+    "lang": "HTML",
+    "price": "20k",
+    "date": "4/9/2025",
+    "img": "https://lh3.googleusercontent.com/d/1m9kifPoHyb8-TcThyNt8obFQ7t0CwF6i",
+    "driveLink": "https://drive.google.com/file/d/1m9kifPoHyb8-TcThyNt8obFQ7t0CwF6i/view?usp=drive_link",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766253919/taivideo.vn_-_Lobby_Room_tiktok_foryou_htmlcss_xuhuong_hoclaptrinh_s3hxy2.mp4",
+    "demo": "",
+    "download": ""
+  },
+  {
+    "id": 29,
+    "title": "Toy Card 📚",
+    "category": "HOATHINH",
+    "lang": "HTML",
+    "price": "10k",
+    "date": "4/9/2025",
+    "img": "https://lh3.googleusercontent.com/d/16KjiWZA2f1-xVlAUqm0CiFDW4wrIy13w",
+    "driveLink": "https://drive.google.com/file/d/16KjiWZA2f1-xVlAUqm0CiFDW4wrIy13w/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766254122/taivideo.vn_-_Toy_Card_tiktok_htmlcss_hoclaptrinh_foryou_xuhuong_ypppvu.mp4",
+    "demo": "",
+    "download": ""
+  },
+  {
+    "id": 30,
+    "title": "Card Love 💕",
+    "category": "Card",
+    "lang": "HTML",
+    "price": "10k",
+    "date": "4/9/2025",
+    "img": "https://lh3.googleusercontent.com/d/1cO6OgadfoDLcvd0x6iJBub03fx6_Xylz",
+    "driveLink": "https://drive.google.com/file/d/1cO6OgadfoDLcvd0x6iJBub03fx6_Xylz/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766254582/taivideo.vn_-_Card_Love_tiktok_htmlcss_foryou_xuhuong_hoclaptrinh_ahekzi.mp4",
+    "demo": "",
+    "download": ""
+  },
+  {
+    "id": 31,
+    "title": "Your Review 🌟",
+    "category": "HOATHINH",
+    "lang": "HTML",
+    "price": "FREE(follow)",
+    "date": "4/9/2025",
+    "img": "https://lh3.googleusercontent.com/d/1k-hY8As1sGdaqGJXLgsW8ODBqpqa_B1F",
+    "driveLink": "https://drive.google.com/file/d/1k-hY8As1sGdaqGJXLgsW8ODBqpqa_B1F/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766254774/taivideo.vn_-_Your_Review_tiktok_htmlcss_foryou_xuhuong_code_muhlgl.mp4",
+    "demo": "",
+    "download": ""
+  },
+  {
+    "id": 32,
+    "title": "Round Cards 📍",
+    "category": "Card",
+    "lang": "HTML",
+    "price": "FREE(follow)",
+    "date": "4/9/2025",
+    "img": "https://lh3.googleusercontent.com/d/1N4n3dZauaiB--okZQ4Fv-4oVxgwtU9LQ",
+    "driveLink": "https://drive.google.com/file/d/1N4n3dZauaiB--okZQ4Fv-4oVxgwtU9LQ/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766254931/taivideo.vn_-_Round_Cards_tiktok_htmlcss_onepiece_vairal_cuocsongthuongngay_xzmxr8.mp4",
+    "demo": "",
+    "download": ""
+  },
+  {
+    "id": 33,
+    "title": "barbar game",
+    "category": "Game",
+    "lang": "HTML",
+    "price": "10k",
+    "date": "4/9/2025",
+    "img": "https://lh3.googleusercontent.com/d/115g30pQImu03q0ORMuFV0qBpL2wZqfXv",
+    "driveLink": "https://drive.google.com/file/d/115g30pQImu03q0ORMuFV0qBpL2wZqfXv/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766255072/taivideo.vn_-_Tui_th_th_h_8x_9x_tiktok_htmlcss_barbar_giaitri_tuoithotoi_piigr3.mp4",
+    "demo": "",
+    "download": ""
+  },
+  {
+    "id": 34,
+    "title": "Máy Gắp Thú",
+    "category": "Game",
+    "lang": "HTML",
+    "price": "FREE(follow)",
+    "date": "4/9/2025",
+    "img": "https://lh3.googleusercontent.com/d/1k1cD5HMNqV1kQbAhG5396zBEVjh8RPY0",
+    "driveLink": "https://drive.google.com/file/d/1k1cD5HMNqV1kQbAhG5396zBEVjh8RPY0/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766255249/taivideo.vn_-_My_gp_th_tiktok_foryou_code_vairal_vuivemoingay_g71909.mp4",
+    "demo": "",
+    "download": ""
+  },
+  {
+    "id": 35,
+    "title": "Thả Kẹo Đa Vũ trụ 😁",
+    "category": "Game",
+    "lang": "HTML",
+    "price": "30k",
+    "date": "8/11/2025",
+    "img": "https://lh3.googleusercontent.com/d/1_7uZMNFAdY4wtAvStjiWuNHoYHdaxkc-",
+    "driveLink": "https://drive.google.com/file/d/1_7uZMNFAdY4wtAvStjiWuNHoYHdaxkc-/view?usp=sharing",
+    "video": "https://res.cloudinary.com/dm6fqzwhs/video/upload/v1766255494/taivideo.vn_-_Th_Ko_a_V_tr_foryou_giaitri_game_xuhuong_giangho_gkdjl7.mp4",
+    "demo": "https://suikagame-multiverse.netlify.app/",
+    "download": ""
+  },
+  {
+    "id": 38,
+    "title": "UI_GreenHouse",
+    "category": "IOT",
+    "lang": "HTML",
+    "price": "FREE(follow)",
+    "date": "7/11/2025",
+    "img": "https://lh3.googleusercontent.com/d/1JlTDyrIXeCcFQ3xVeplhY2Sawm6WtAUT",
+    "driveLink": "https://drive.google.com/file/d/1JlTDyrIXeCcFQ3xVeplhY2Sawm6WtAUT/view?usp=sharing",
+    "video": "",
+    "demo": "https://greenhouseg3td.netlify.app/",
+    "download": "NULL"
+  }
 ];
 
 // Danh sách logo ảnh thật các công nghệ / ngôn ngữ chuẩn Devicon SVG (59 công nghệ đa dạng)
@@ -564,40 +1050,160 @@ export default function Home() {
             <div className="circle-overlay"></div>
             
             <div className="source-header">
-              <div className="source-title">MÃ NGUỒN</div>
-              <div className="box search-mini-box" style={{ '--w': '200px', '--h': '32px', '--r': '9999px' }}>
+              <div className="source-title-group" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', zIndex: 10 }}>
+                <div className="source-title">MÃ NGUỒN</div>
+                <span className="source-count-badge" style={{ fontSize: '0.72rem', color: '#38bdf8', fontWeight: 700, background: 'rgba(56, 189, 248, 0.12)', padding: '2px 8px', borderRadius: '9999px' }}>
+                  {filteredSources.length} sản phẩm
+                </span>
+              </div>
+              <div className="box search-mini-box" style={{ '--w': '220px', '--h': '32px', '--r': '9999px' }}>
                 <div className="circle-overlay"></div>
-                <input type="text" placeholder="Tìm kiếm source code..." />
+                <input 
+                  type="text" 
+                  placeholder="Tìm kiếm source code..." 
+                  value={sourceSearch}
+                  onChange={(e) => {
+                    setSourceSearch(e.target.value);
+                    setSourcePage(1);
+                  }}
+                />
                 <i className="fas fa-search" style={{ zIndex: 10, color: '#64748b', fontSize: '11px' }}></i>
               </div>
             </div>
 
+            {/* Bộ lọc danh mục */}
+            <div className="category-filter-row" style={{ display: 'flex', gap: '0.45rem', marginBottom: '1rem', zIndex: 10, flexWrap: 'wrap' }}>
+              {categories.map(cat => (
+                <button
+                  key={cat}
+                  className={`box cat-filter-btn ${sourceCategory === cat ? 'active' : ''}`}
+                  style={{
+                    '--w': 'auto',
+                    '--h': '28px',
+                    '--r': '9999px',
+                    '--tr': '15%',
+                    border: 'none',
+                    padding: '0 12px',
+                    cursor: 'pointer',
+                    fontSize: '0.72rem',
+                    fontWeight: 700
+                  }}
+                  onClick={() => {
+                    setSourceCategory(cat);
+                    setSourcePage(1);
+                  }}
+                >
+                  <div className="circle-overlay"></div>
+                  <span style={{ zIndex: 10 }}>{cat === 'ALL' ? 'Tất cả' : cat}</span>
+                </button>
+              ))}
+            </div>
+
             <div className="grid-3x3">
-              {sourceCodes.map((item, index) => (
-                <div key={index} className="box code-card-glass" style={{ '--w': '100%', '--h': 'auto', '--r': '16px', '--tr': '15%' }}>
+              {currentSources.map((item, index) => (
+                <div key={item.id || index} className="box code-card-glass" style={{ '--w': '100%', '--h': 'auto', '--r': '16px', '--tr': '15%' }}>
                   <div className="circle-overlay"></div>
                   <div className="card-thumb" style={{ zIndex: 10 }}>
-                    <img src={item.img} alt={item.title} />
-                    <span className="thumb-badge"><i className="fas fa-play" style={{ fontSize: '6px' }}></i> Video</span>
-                    <span className="thumb-tech-icon">5</span>
+                    <img 
+                      src={item.img} 
+                      alt={item.title} 
+                      onError={(e) => {
+                        e.target.src = 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&q=80';
+                      }}
+                    />
+                    <span className="thumb-badge">
+                      <i className="fas fa-tag" style={{ fontSize: '7px' }}></i> {item.price || 'FREE'}
+                    </span>
+                    <span 
+                      className="thumb-tech-icon"
+                      style={{
+                        background: item.lang.includes('PYTHON') ? '#3b82f6' : '#e34f26'
+                      }}
+                    >
+                      {item.lang.includes('PYTHON') ? 'Py' : '5'}
+                    </span>
                   </div>
-                  <div className="card-title-text" style={{ zIndex: 10 }}>{item.title}</div>
+                  <div className="card-title-text" style={{ zIndex: 10 }} title={item.title}>{item.title}</div>
                   <div className="card-meta" style={{ zIndex: 10 }}>
                     <span>{item.lang} • {item.date}</span>
                     <div style={{ display: 'flex', gap: '8px' }}>
-                      <i className="fas fa-eye"></i>
-                      <i className="fas fa-download"></i>
+                      {item.video && (
+                        <a 
+                          href={item.video} 
+                          target="_blank" 
+                          rel="noreferrer" 
+                          title="Xem video demo"
+                          style={{ color: 'inherit', textDecoration: 'none' }}
+                        >
+                          <i className="fas fa-play" style={{ fontSize: '0.75rem' }}></i>
+                        </a>
+                      )}
+                      {item.demo && (
+                        <a 
+                          href={item.demo} 
+                          target="_blank" 
+                          rel="noreferrer" 
+                          title="Xem demo"
+                          style={{ color: 'inherit', textDecoration: 'none' }}
+                        >
+                          <i className="fas fa-eye"></i>
+                        </a>
+                      )}
+                      {(item.download || item.driveLink) && (
+                        <a 
+                          href={item.download || item.driveLink} 
+                          target="_blank" 
+                          rel="noreferrer" 
+                          title="Tải mã nguồn"
+                          style={{ color: 'inherit', textDecoration: 'none' }}
+                        >
+                          <i className="fas fa-download"></i>
+                        </a>
+                      )}
                     </div>
                   </div>
                 </div>
               ))}
             </div>
 
-            <div className="pagination-row">
-              <div className="box page-btn active" style={{ '--w': '26px', '--h': '26px', '--r': '9999px' }}><span style={{ zIndex: 10 }}>1</span></div>
-              <div className="box page-btn" style={{ '--w': '26px', '--h': '26px', '--r': '9999px' }}><span style={{ zIndex: 10 }}>2</span></div>
-              <div className="box page-btn" style={{ '--w': '26px', '--h': '26px', '--r': '9999px' }}><span style={{ zIndex: 10 }}>3</span></div>
-            </div>
+            {/* Phân trang động */}
+            {totalPages > 1 && (
+              <div className="pagination-row">
+                <button
+                  className="box page-btn"
+                  style={{ '--w': '28px', '--h': '28px', '--r': '9999px', border: 'none', cursor: 'pointer' }}
+                  onClick={() => setSourcePage(p => Math.max(1, p - 1))}
+                  disabled={sourcePage === 1}
+                  aria-label="Trang trước"
+                >
+                  <div className="circle-overlay"></div>
+                  <span style={{ zIndex: 10 }}>&lt;</span>
+                </button>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => (
+                  <button
+                    key={pageNum}
+                    className={`box page-btn ${sourcePage === pageNum ? 'active' : ''}`} 
+                    style={{ '--w': '28px', '--h': '28px', '--r': '9999px', border: 'none', cursor: 'pointer' }}
+                    onClick={() => setSourcePage(pageNum)}
+                  >
+                    <div className="circle-overlay"></div>
+                    <span style={{ zIndex: 10 }}>{pageNum}</span>
+                  </button>
+                ))}
+
+                <button
+                  className="box page-btn"
+                  style={{ '--w': '28px', '--h': '28px', '--r': '9999px', border: 'none', cursor: 'pointer' }}
+                  onClick={() => setSourcePage(p => Math.min(totalPages, p + 1))}
+                  disabled={sourcePage === totalPages}
+                  aria-label="Trang sau"
+                >
+                  <div className="circle-overlay"></div>
+                  <span style={{ zIndex: 10 }}>&gt;</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
