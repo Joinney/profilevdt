@@ -3,6 +3,17 @@ import React, { useState, useMemo } from 'react';
 // Danh sách dữ liệu công cụ chính xác từ voduytoan.netlify.app/congcu
 const toolsData = [
   {
+    id: 6,
+    title: "AI Canvas Studio - Canvas Video AI TMĐT",
+    category: "Video",
+    date: "16/11/2026",
+    description: "Nền tảng tạo video AI bán hàng TMĐT chuyên nghiệp theo sơ đồ Canvas Node Workflow: tạo ảnh biến thể, chuyển động Veo 2, viết kịch bản, lồng tiếng và xuất bản tự động cho TikTok Shop, Shopee, Lazada.",
+    image: "/tools/ai-canvas-studio.jpg",
+    fallbackImage: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80",
+    link: "https://github.com/Joinney/ai-canvas-studio",
+    tags: ["Video", "AI", "Canvas Workflow", "TMĐT", "E-Commerce"]
+  },
+  {
     id: 5,
     title: "Studio VDT - Video Dynamic Toolkit",
     category: "Video",
