@@ -574,13 +574,126 @@ export default function Home() {
   const [time, setTime] = useState('');
   const canvasRef = useRef(null);
 
-  // Bộ lọc, tìm kiếm và phân trang mã nguồn
-  const [sourceSearch, setSourceSearch] = useState('');
-  const [sourceCategory, setSourceCategory] = useState('ALL');
-  const [sourcePage, setSourcePage] = useState(1);
+  // Bộ lọc, tìm kiếm và phân trang mã nguồn đồng bộ URL (?page=2, ?category=3D)
+  const categories = ['ALL', '3D', 'HOATHINH', 'To Tinh', 'Card', 'Game', 'IOT'];
+
+  const getInitialSourcePage = () => {
+    if (typeof window === 'undefined') return 1;
+    const params = new URLSearchParams(window.location.search);
+    const p = parseInt(params.get('page') || params.get('p'));
+    if (!isNaN(p) && p >= 1) return p;
+
+    // Hỗ trợ cả định dạng hash #page-2 hoặc #page=2
+    const hash = window.location.hash;
+    const match = hash.match(/page[=-](d+)/);
+    if (match) return parseInt(match[1]);
+
+    return 1;
+  };
+
+  const getInitialCategory = () => {
+    if (typeof window === 'undefined') return 'ALL';
+    const params = new URLSearchParams(window.location.search);
+    const cat = params.get('category') || params.get('cat');
+    if (cat && categories.map(c => c.toLowerCase()).includes(cat.toLowerCase())) {
+      return categories.find(c => c.toLowerCase() === cat.toLowerCase()) || 'ALL';
+    }
+    return 'ALL';
+  };
+
+  const getInitialSearch = () => {
+    if (typeof window === 'undefined') return '';
+    const params = new URLSearchParams(window.location.search);
+    return params.get('q') || params.get('search') || '';
+  };
+
+  const [sourceSearch, setSourceSearch] = useState(getInitialSearch);
+  const [sourceCategory, setSourceCategory] = useState(getInitialCategory);
+  const [sourcePage, setSourcePage] = useState(getInitialSourcePage);
   const itemsPerPage = 9;
 
-  const categories = ['ALL', '3D', 'HOATHINH', 'To Tinh', 'Card', 'Game', 'IOT'];
+  // Lắng nghe sự kiện Back/Forward của trình duyệt để đồng bộ trang và bộ lọc
+  useEffect(() => {
+    const handlePopState = () => {
+      setSourcePage(getInitialSourcePage());
+      setSourceCategory(getInitialCategory());
+      setSourceSearch(getInitialSearch());
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const updateSourceUrl = (newPage, newCat, newSearch) => {
+    if (typeof window === 'undefined') return;
+    const url = new URL(window.location.href);
+
+    if (newPage && newPage > 1) {
+      url.searchParams.set('page', newPage);
+    } else {
+      url.searchParams.delete('page');
+      url.searchParams.delete('p');
+    }
+
+    if (newCat && newCat !== 'ALL') {
+      url.searchParams.set('category', newCat);
+    } else {
+      url.searchParams.delete('category');
+      url.searchParams.delete('cat');
+    }
+
+    if (newSearch && newSearch.trim()) {
+      url.searchParams.set('q', newSearch.trim());
+    } else {
+      url.searchParams.delete('q');
+      url.searchParams.delete('search');
+    }
+
+    const newPath = url.pathname + (url.search ? url.search : '') + (url.hash ? url.hash : '');
+    window.history.pushState({ page: newPage, category: newCat, q: newSearch }, '', newPath);
+  };
+
+  const handlePageChange = (newPage) => {
+    setSourcePage(newPage);
+    updateSourceUrl(newPage, sourceCategory, sourceSearch);
+  };
+
+  const handleCategoryChange = (newCat) => {
+    setSourceCategory(newCat);
+    setSourcePage(1);
+    updateSourceUrl(1, newCat, sourceSearch);
+  };
+
+  const handleSearchChange = (newSearch) => {
+    setSourceSearch(newSearch);
+    setSourcePage(1);
+    updateSourceUrl(1, sourceCategory, newSearch);
+  };
+
+  const buildPageUrl = (targetPage) => {
+    if (typeof window === 'undefined') return '#';
+    const url = new URL(window.location.href);
+    if (targetPage > 1) {
+      url.searchParams.set('page', targetPage);
+    } else {
+      url.searchParams.delete('page');
+      url.searchParams.delete('p');
+    }
+    return url.pathname + (url.search ? url.search : '') + (url.hash ? url.hash : '');
+  };
+
+  const buildCategoryUrl = (cat) => {
+    if (typeof window === 'undefined') return '#';
+    const url = new URL(window.location.href);
+    url.searchParams.delete('page');
+    url.searchParams.delete('p');
+    if (cat !== 'ALL') {
+      url.searchParams.set('category', cat);
+    } else {
+      url.searchParams.delete('category');
+      url.searchParams.delete('cat');
+    }
+    return url.pathname + (url.search ? url.search : '') + (url.hash ? url.hash : '');
+  };
 
   const filteredSources = sourceCodes.filter(item => {
     const matchesSearch = item.title.toLowerCase().includes(sourceSearch.toLowerCase()) ||
@@ -1081,10 +1194,7 @@ export default function Home() {
                   type="text" 
                   placeholder="Tìm kiếm source code..." 
                   value={sourceSearch}
-                  onChange={(e) => {
-                    setSourceSearch(e.target.value);
-                    setSourcePage(1);
-                  }}
+                  onChange={(e) => handleSearchChange(e.target.value)}
                 />
                 <i className="fas fa-search" style={{ zIndex: 10, color: '#64748b', fontSize: '11px' }}></i>
               </div>
@@ -1093,8 +1203,9 @@ export default function Home() {
             {/* Bộ lọc danh mục */}
             <div className="category-filter-row" style={{ display: 'flex', gap: '0.45rem', marginBottom: '1rem', zIndex: 10, flexWrap: 'wrap' }}>
               {categories.map(cat => (
-                <button
+                <a
                   key={cat}
+                  href={buildCategoryUrl(cat)}
                   className={`box cat-filter-btn ${sourceCategory === cat ? 'active' : ''}`}
                   style={{
                     '--w': 'auto',
@@ -1105,16 +1216,20 @@ export default function Home() {
                     padding: '0 12px',
                     cursor: 'pointer',
                     fontSize: '0.72rem',
-                    fontWeight: 700
+                    fontWeight: 700,
+                    textDecoration: 'none',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
                   }}
-                  onClick={() => {
-                    setSourceCategory(cat);
-                    setSourcePage(1);
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleCategoryChange(cat);
                   }}
                 >
                   <div className="circle-overlay"></div>
                   <span style={{ zIndex: 10 }}>{cat === 'ALL' ? 'Tất cả' : cat}</span>
-                </button>
+                </a>
               ))}
             </div>
 
@@ -1188,39 +1303,81 @@ export default function Home() {
             {/* Phân trang động */}
             {totalPages > 1 && (
               <div className="pagination-row">
-                <button
+                <a
+                  href={buildPageUrl(Math.max(1, sourcePage - 1))}
                   className="box page-btn"
-                  style={{ '--w': '28px', '--h': '28px', '--r': '9999px', border: 'none', cursor: 'pointer' }}
-                  onClick={() => setSourcePage(p => Math.max(1, p - 1))}
-                  disabled={sourcePage === 1}
+                  style={{
+                    '--w': '28px',
+                    '--h': '28px',
+                    '--r': '9999px',
+                    border: 'none',
+                    cursor: sourcePage === 1 ? 'not-allowed' : 'pointer',
+                    textDecoration: 'none',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    opacity: sourcePage === 1 ? 0.35 : 1
+                  }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (sourcePage > 1) handlePageChange(sourcePage - 1);
+                  }}
                   aria-label="Trang trước"
                 >
                   <div className="circle-overlay"></div>
                   <span style={{ zIndex: 10 }}>&lt;</span>
-                </button>
+                </a>
 
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => (
-                  <button
+                  <a
                     key={pageNum}
+                    href={buildPageUrl(pageNum)}
                     className={`box page-btn ${sourcePage === pageNum ? 'active' : ''}`} 
-                    style={{ '--w': '28px', '--h': '28px', '--r': '9999px', border: 'none', cursor: 'pointer' }}
-                    onClick={() => setSourcePage(pageNum)}
+                    style={{
+                      '--w': '28px',
+                      '--h': '28px',
+                      '--r': '9999px',
+                      border: 'none',
+                      cursor: 'pointer',
+                      textDecoration: 'none',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handlePageChange(pageNum);
+                    }}
                   >
                     <div className="circle-overlay"></div>
                     <span style={{ zIndex: 10 }}>{pageNum}</span>
-                  </button>
+                  </a>
                 ))}
 
-                <button
+                <a
+                  href={buildPageUrl(Math.min(totalPages, sourcePage + 1))}
                   className="box page-btn"
-                  style={{ '--w': '28px', '--h': '28px', '--r': '9999px', border: 'none', cursor: 'pointer' }}
-                  onClick={() => setSourcePage(p => Math.min(totalPages, p + 1))}
-                  disabled={sourcePage === totalPages}
+                  style={{
+                    '--w': '28px',
+                    '--h': '28px',
+                    '--r': '9999px',
+                    border: 'none',
+                    cursor: sourcePage === totalPages ? 'not-allowed' : 'pointer',
+                    textDecoration: 'none',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    opacity: sourcePage === totalPages ? 0.35 : 1
+                  }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (sourcePage < totalPages) handlePageChange(sourcePage + 1);
+                  }}
                   aria-label="Trang sau"
                 >
                   <div className="circle-overlay"></div>
                   <span style={{ zIndex: 10 }}>&gt;</span>
-                </button>
+                </a>
               </div>
             )}
           </div>
