@@ -3,6 +3,17 @@ import React, { useState, useMemo } from 'react';
 // Danh sách dữ liệu công cụ chính xác từ voduytoan.netlify.app/congcu
 const toolsData = [
   {
+    id: 5,
+    title: "Studio VDT - Video Dynamic Toolkit",
+    category: "Video",
+    date: "10/11/2026",
+    description: "Nền tảng lồng tiếng video AI chuyên nghiệp toàn diện & bộ công cụ tự động nhận diện, trích xuất, tải video siêu tốc từ YouTube, TikTok, Weibo, Soda Reels & MinuteDrama.",
+    image: "/tools/studio-vdt.jpg",
+    fallbackImage: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&q=80",
+    link: "https://github.com/Joinney/Video-Dynamic-Toolkit",
+    tags: ["Video", "AI", "Dubbing", "Downloader", "Node.js"]
+  },
+  {
     id: 1,
     title: "xóa ảnh vật thẻ",
     category: "IMG",
@@ -52,14 +63,16 @@ export default function Tools({ theme }) {
   const isLight = theme === 'light';
   const [activeCategory, setActiveCategory] = useState('ALL');
 
-  // Thống kê số lượng từng danh mục
+  // Thống kê tự động danh mục động từ toolsData
   const categories = useMemo(() => {
+    const rawCategories = Array.from(new Set(toolsData.map(t => t.category)));
     return [
       { id: 'ALL', name: 'Tất cả', count: toolsData.length },
-      { id: 'Art', name: 'Art', count: toolsData.filter(t => t.category === 'Art').length },
-      { id: 'IMG', name: 'IMG', count: toolsData.filter(t => t.category === 'IMG').length },
-      { id: 'Office', name: 'Office', count: toolsData.filter(t => t.category === 'Office').length },
-      { id: 'QR', name: 'QR', count: toolsData.filter(t => t.category === 'QR').length }
+      ...rawCategories.map(cat => ({
+        id: cat,
+        name: cat,
+        count: toolsData.filter(t => t.category === cat).length
+      }))
     ];
   }, []);
 
@@ -125,11 +138,11 @@ export default function Tools({ theme }) {
                   <span className="stat-label">Công cụ</span>
                 </div>
                 <div className="stat-unit">
-                  <span className="stat-number">4</span>
+                  <span className="stat-number">{categories.length - 1}</span>
                   <span className="stat-label">Danh mục</span>
                 </div>
                 <div className="stat-unit">
-                  <span className="stat-number">89</span>
+                  <span className="stat-number">95+</span>
                   <span className="stat-label">Tags</span>
                 </div>
               </div>
