@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import LoadingScreen from './components/LoadingScreen';
+import SakuraPetals from './components/SakuraPetals';
 
 // Import các trang
 import Home from './page/home';
@@ -203,6 +204,9 @@ export default function App() {
         {/* Truyền theme xuống Footer */}
         <Footer theme={theme} />
       </div>
+
+      {/* Hiệu ứng cánh hoa anh đào rơi toàn màn hình */}
+      <SakuraPetals />
     </>
   );
 }
