@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 
 // Danh sách dữ liệu công cụ chính xác từ voduytoan.netlify.app/congcu
-export const toolsData = [
+const toolsData = [
   {
     id: 1,
     title: "xóa ảnh vật thẻ",
