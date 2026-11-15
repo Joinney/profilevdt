@@ -1,76 +1,37 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { sourceCodes } from '../data/sourceCodes';
 
-// Danh sách logo ảnh thật các công nghệ / ngôn ngữ chuẩn Devicon SVG (59 công nghệ đa dạng)
+// Danh sách logo ảnh thật các công nghệ / ngôn ngữ chuẩn Devicon SVG (Top 24 công nghệ biểu tượng, tối ưu hiệu năng mượt mà 60fps)
 const techLogoSources = [
-  // Frontend & Web UI
+  // Frontend & UI
   { name: 'JavaScript', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg' },
   { name: 'TypeScript', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg' },
   { name: 'React', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg' },
   { name: 'NextJS', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg' },
   { name: 'VueJS', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vuejs/vuejs-original.svg' },
-  { name: 'Angular', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/angularjs/angularjs-original.svg' },
-  { name: 'Svelte', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/svelte/svelte-original.svg' },
   { name: 'HTML5', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg' },
   { name: 'CSS3', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg' },
   { name: 'TailwindCSS', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg' },
-  { name: 'Sass', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sass/sass-original.svg' },
-  { name: 'Bootstrap', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg' },
-  { name: 'Redux', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redux/redux-original.svg' },
   { name: 'ThreeJS', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/threejs/threejs-original.svg' },
-  { name: 'Vite', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vitejs/vitejs-original.svg' },
-  { name: 'Webpack', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/webpack/webpack-original.svg' },
-  { name: 'Electron', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/electron/electron-original.svg' },
 
-  // Backend & Platforms
+  // Backend & Languages
   { name: 'NodeJS', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg' },
-  { name: 'Express', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg' },
-  { name: 'NestJS', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nestjs/nestjs-original.svg' },
   { name: 'Python', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg' },
-  { name: 'Django', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg' },
-  { name: 'FastAPI', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg' },
-  { name: 'Java', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg' },
-  { name: 'Spring', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg' },
-  { name: 'CSharp', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg' },
-  { name: 'DotNet', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/dot-net/dot-net-original.svg' },
   { name: 'Go', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original.svg' },
   { name: 'Rust', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/rust/rust-original.svg' },
-  { name: 'PHP', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg' },
-  { name: 'Ruby', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ruby/ruby-original.svg' },
-  { name: 'Rails', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/rails/rails-plain.svg' },
+  { name: 'Java', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg' },
+  { name: 'CSharp', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg' },
   { name: 'CPlusPlus', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg' },
-  { name: 'C', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg' },
-
-  // Mobile & Cross-platform
   { name: 'Flutter', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flutter/flutter-original.svg' },
-  { name: 'Dart', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/dart/dart-original.svg' },
-  { name: 'Kotlin', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kotlin/kotlin-original.svg' },
-  { name: 'Swift', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/swift/swift-original.svg' },
-  { name: 'Unity', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/unity/unity-original.svg' },
-  { name: 'Unreal', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/unrealengine/unrealengine-original.svg' },
 
-  // Databases & Cloud
+  // Database & DevOps
   { name: 'PostgreSQL', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg' },
-  { name: 'MySQL', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg' },
   { name: 'MongoDB', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg' },
   { name: 'Redis', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg' },
-  { name: 'SQLite', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlite/sqlite-original.svg' },
-  { name: 'Firebase', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg' },
-  { name: 'Supabase', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/supabase/supabase-original.svg' },
-  { name: 'GraphQL', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/graphql/graphql-plain.svg' },
-
-  // DevOps & Tools
   { name: 'Docker', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg' },
-  { name: 'Kubernetes', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg' },
-  { name: 'Linux', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg' },
-  { name: 'Nginx', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nginx/nginx-original.svg' },
   { name: 'Git', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg' },
-  { name: 'GitHub', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg' },
-  { name: 'GitLab', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/gitlab/gitlab-original.svg' },
-  { name: 'VSCode', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg' },
-  { name: 'Figma', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg' },
-  { name: 'Postman', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postman/postman-original.svg' },
-  { name: 'Bash', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bash/bash-original.svg' }
+  { name: 'Linux', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg' },
+  { name: 'Figma', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg' }
 ];
 
 export default function Home() {
@@ -263,8 +224,10 @@ export default function Home() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    let animationFrameId;
+    const ctx = canvas.getContext('2d', { alpha: true });
+    if (!ctx) return;
+    let animationFrameId = null;
+    let isVisible = true;
 
     let width = (canvas.width = canvas.parentElement.offsetWidth);
     let height = (canvas.height = canvas.parentElement.offsetHeight);
@@ -277,12 +240,12 @@ export default function Home() {
     };
     window.addEventListener('resize', handleResize);
 
-    // 1. CÁC ĐIỂM LÒ XO MẶT NƯỚC (SPRING MESH WATER)
-    const springCount = 70;
+    // 1. CÁC ĐIỂM LÒ XO MẶT NƯỚC (35 điểm lò xo mượt mà, siêu nhẹ CPU)
+    const springCount = 35;
     let springs = [];
     const tension = 0.025;
     const dampening = 0.025;
-    const spread = 0.25;
+    const spread = 0.22;
 
     function initSprings() {
       springs = [];
@@ -316,10 +279,9 @@ export default function Home() {
       item.img.onload = () => { item.loaded = true; };
     });
 
-    // Đàn 59 logo công nghệ & ngôn ngữ bơi lội đa tầng độ sâu 3D (Foreground, Midground, Background)
+    // 24 logo công nghệ & ngôn ngữ bơi lội đa tầng độ sâu 3D
     const techEntities = techLogoSources.map((_, index) => {
       const speedDirection = index % 2 === 0 ? 1 : -1;
-      // 3 tầng độ sâu thị giác
       const depthLayer = index % 3; // 0: tiền cảnh, 1: trung cảnh, 2: hậu cảnh
       const size = depthLayer === 0 ? 28 + (index % 4) * 2 : depthLayer === 1 ? 23 + (index % 3) * 2 : 18 + (index % 3) * 2;
       const baseSpeed = depthLayer === 0 ? 0.72 + (index % 5) * 0.09 : depthLayer === 1 ? 0.52 + (index % 4) * 0.07 : 0.36 + (index % 3) * 0.05;
@@ -328,7 +290,7 @@ export default function Home() {
         logoIndex: index,
         depthLayer,
         alpha,
-        x: ((index * 42 + 20) % ((width || 700) + 80)) - 40,
+        x: ((index * 50 + 20) % ((width || 700) + 80)) - 40,
         y: height * (0.38 + ((index * 9) % 50) * 0.01),
         vx: speedDirection * baseSpeed,
         size,
@@ -337,29 +299,34 @@ export default function Home() {
       };
     });
 
-    // 3. KHỞI TẠO BỌT NƯỚC (BUBBLES)
-    const bubbles = Array.from({ length: 32 }, () => ({
+    // 3. KHỞI TẠO BỌT NƯỚC (14 bọt nước tăm)
+    const bubbles = Array.from({ length: 14 }, () => ({
       x: Math.random() * width,
       y: height + Math.random() * 80,
-      r: Math.random() * 3.5 + 1.5,
-      speedY: Math.random() * 0.9 + 0.6,
+      r: Math.random() * 3 + 1.5,
+      speedY: Math.random() * 0.8 + 0.5,
       wobbleSpeed: Math.random() * 0.04 + 0.02,
-      wobbleAmp: Math.random() * 1.4 + 0.6,
+      wobbleAmp: Math.random() * 1.2 + 0.5,
       seed: Math.random() * 100
     }));
 
-    // 4. KHỞI TẠO RONG BIỂN ĐÁY BỂ (SEAWEEDS)
-    const seaweeds = Array.from({ length: 8 }, (_, i) => ({
-      baseX: 25 + i * (width / 9) + (Math.random() * 15 - 7),
-      height: 60 + Math.random() * 35,
+    // 4. KHỞI TẠO RONG BIỂN ĐÁY BỂ (4 nhánh rong biển mềm mại)
+    const seaweeds = Array.from({ length: 4 }, (_, i) => ({
+      baseX: 40 + i * (width / 4.5) + (Math.random() * 20 - 10),
+      height: 60 + Math.random() * 30,
       swayOffset: Math.random() * Math.PI * 2,
-      segments: 5
+      segments: 4
     }));
 
     let timeStep = 0;
 
     // VÒNG LẶP RENDER VẬT LÝ NƯỚC
     const render = () => {
+      if (!isVisible) {
+        animationFrameId = null;
+        return;
+      }
+
       timeStep += 0.03;
       ctx.clearRect(0, 0, width, height);
 
@@ -372,28 +339,26 @@ export default function Home() {
       }
 
       // Sóng tự tạo nhịp nhàng ngẫu nhiên
-      if (Math.random() < 0.05) {
+      if (Math.random() < 0.03) {
         const randIndex = Math.floor(Math.random() * springs.length);
-        splash(randIndex, (Math.random() * 2.5 - 1.25));
+        splash(randIndex, (Math.random() * 2.2 - 1.1));
       }
 
-      // Lan truyền lực sóng sang hai bên
+      // Lan truyền lực sóng 1 lần nhẹ nhàng
       const leftDeltas = new Array(springs.length).fill(0);
       const rightDeltas = new Array(springs.length).fill(0);
-      for (let j = 0; j < 3; j++) {
-        for (let i = 0; i < springs.length; i++) {
-          if (i > 0) {
-            leftDeltas[i] = spread * (springs[i].y - springs[i - 1].y);
-            springs[i - 1].speed += leftDeltas[i];
-          }
-          if (i < springs.length - 1) {
-            rightDeltas[i] = spread * (springs[i].y - springs[i + 1].y);
-            springs[i + 1].speed += rightDeltas[i];
-          }
+      for (let i = 0; i < springs.length; i++) {
+        if (i > 0) {
+          leftDeltas[i] = spread * (springs[i].y - springs[i - 1].y);
+          springs[i - 1].speed += leftDeltas[i];
+        }
+        if (i < springs.length - 1) {
+          rightDeltas[i] = spread * (springs[i].y - springs[i + 1].y);
+          springs[i + 1].speed += rightDeltas[i];
         }
       }
 
-      // B. Vẽ Khối nước chính & Độ dốc nước sâu (Deep Ocean Gradient)
+      // B. Vẽ Khối nước chính & Độ dốc nước sâu
       ctx.save();
       ctx.beginPath();
       ctx.moveTo(0, height);
@@ -410,26 +375,26 @@ export default function Home() {
       ctx.closePath();
 
       const waterGrad = ctx.createLinearGradient(0, height * 0.3, 0, height);
-      waterGrad.addColorStop(0, 'rgba(14, 165, 233, 0.45)');
-      waterGrad.addColorStop(0.3, 'rgba(2, 132, 199, 0.65)');
+      waterGrad.addColorStop(0, 'rgba(14, 165, 233, 0.42)');
+      waterGrad.addColorStop(0.35, 'rgba(2, 132, 199, 0.62)');
       waterGrad.addColorStop(1, 'rgba(3, 30, 60, 0.88)');
       ctx.fillStyle = waterGrad;
       ctx.fill();
 
-      // C. Tia sáng mặt trời tán xạ qua nước (Sun Rays / Caustic Shafts)
-      for (let r = 0; r < 4; r++) {
-        const rayX = width * (0.2 + r * 0.22) + Math.sin(timeStep + r) * 25;
-        const rayGrad = ctx.createLinearGradient(rayX, 0, rayX + 40, height);
-        rayGrad.addColorStop(0, 'rgba(255, 255, 255, 0.16)');
-        rayGrad.addColorStop(0.6, 'rgba(56, 189, 248, 0.04)');
+      // C. Tia sáng mặt trời tán xạ qua nước (3 tia sáng)
+      for (let r = 0; r < 3; r++) {
+        const rayX = width * (0.2 + r * 0.3) + Math.sin(timeStep + r) * 20;
+        const rayGrad = ctx.createLinearGradient(rayX, 0, rayX + 35, height);
+        rayGrad.addColorStop(0, 'rgba(255, 255, 255, 0.14)');
+        rayGrad.addColorStop(0.6, 'rgba(56, 189, 248, 0.03)');
         rayGrad.addColorStop(1, 'transparent');
 
         ctx.fillStyle = rayGrad;
         ctx.beginPath();
         ctx.moveTo(rayX - 10, springs[0].targetY);
-        ctx.lineTo(rayX + 35, springs[0].targetY);
-        ctx.lineTo(rayX + 85, height);
-        ctx.lineTo(rayX - 55, height);
+        ctx.lineTo(rayX + 30, springs[0].targetY);
+        ctx.lineTo(rayX + 75, height);
+        ctx.lineTo(rayX - 45, height);
         ctx.closePath();
         ctx.fill();
       }
@@ -438,7 +403,7 @@ export default function Home() {
       seaweeds.forEach(sw => {
         ctx.save();
         ctx.strokeStyle = '#10b981';
-        ctx.lineWidth = 4.5;
+        ctx.lineWidth = 3.5;
         ctx.lineCap = 'round';
         ctx.beginPath();
         ctx.moveTo(sw.baseX, height);
@@ -448,7 +413,7 @@ export default function Home() {
         const segLen = sw.height / sw.segments;
 
         for (let s = 1; s <= sw.segments; s++) {
-          const sway = Math.sin(timeStep * 1.5 + sw.swayOffset + s * 0.4) * (s * 4);
+          const sway = Math.sin(timeStep * 1.5 + sw.swayOffset + s * 0.4) * (s * 3.5);
           const nextX = sw.baseX + sway;
           const nextY = height - s * segLen;
           ctx.quadraticCurveTo(currX, currY, nextX, nextY);
@@ -459,14 +424,14 @@ export default function Home() {
         ctx.restore();
       });
 
-      // E. CẬP NHẬT VÀ VẼ ĐÀN 59 LOGO CÔNG NGHỆ BƠI LỘI ĐA TẦNG DƯỚI NƯỚC
+      // E. CẬP NHẬT VÀ VẼ LOGO CÔNG NGHỆ BƠI LỘI (Không dùng ctx.shadowBlur để giữ 60fps mượt mà)
       techEntities.forEach(tech => {
         tech.x += tech.vx;
         tech.rot += tech.rotSpeed;
         const waveY = Math.sin(timeStep * (2.0 + tech.depthLayer * 0.3) + tech.x * 0.025 + tech.logoIndex) * 5;
         const curY = tech.y + waveY;
 
-        // Tự tuần hoàn bơi qua lại khi bơi ra ngoài mép bể
+        // Tự tuần hoàn bơi qua lại khi ra khỏi mép bể
         if (tech.vx > 0 && tech.x > width + 45) {
           tech.x = -45;
           tech.y = height * (0.38 + Math.random() * 0.48);
@@ -479,6 +444,13 @@ export default function Home() {
         ctx.save();
         ctx.globalAlpha = tech.alpha;
         ctx.translate(tech.x, curY);
+
+        // Vòng bóng đổ vector siêu nhẹ dưới đáy bong bóng thay thế cho shadowBlur
+        ctx.beginPath();
+        ctx.arc(1, 2.5, tech.size * 0.65, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.22)';
+        ctx.fill();
+
         ctx.rotate(tech.rot);
 
         // Vòng cầu bong bóng nước thủy tinh bao quanh logo
@@ -496,13 +468,8 @@ export default function Home() {
         ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
         ctx.fill();
 
-        // Bóng mờ phản xạ chiều sâu nước
-        ctx.shadowColor = 'rgba(0, 0, 0, 0.35)';
-        ctx.shadowBlur = 8;
-        ctx.shadowOffsetY = 3;
-
         if (logoData && logoData.loaded) {
-          // Vẽ logo ảnh thật
+          // Vẽ logo ảnh thật bằng hardware acceleration
           ctx.drawImage(
             logoData.img,
             -tech.size / 2,
@@ -511,7 +478,6 @@ export default function Home() {
             tech.size
           );
         } else if (logoData) {
-          // Fallback bong bóng công nghệ phát sáng trong lúc chờ tải
           ctx.fillStyle = '#ffffff';
           ctx.font = `bold ${Math.max(8, Math.round(tech.size * 0.34))}px monospace`;
           ctx.textAlign = 'center';
@@ -563,12 +529,38 @@ export default function Home() {
         ctx.quadraticCurveTo(prev.x, prev.y, midX, midY);
       }
       ctx.strokeStyle = 'rgba(224, 242, 254, 0.85)';
-      ctx.lineWidth = 2.5;
+      ctx.lineWidth = 2.2;
       ctx.stroke();
 
       ctx.restore();
       animationFrameId = requestAnimationFrame(render);
     };
+
+    // Tự động tạm dừng hoạt họa khi cuộn ra ngoài màn hình (IntersectionObserver)
+    const observer = new IntersectionObserver(([entry]) => {
+      isVisible = entry.isIntersecting;
+      if (isVisible && !animationFrameId) {
+        animationFrameId = requestAnimationFrame(render);
+      }
+    }, { threshold: 0.05 });
+    observer.observe(canvas);
+
+    // Tự động tạm dừng hoạt họa khi đổi tab (visibilitychange)
+    const handleVisibility = () => {
+      if (document.hidden) {
+        isVisible = false;
+        if (animationFrameId) {
+          cancelAnimationFrame(animationFrameId);
+          animationFrameId = null;
+        }
+      } else {
+        isVisible = true;
+        if (!animationFrameId) {
+          animationFrameId = requestAnimationFrame(render);
+        }
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
 
     render();
 
@@ -587,9 +579,13 @@ export default function Home() {
 
     return () => {
       window.removeEventListener('resize', handleResize);
+      document.removeEventListener('visibilitychange', handleVisibility);
+      observer.disconnect();
       canvas.removeEventListener('mousemove', handlePointerMove);
       canvas.removeEventListener('touchmove', handlePointerMove);
-      cancelAnimationFrame(animationFrameId);
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
     };
   }, []);
 

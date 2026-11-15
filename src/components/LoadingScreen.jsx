@@ -21,12 +21,12 @@ export default function LoadingScreen({ onFinish, theme }) {
             setIsFadingOut(true);
             setTimeout(() => {
               if (onFinish) onFinish();
-            }, 550);
-          }, 350);
+            }, 300);
+          }, 150);
           return 100;
         }
 
-        const step = Math.floor(Math.random() * 7) + 5;
+        const step = Math.floor(Math.random() * 10) + 12;
         const next = Math.min(100, prev + step);
 
         const found = statuses.find(s => next >= s.at && prev < s.at);
@@ -36,7 +36,7 @@ export default function LoadingScreen({ onFinish, theme }) {
 
         return next;
       });
-    }, 65);
+    }, 32);
 
     return () => clearInterval(interval);
   }, [onFinish]);

@@ -118,7 +118,7 @@ export default function SakuraPetals() {
       }
     }
 
-    const FLOWER_COUNT = 38; // Số lượng cánh hoa rơi tối ưu 60fps
+    const FLOWER_COUNT = 20; // 20 cánh hoa rơi nhẹ nhàng, tối ưu tải GPU mượt mà 60fps
     const sakuraList = [];
 
     const initSakuras = () => {
@@ -144,7 +144,10 @@ export default function SakuraPetals() {
     let isRunning = true;
 
     const render = () => {
-      if (!isRunning) return;
+      if (!isRunning || document.hidden) {
+        animFrameIdRef.current = null;
+        return;
+      }
       ctx.clearRect(0, 0, width, height);
 
       for (let i = 0; i < sakuraList.length; i++) {
@@ -154,6 +157,13 @@ export default function SakuraPetals() {
 
       animFrameIdRef.current = requestAnimationFrame(render);
     };
+
+    const handleVisibility = () => {
+      if (!document.hidden && isRunning && !animFrameIdRef.current) {
+        animFrameIdRef.current = requestAnimationFrame(render);
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
 
     img.onload = () => {
       initSakuras();
@@ -167,6 +177,7 @@ export default function SakuraPetals() {
 
     return () => {
       isRunning = false;
+      document.removeEventListener('visibilitychange', handleVisibility);
       window.removeEventListener('resize', handleResize);
       if (animFrameIdRef.current) {
         cancelAnimationFrame(animFrameIdRef.current);

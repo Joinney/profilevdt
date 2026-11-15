@@ -134,10 +134,11 @@ body {
       inset 0 0 3px rgba(0, 0, 0, 0.25),
       var(--glass-shadow) !important;
 
-  /* Lớp kính mờ xuyên thấu */
+  /* Lớp kính mờ xuyên thấu tối ưu hóa phần cứng */
   background: var(--glass-bg) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  transform: translateZ(0);
   overflow: hidden;
   transition: transform 0.2s ease, filter 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
 }
