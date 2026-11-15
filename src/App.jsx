@@ -164,7 +164,7 @@ export default function App() {
       case 'tools':
         return typeof Tools === 'function' ? <Tools /> : <div>Trang Công Cụ đang cập nhật...</div>;
       case 'moments':
-        return typeof Moments === 'function' ? <Moments /> : <div>Trang Khoảnh Khắc đang cập nhật...</div>;
+        return typeof Moments === 'function' ? <Moments theme={theme} /> : <div>Trang Khoảnh Khắc đang cập nhật...</div>;
       case 'source-detail':
         return <SourceDetail theme={theme} onBack={() => changeTab('home')} />;
       case 'home':
