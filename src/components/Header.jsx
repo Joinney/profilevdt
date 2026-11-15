@@ -64,17 +64,30 @@ export default function Header({ activeTab, setActiveTab, theme, toggleTheme }) 
                 if (isActive) tabTextColor = isLight ? '#ea580c' : '#38bdf8';
 
                 return (
-                  <button
+                  <a
                     key={item.id}
+                    href={item.id === 'home' ? '#' : `#${item.id}`}
                     className="box nav-tab-box"
-                    style={{ '--w': 'auto', '--h': '36px', '--r': '9999px', '--tr': '15%' }}
-                    onClick={() => setActiveTab(item.id)}
+                    style={{ 
+                      '--w': 'auto', 
+                      '--h': '36px', 
+                      '--r': '9999px', 
+                      '--tr': '15%',
+                      textDecoration: 'none',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setActiveTab(item.id);
+                    }}
                   >
                     <div className="circle-overlay"></div>
                     <span style={{ color: tabTextColor, fontWeight: isActive ? 800 : 600 }}>
                       {item.label}
                     </span>
-                  </button>
+                  </a>
                 );
               })}
             </nav>
@@ -168,21 +181,28 @@ export default function Header({ activeTab, setActiveTab, theme, toggleTheme }) 
                   if (isActive) color = isLight ? '#ea580c' : '#38bdf8';
 
                   return (
-                    <button
+                    <a
                       key={item.id}
+                      href={item.id === 'home' ? '#' : `#${item.id}`}
                       className="box drawer-nav-item"
                       style={{ 
                         '--w': '100%', 
                         '--h': '46px', 
                         '--r': '16px', 
-                        '--tr': '15%'
+                        '--tr': '15%',
+                        textDecoration: 'none',
+                        display: 'flex',
+                        alignItems: 'center'
                       }}
-                      onClick={() => handleSelectTab(item.id)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleSelectTab(item.id);
+                      }}
                     >
                       <div className="circle-overlay"></div>
                       <i className={`fas ${item.icon}`} style={{ color, zIndex: 10 }}></i>
                       <span style={{ color, zIndex: 10, fontWeight: isActive ? 800 : 600 }}>{item.label}</span>
-                    </button>
+                    </a>
                   );
                 })}
               </nav>
@@ -302,10 +322,10 @@ export default function Header({ activeTab, setActiveTab, theme, toggleTheme }) 
         }
         .header-box { width: 100% !important; height: 60px !important; padding: 0 1.8rem; display: flex; justify-content: space-between; align-items: center; cursor: default; }
         .header-inner { position: relative; z-index: 10; width: 100%; display: flex; justify-content: space-between; align-items: center; }
-        .brand-wrapper { display: flex; align-items: center; gap: 0.8rem; font-weight: 800; font-size: 1.15rem; cursor: pointer; }
+        .brand-wrapper { text-decoration: none; display: flex; align-items: center; gap: 0.8rem; font-weight: 800; font-size: 1.15rem; cursor: pointer; }
         .brand-wrapper img { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; background-color: #1e293b; }
         .nav-links-box { display: flex; align-items: center; gap: 0.5rem; }
-        .nav-tab-box { padding: 0 1.25rem !important; font-size: 0.85rem; cursor: pointer; border: none; }
+        .nav-tab-box { text-decoration: none; padding: 0 1.25rem !important; font-size: 0.85rem; cursor: pointer; border: none; }
         .nav-tab-box span { position: relative; z-index: 10; transition: color 0.2s ease; }
         
         .header-glow-left {

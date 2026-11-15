@@ -165,7 +165,7 @@ export default function About() {
                     </div>
                     <p className="timeline-sub">Architect & Lead Developer</p>
                     <p className="timeline-text">
-                      Trực tiếp phát triển nền tảng thương mại điện tử Polyglot Microservices <strong>Demi Mart</strong>, Game đối kháng 2D Unity <strong>Glitchverse</strong> và hệ thống giám sát nông nghiệp thông minh <strong>G3TD Smart Greenhouse IoT</strong>.
+                      Trực tiếp phát triển nền tảng thương mại điện tử Polyglot Microservices <strong>Supermarket NIIE (Demi Mart)</strong>, nền tảng giáo dục trực tuyến <strong>EduTech Central</strong>, Game đối kháng 2D Unity <strong>Glitchverse</strong> và hệ thống giám sát nông nghiệp thông minh <strong>G3TD Smart Greenhouse IoT</strong>.
                     </p>
                   </div>
                 </div>

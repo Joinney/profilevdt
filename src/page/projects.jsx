@@ -3,26 +3,46 @@ import React, { useState, useEffect, useRef } from 'react';
 const projectList = [
   {
     id: 1,
-    title: "Demi Mart",
-    subtitle: "Nền tảng thương mại điện tử & Bán lẻ đa kênh",
-    desc: "Hệ sinh thái E-Commerce toàn diện được xây dựng trên kiến trúc Polyglot Microservices hiệu năng cao. Tích hợp thanh toán trực tuyến, quản lý tồn kho theo thời gian thực và trải nghiệm mua sắm mượt mà trên cả Web lẫn Mobile.",
-    tech: ["Next.js 14", "React Native", "Node.js", "Go", "Docker", "Redis", "MongoDB"],
+    title: "Supermarket NIIE (Demi Mart)",
+    subtitle: "Hệ thống thương mại điện tử & Siêu thị trực tuyến đa kênh",
+    desc: "Hệ sinh thái thương mại điện tử siêu thị trực tuyến toàn diện bao gồm Web App (Next.js 14 / TypeScript), Mobile App (React Native), AI Service Chatbot tư vấn và hệ thống Backend Node.js Microservices được triển khai bằng Docker & NGINX.",
+    tech: ["Next.js 14", "TypeScript", "React Native", "Node.js", "Python AI", "Docker", "NGINX", "MongoDB"],
     features: [
-      "Kiến trúc Microservices",
-      "Thanh toán VNPAY / Momo",
-      "Quản lý đơn hàng Real-time",
-      "Bộ nhớ đệm Redis Caching",
-      "Giao diện chuẩn Glass UI",
-      "Đồng bộ Web & Mobile App"
+      "Web App Next.js 14 & Tailwind CSS",
+      "Mobile App React Native (iOS & Android)",
+      "AI Service Chatbot tư vấn & gợi ý sản phẩm",
+      "Backend Microservices & NGINX Reverse Proxy",
+      "Đồng bộ giỏ hàng & Đơn hàng Real-time",
+      "Admin Dashboard quản lý kho & bán hàng"
     ],
-    floatingTags: ["Microservices", "Real-time Order", "Cross-Platform"],
-    mockupImg: "https://images.unsplash.com/photo-1557821552-17105176677c?w=900&q=80",
-    stats: "10K+ Products",
-    demoUrl: "https://github.com/Joinney",
-    githubUrl: "https://github.com/Joinney"
+    floatingTags: ["Fullstack Microservices", "AI Chatbot", "Web & Mobile App"],
+    mockupImg: "/projects/supermarket_niie.png",
+    stats: "E-Commerce System",
+    demoUrl: "https://demimart-fe.onrender.com",
+    githubUrl: "https://github.com/Joinney/Supermarket_niie"
+  },
+    {
+    id: 2,
+    title: "EduTech Central",
+    subtitle: "Nền tảng học tập trực tuyến đa dịch vụ & Trợ lý AI",
+    desc: "Nền tảng giáo dục trực tuyến toàn diện theo kiến trúc Microservices và Monorepo (pnpm-workspace). Tích hợp Frontend React (Vite), Backend Node.js, PostgreSQL (Prisma ORM), cổng thanh toán VNPay, lớp học Google Meet API và cụm trợ lý AI (DeepSeek, GLM, Qwen) hỗ trợ giải đáp 24/7.",
+    tech: ["React.js", "Vite", "Node.js", "PostgreSQL", "Prisma ORM", "DeepSeek AI", "Docker", "VNPay", "Google Meet API"],
+    features: [
+      "Kiến trúc Monorepo & Microservices",
+      "Trợ lý AI đa mô hình (DeepSeek, GLM, Qwen)",
+      "Thanh toán khóa học VNPay an toàn",
+      "Phòng học trực tuyến Google Meet API",
+      "Phân quyền: Học viên, Giảng viên & Admin",
+      "Quản lý khóa học, video & tài liệu PDF"
+    ],
+    floatingTags: ["EdTech Platform", "AI Assistant", "Monorepo Microservices"],
+    mockupImg: "/projects/edutechcentral.png",
+    stats: "E-Learning Platform",
+    demoUrl: "https://edutech-central.onrender.com",
+    githubUrl: "https://github.com/Joinney/EduTech_Central"
   },
   {
-    id: 2,
+    id: 3,
     title: "Glitchverse: The Final Fight",
     subtitle: "Game đối kháng 2D đa vũ trụ trên Unity Engine",
     desc: "Trò chơi hành động đối kháng 2D nhịp độ cao với cơ chế combo phức tạp, hệ thống Finite State Machine (FSM) AI thông minh và góc máy Cinemachine điện ảnh mang đến cảm giác chiến đấu mãn nhãn.",
@@ -37,12 +57,12 @@ const projectList = [
     ],
     floatingTags: ["2D Combat", "Finite State AI", "Unity 60FPS"],
     mockupImg: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=900&q=80",
-    stats: "Arcade Fighting",
-    demoUrl: "https://github.com/Joinney",
-    githubUrl: "https://github.com/Joinney"
+    stats: "Arcade Fighting Game",
+    demoUrl: "https://joinneyz.itch.io/",
+    githubUrl: "https://github.com/Joinney/Glitchverse-The-Final-Figh"
   },
   {
-    id: 3,
+    id: 4,
     title: "G3TD Smart Greenhouse",
     subtitle: "Hệ thống nhà kính thông minh giám sát & điều khiển IoT",
     desc: "Giải pháp IoT toàn diện ứng dụng vi điều khiển ESP32 và cảm biến đa tầng. Hệ thống tự động đo nhiệt độ, độ ẩm, ánh sáng và điều khiển tưới tiêu tự động qua Dashboard 3D Three.js và Mobile App.",
@@ -56,16 +76,16 @@ const projectList = [
       "Tích hợp điều khiển giọng nói"
     ],
     floatingTags: ["IoT Hardware", "Three.js 3D", "Firebase"],
-    mockupImg: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=900&q=80",
+    mockupImg: "/projects/greenhouse.png",
     stats: "Smart Agriculture",
-    demoUrl: "https://github.com/Joinney",
-    githubUrl: "https://github.com/Joinney"
+    demoUrl: "https://github.com/Joinney/Greenhouse_IOT",
+    githubUrl: "https://github.com/Joinney/Greenhouse_IOT"
   },
   {
-    id: 4,
-    title: "G3TD Furniture Store",
-    subtitle: "Trang thương mại điện tử nội thất cao cấp ASP.NET Core",
-    desc: "Web bán hàng nội thất gia đình hiện đại với kiến trúc ASP.NET Core MVC, Entity Framework Core, SQL Server và tích hợp cổng thanh toán bảo mật chuẩn doanh nghiệp.",
+    id: 5,
+    title: "G3TD Furniture Store (Final Project)",
+    subtitle: "Đồ án thương mại điện tử nội thất cao cấp ASP.NET Core",
+    desc: "Đồ án kết thúc môn / dự án tốt nghiệp xây dựng nền tảng thương mại điện tử kinh doanh nội thất trực tuyến với kiến trúc ASP.NET Core MVC, Entity Framework Core, SQL Server và hệ thống phân quyền giao dịch bảo mật.",
     tech: ["ASP.NET Core", "C#", "SQL Server", "EF Core", "Tailwind CSS"],
     features: [
       "Quản lý danh mục & biến thể",
@@ -75,34 +95,94 @@ const projectList = [
       "Tối ưu SEO Onpage",
       "Bảo mật giao dịch an toàn"
     ],
-    floatingTags: ["Enterprise MVC", "SQL Server", "E-Commerce"],
+    floatingTags: ["Enterprise MVC", "SQL Server", "Final Project"],
     mockupImg: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=900&q=80",
     stats: "Retail Enterprise",
-    demoUrl: "https://github.com/Joinney",
-    githubUrl: "https://github.com/Joinney"
+    demoUrl: "https://github.com/ThuanVan060504/Final-Project",
+    githubUrl: "https://github.com/ThuanVan060504/Final-Project"
   },
-  {
-    id: 5,
-    title: "Suika Game: Multiverse",
-    subtitle: "Web Game giải đố vật lý 2D tương tác cao",
-    desc: "Trò chơi ghép trái cây giải đố 2D dựa trên động cơ vật lý Matter.js. Tối ưu hiệu năng rendering bằng HTML5 Canvas và các thuật toán tính toán va chạm vật lý thời gian thực.",
-    tech: ["JavaScript", "Matter.js", "HTML5 Canvas", "Web Audio API"],
-    features: [
-      "Động cơ vật lý chân thực",
-      "Hiệu ứng âm thanh nảy vui nhộn",
-      "Bảng xếp hạng điểm cao",
-      "Chế độ combo tính điểm",
-      "Tương thích mọi thiết bị",
-      "Tải nhanh không cần cài đặt"
-    ],
-    floatingTags: ["Physics Engine", "Canvas 2D", "Casual Game"],
-    mockupImg: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=900&q=80",
-    stats: "Casual Web Game",
-    demoUrl: "https://github.com/Joinney",
-    githubUrl: "https://github.com/Joinney"
-  },
-  {
+    {
     id: 6,
+    title: "PerryFly",
+    subtitle: "Game Arcade 2D bay lượn phiêu lưu vui nhộn",
+    desc: "Trò chơi hành động bay lượn 2D nhịp độ nhanh lấy cảm hứng từ nhân vật Perry. Điều khiển vượt chướng ngại vật với cơ chế tính toán trọng lực vật lý mượt mà, thu thập vật phẩm và hệ thống ghi điểm theo thời gian thực.",
+    tech: ["Unity Engine", "C#", "2D Physics", "Sprite Animation", "Audio FX"],
+    features: [
+      "Cơ chế điều khiển bay lượn mượt mà",
+      "Hệ thống tạo chướng ngại vật ngẫu nhiên",
+      "Vật lý va chạm 2D chân thực",
+      "Bảng ghi nhận điểm số kỷ lục",
+      "Hiệu ứng âm thanh vui nhộn sống động",
+      "Tối ưu 60 FPS trải nghiệm mượt mà"
+    ],
+    floatingTags: ["2D Arcade", "Unity C#", "Physics Flying"],
+    mockupImg: "https://images.unsplash.com/photo-1551103782-8ab07afd45c1?w=900&q=80",
+    stats: "2D Arcade Game",
+    demoUrl: "https://github.com/Joinney/PerryFly",
+    githubUrl: "https://github.com/Joinney/PerryFly"
+  },
+    {
+    id: 7,
+    title: "Python Shop Bán Hàng Mini",
+    subtitle: "Hệ thống ứng dụng quản lý & bán hàng mini bằng Python",
+    desc: "Ứng dụng quản lý cửa hàng và bán lẻ mini được phát triển bằng ngôn ngữ Python. Tích hợp cơ sở dữ liệu SQLite gọn nhẹ, giao diện thân thiện trực quan hỗ trợ quản lý sản phẩm, lập giỏ hàng, xuất hóa đơn và thống kê doanh thu bán lẻ.",
+    tech: ["Python", "SQLite", "GUI Desktop", "Data Analysis"],
+    features: [
+      "Quản lý danh mục & mặt hàng cửa hàng",
+      "Tạo giỏ hàng và tính tiền tự động",
+      "In & xuất hóa đơn bán lẻ chi tiết",
+      "Lưu trữ dữ liệu SQLite an toàn, độc lập",
+      "Báo cáo thống kê doanh số bán hàng",
+      "Dễ cài đặt, chạy mượt mà không tốn tài nguyên"
+    ],
+    floatingTags: ["Python Core", "SQLite Database", "Retail Management"],
+    mockupImg: "https://images.unsplash.com/photo-1556742049-0a67c5574f73?w=900&q=80",
+    stats: "Retail Application",
+    demoUrl: "https://github.com/Joinney/Python-shop-ban-hang-mini",
+    githubUrl: "https://github.com/Joinney/Python-shop-ban-hang-mini"
+  },
+    {
+    id: 8,
+    title: "Hệ Thống Quản Lý Rạp Chiếu Phim",
+    subtitle: "Ứng dụng đặt vé & quản lý cụm rạp chiếu phim hiện đại",
+    desc: "Hệ thống phần mềm quản lý toàn diện hoạt động của cụm rạp chiếu phim: từ quản lý lịch chiếu, phòng chiếu và sơ đồ ghế ngồi trực quan thời gian thực, đến đặt vé xem phim, bán combo bắp nước và báo cáo doanh thu theo từng suất chiếu.",
+    tech: ["C#", ".NET", "SQL Server", "WinForms / WPF", "ADO.NET / EF Core"],
+    features: [
+      "Quản lý danh mục phim, suất chiếu & định dạng 2D/3D",
+      "Sơ đồ chọn ghế ngồi trực quan thời gian thực (VIP / Thường / Đôi)",
+      "Bán vé xem phim & tích hợp combo bắp nước",
+      "Thống kê doanh thu theo ngày, tháng và từng bộ phim",
+      "Phân quyền nhân viên bán vé và quản lý cụm rạp",
+      "In hóa đơn và vé xem phim nhanh chóng"
+    ],
+    floatingTags: ["Cinema Management", "Seat Matrix Real-time", "Ticket Booking"],
+    mockupImg: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=900&q=80",
+    stats: "Cinema Booking System",
+    demoUrl: "https://github.com/Joinney/Quanlyrapchieuphim",
+    githubUrl: "https://github.com/Joinney/Quanlyrapchieuphim"
+  },
+  {
+    id: 9,
+    title: "Web Quiz - Thi Trắc Nghiệm Trực Tuyến",
+    subtitle: "Nền tảng tạo đề & làm bài kiểm tra trắc nghiệm tương tác",
+    desc: "Nền tảng web trắc nghiệm trực tuyến linh hoạt hỗ trợ tổ chức thi cử và ôn luyện kiến thức. Tích hợp bộ đếm ngược thời gian làm bài, tự động xáo trộn ngẫu nhiên câu hỏi, chấm điểm tức thì cùng bảng xếp hạng điểm số và xem lại chi tiết đáp án.",
+    tech: ["HTML5", "CSS3", "JavaScript", "React.js", "Node.js"],
+    features: [
+      "Ngân hàng câu hỏi phong phú đa dạng chủ đề",
+      "Bộ đếm thời gian làm bài chính xác (Countdown Timer)",
+      "Tự động xáo trộn ngẫu nhiên câu hỏi & đáp án",
+      "Chấm điểm tức thì & giải thích đáp án chi tiết",
+      "Bảng vinh danh thành tích người chơi (Leaderboard)",
+      "Giao diện responsive mượt mà trên mọi thiết bị"
+    ],
+    floatingTags: ["Online Quiz", "Auto Scoring", "Interactive Web"],
+    mockupImg: "https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?w=900&q=80",
+    stats: "Quiz & Testing App",
+    demoUrl: "https://github.com/Joinney/web-quizz",
+    githubUrl: "https://github.com/Joinney/web-quizz"
+  },
+  {
+    id: 10,
     title: "Personal Glass Portfolio",
     subtitle: "Không gian trưng bày kỹ thuật cá nhân phong cách Glassmorphism",
     desc: "Trang cá nhân tương tác cao áp dụng chuẩn thiết kế Glassmorphism hiện đại, tích hợp WebGL Shader mô phỏng chất lỏng và đồ họa 3D xoay quanh nhân vật trung tâm.",
@@ -118,8 +198,8 @@ const projectList = [
     floatingTags: ["Glassmorphism", "WebGL Water", "Interactive 3D"],
     mockupImg: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=900&q=80",
     stats: "Creative Portfolio",
-    demoUrl: "https://github.com/Joinney",
-    githubUrl: "https://github.com/Joinney"
+    demoUrl: "https://github.com/Joinney/profilevdt",
+    githubUrl: "https://github.com/Joinney/profilevdt"
   }
 ];
 
@@ -276,7 +356,7 @@ export default function Projects() {
 
                 <div className="card-inner-glass">
                   <div className="card-thumb">
-                    <img src={item.mockupImg} alt={item.title} />
+                    <img src={item.mockupImg} alt={item.title} onError={(e) => { e.target.src = 'https://raw.githubusercontent.com/Joinney/Supermarket_niie/main/Screenshot/demimart.png'; }} />
                   </div>
                   <h4 className="project-title">{item.title}</h4>
                   <p className="project-desc">{item.desc}</p>

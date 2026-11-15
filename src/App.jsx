@@ -12,9 +12,32 @@ import Moments from './page/moments';
 
 import './style.css';
 
+const VALID_TABS = ['home', 'about', 'projects', 'tools', 'moments'];
+
+const TAB_TITLES = {
+  home: 'Võ Duy Toàn | Trang Chủ',
+  about: 'Võ Duy Toàn | Về Tôi',
+  projects: 'Võ Duy Toàn | Dự Án',
+  tools: 'Võ Duy Toàn | Công Cụ',
+  moments: 'Võ Duy Toàn | Khoảnh Khắc'
+};
+
+const getTabFromUrl = () => {
+  if (typeof window === 'undefined') return 'home';
+  // 1. Kiểm tra Hash (chuẩn SPA trên mọi server tĩnh như GitHub Pages, Vercel: #about, #projects...)
+  const hash = window.location.hash.replace(/^#\/?/, '').toLowerCase().trim();
+  if (VALID_TABS.includes(hash)) return hash;
+
+  // 2. Kiểm tra Pathname nếu có (ví dụ: /about)
+  const path = window.location.pathname.replace(/^\/|\/$/g, '').toLowerCase().trim();
+  if (VALID_TABS.includes(path)) return path;
+
+  return 'home';
+};
+
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('home');
+  const [activeTab, setActiveTabState] = useState(getTabFromUrl);
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
 
   useEffect(() => {
@@ -25,6 +48,40 @@ export default function App() {
     }
     localStorage.setItem('theme', theme);
   }, [theme]);
+
+  // Cập nhật Document Title theo trang hiện tại
+  useEffect(() => {
+    document.title = TAB_TITLES[activeTab] || 'Võ Duy Toàn | Profile';
+  }, [activeTab]);
+
+  // Lắng nghe sự kiện chuyển trang khi người dùng bấm Back / Forward hoặc đổi Hash
+  useEffect(() => {
+    const handleUrlChange = () => {
+      const currentTab = getTabFromUrl();
+      setActiveTabState(currentTab);
+    };
+
+    window.addEventListener('popstate', handleUrlChange);
+    window.addEventListener('hashchange', handleUrlChange);
+    return () => {
+      window.removeEventListener('popstate', handleUrlChange);
+      window.removeEventListener('hashchange', handleUrlChange);
+    };
+  }, []);
+
+  // Hàm chuyển tab đồng bộ URL trên thanh địa chỉ
+  const changeTab = (newTab, updateUrl = true) => {
+    const targetTab = VALID_TABS.includes(newTab) ? newTab : 'home';
+    setActiveTabState(targetTab);
+
+    if (updateUrl && typeof window !== 'undefined') {
+      const newHash = targetTab === 'home' ? '' : `#${targetTab}`;
+      const newUrl = window.location.pathname + (newHash ? newHash : '') + window.location.search;
+      if (window.location.hash !== newHash) {
+        window.history.pushState({ tab: targetTab }, '', newUrl);
+      }
+    }
+  };
 
   const toggleTheme = () => {
     setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
@@ -58,7 +115,7 @@ export default function App() {
       <div className="dashboard-container">
         <Header 
           activeTab={activeTab} 
-          setActiveTab={setActiveTab} 
+          setActiveTab={changeTab} 
           theme={theme} 
           toggleTheme={toggleTheme} 
         />
