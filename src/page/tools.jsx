@@ -8,7 +8,8 @@ export const toolsData = [
     category: "IMG",
     date: "18/12/2025",
     description: "Công cụ xóa vật thể và các chi tiết thừa trong ảnh thông minh bằng trí tuệ nhân tạo AI nhanh chóng và tiện lợi.",
-    image: "https://nbold.com/wp-content/uploads/2021/07/Untitled-design.png",
+    image: "/tools/xoa-vat-the.jpg",
+    fallbackImage: "https://lh3.googleusercontent.com/d/1cn870kcGS6ekSANcBR5aLsP98Jy0_-tI=w1000",
     link: "https://vdt-xoa-vat-the.netlify.app/",
     tags: ["IMG", "AI", "Editor"]
   },
@@ -18,7 +19,8 @@ export const toolsData = [
     category: "QR",
     date: "26/12/2025",
     description: "Công cụ tạo mã QR nghệ thuật cá nhân hóa độc đáo, dễ dàng & sáng tạo với nhiều màu sắc và phong cách.",
-    image: "https://res.cloudinary.com/dwyzszawl/image/upload/v1766746976/B%E1%BA%A3n_sao_c%E1%BB%A7a_B%E1%BA%A3n_sao_c%E1%BB%A7a_b%C3%ACa_fb_x9eunx.png",
+    image: "/tools/tao-qrcode.png",
+    fallbackImage: "https://lh3.googleusercontent.com/d/1WIRPpTgr27VZDOyV8b5wok7kSQD-rnqu=w1000",
     link: "https://vdt-qrcode.netlify.app/",
     tags: ["QR", "Generator", "Custom"]
   },
@@ -28,7 +30,8 @@ export const toolsData = [
     category: "Office",
     date: "08/08/2025",
     description: "Công Cụ Hỗ Trợ Tải và Kích Hoạt Bản Quyền Office Mọi Phiên Bản Nhanh Chóng và Hoàn Toàn Miễn Phí.",
-    image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&q=80",
+    image: "/tools/trien-khai-office.svg",
+    fallbackImage: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&q=80",
     link: "https://trien-khai-office.netlify.app/",
     tags: ["Office", "Windows", "Scripts"]
   },
@@ -38,7 +41,8 @@ export const toolsData = [
     category: "Art",
     date: "06/05/2025",
     description: "Công Cụ Chuyển Đổi Hình Ảnh Thành Tranh Vẽ Bằng Ngôn Ngữ Lập Trình Python Cực Kỳ Độc Đáo.",
-    image: "https://res.cloudinary.com/dwyzszawl/image/upload/v1746498425/image_zfg9q8.png",
+    image: "/tools/tao-anh-python.png",
+    fallbackImage: "https://lh3.googleusercontent.com/d/1nZpWDkWOY0Y5SHCVsG7jE8so_a4qD8gE=w1000",
     link: "https://tao-anh-python.netlify.app/",
     tags: ["Art", "Python", "Creative"]
   }
@@ -87,9 +91,9 @@ export default function Tools({ theme }) {
               {/* Avatar với vòng sáng online */}
               <div className="avatar-frame">
                 <img 
-                  src="/teo.jpeg" 
+                  src="/tools/teone.jpeg" 
                   alt="Võ Duy Toàn" 
-                  onError={(e) => { e.target.src = '/teoproject.png'; }}
+                  onError={(e) => { e.target.src = '/teo.jpeg'; }}
                   className="avatar-img"
                 />
                 <span className="online-beacon" title="Trực tuyến"></span>
@@ -238,7 +242,9 @@ export default function Tools({ theme }) {
                         src={tool.image} 
                         alt={tool.title}
                         onError={(e) => {
-                          e.target.src = 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&q=80';
+                          if (tool.fallbackImage && e.target.src !== tool.fallbackImage) {
+                            e.target.src = tool.fallbackImage;
+                          }
                         }}
                         className="tool-cover-img"
                       />
