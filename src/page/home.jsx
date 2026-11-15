@@ -574,6 +574,25 @@ export default function Home() {
   const [time, setTime] = useState('');
   const canvasRef = useRef(null);
 
+  // Bộ lọc, tìm kiếm và phân trang mã nguồn
+  const [sourceSearch, setSourceSearch] = useState('');
+  const [sourceCategory, setSourceCategory] = useState('ALL');
+  const [sourcePage, setSourcePage] = useState(1);
+  const itemsPerPage = 9;
+
+  const categories = ['ALL', '3D', 'HOATHINH', 'To Tinh', 'Card', 'Game', 'IOT'];
+
+  const filteredSources = sourceCodes.filter(item => {
+    const matchesSearch = item.title.toLowerCase().includes(sourceSearch.toLowerCase()) ||
+      item.lang.toLowerCase().includes(sourceSearch.toLowerCase()) ||
+      (item.category && item.category.toLowerCase().includes(sourceSearch.toLowerCase()));
+    const matchesCategory = sourceCategory === 'ALL' || item.category.toLowerCase() === sourceCategory.toLowerCase();
+    return matchesSearch && matchesCategory;
+  });
+
+  const totalPages = Math.max(1, Math.ceil(filteredSources.length / itemsPerPage));
+  const currentSources = filteredSources.slice((sourcePage - 1) * itemsPerPage, sourcePage * itemsPerPage);
+
   // Trạng thái điều khiển Nhân vật 3D Hologram
   const [modelAngle, setModelAngle] = useState(0);
   const [modelTiltX, setModelTiltX] = useState(0);
