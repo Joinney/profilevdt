@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import LoadingScreen from './components/LoadingScreen';
@@ -50,6 +50,31 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTabState] = useState(getTabFromUrl);
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
+  const [isPageSwitching, setIsPageSwitching] = useState(false);
+  const laserTimerRef = useRef(null);
+
+  const triggerLaser = () => {
+    setIsPageSwitching(false);
+    if (laserTimerRef.current) clearTimeout(laserTimerRef.current);
+    requestAnimationFrame(() => {
+      setIsPageSwitching(true);
+      laserTimerRef.current = setTimeout(() => {
+        setIsPageSwitching(false);
+      }, 550);
+    });
+  };
+
+  const triggerTransition = (callback) => {
+    triggerLaser();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (typeof document !== 'undefined' && document.startViewTransition) {
+      document.startViewTransition(() => {
+        callback();
+      });
+    } else {
+      callback();
+    }
+  };
 
   useEffect(() => {
     if (theme === 'light') {
@@ -69,7 +94,9 @@ export default function App() {
   useEffect(() => {
     const handleUrlChange = () => {
       const currentTab = getTabFromUrl();
-      setActiveTabState(currentTab);
+      triggerTransition(() => {
+        setActiveTabState(currentTab);
+      });
     };
 
     window.addEventListener('popstate', handleUrlChange);
@@ -77,34 +104,48 @@ export default function App() {
     return () => {
       window.removeEventListener('popstate', handleUrlChange);
       window.removeEventListener('hashchange', handleUrlChange);
+      if (laserTimerRef.current) clearTimeout(laserTimerRef.current);
     };
   }, []);
 
   // Hàm chuyển tab đồng bộ URL trên thanh địa chỉ
   const changeTab = (newTab, updateUrl = true) => {
     const targetTab = VALID_TABS.includes(newTab) ? newTab : 'home';
-    setActiveTabState(targetTab);
 
-    if (updateUrl && typeof window !== 'undefined') {
-      if (targetTab === 'home') {
-        // Xóa query param source khi quay về trang chủ
-        const params = new URLSearchParams(window.location.search);
-        params.delete('source');
-        params.delete('sourceId');
-        const qStr = params.toString();
-        const newUrl = window.location.pathname + (qStr ? `?${qStr}` : '');
-        window.history.pushState({ tab: 'home' }, '', newUrl);
-      } else if (targetTab === 'source-detail') {
-        // Không ghi đè URL nếu đang ở trang chi tiết
-      } else {
-        const newHash = `#${targetTab}`;
-        window.history.pushState({ tab: targetTab }, '', window.location.pathname + newHash);
+    triggerTransition(() => {
+      setActiveTabState(targetTab);
+
+      if (updateUrl && typeof window !== 'undefined') {
+        if (targetTab === 'home') {
+          // Xóa query param source khi quay về trang chủ
+          const params = new URLSearchParams(window.location.search);
+          params.delete('source');
+          params.delete('sourceId');
+          const qStr = params.toString();
+          const newUrl = window.location.pathname + (qStr ? `?${qStr}` : '');
+          window.history.pushState({ tab: 'home' }, '', newUrl);
+        } else if (targetTab === 'source-detail') {
+          // Không ghi đè URL nếu đang ở trang chi tiết
+        } else {
+          const newHash = `#${targetTab}`;
+          window.history.pushState({ tab: targetTab }, '', window.location.pathname + newHash);
+        }
       }
-    }
+    });
   };
 
   const toggleTheme = () => {
     setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
+  };
+
+  // Khóa duy nhất cho hiệu ứng chuyển động trang mượt mà
+  const getPageTransitionKey = () => {
+    if (activeTab === 'source-detail') {
+      const params = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
+      const sId = params.get('source') || params.get('sourceId') || 'detail';
+      return `source-detail-${sId}`;
+    }
+    return activeTab;
   };
 
   const renderPage = () => {
@@ -142,8 +183,14 @@ export default function App() {
           toggleTheme={toggleTheme} 
         />
         
-        <main style={{ minHeight: '80vh', padding: '20px 0' }}>
-          {renderPage()}
+        <main style={{ minHeight: '80vh', padding: '20px 0', position: 'relative' }}>
+          {/* Tia laser quét ngang đỉnh nội dung khi chuyển trang */}
+          <div className={`cyber-page-laser ${isPageSwitching ? 'active' : ''}`}></div>
+
+          {/* Lớp bọc hiệu ứng kính mờ & trượt mượt mà */}
+          <div key={getPageTransitionKey()} className="page-transition-wrapper">
+            {renderPage()}
+          </div>
         </main>
 
         {/* Truyền theme xuống Footer */}

@@ -212,3 +212,93 @@ body.light-mode .box .circle-overlay {
     --r: 16px;
   }
 }
+
+/* ========================================================= */
+/* 5. HIỆU ỨNG CHUYỂN TRANG (CYBER GLASS PAGE TRANSITION)    */
+/* ========================================================= */
+
+.page-transition-wrapper {
+  width: 100%;
+  animation: cyberPageEnter 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: transform, opacity, filter;
+}
+
+@keyframes cyberPageEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(16px) scale(0.99);
+    filter: blur(6px);
+  }
+  50% {
+    opacity: 0.85;
+    filter: blur(1.5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* Tia laser quét ngang đỉnh nội dung khi chuyển trang */
+.cyber-page-laser {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2.5px;
+  background: linear-gradient(
+    90deg, 
+    transparent 0%, 
+    var(--accent-color) 45%, 
+    #ffffff 75%, 
+    transparent 100%
+  );
+  box-shadow: 0 0 14px var(--accent-color), 0 0 28px var(--accent-glow);
+  opacity: 0;
+  transform: translateX(-100%);
+  pointer-events: none;
+  z-index: 999;
+}
+
+.cyber-page-laser.active {
+  animation: cyberLaserSweep 0.55s cubic-bezier(0.2, 0.8, 0.4, 1) forwards;
+}
+
+@keyframes cyberLaserSweep {
+  0% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  25% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+    transform: translateX(25%);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+/* Tối ưu hiệu ứng View Transitions API của trình duyệt */
+::view-transition-old(root) {
+  animation: cyberPageExit 0.22s cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+::view-transition-new(root) {
+  animation: cyberPageEnter 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes cyberPageExit {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.988);
+  }
+}
