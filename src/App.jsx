@@ -67,10 +67,17 @@ export default function App() {
   const triggerTransition = (callback) => {
     triggerLaser();
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    if (typeof document !== 'undefined' && document.startViewTransition) {
-      document.startViewTransition(() => {
+    if (typeof document !== 'undefined' && typeof document.startViewTransition === 'function') {
+      try {
+        const transition = document.startViewTransition(() => {
+          callback();
+        });
+        if (transition && transition.finished) {
+          transition.finished.catch(() => {});
+        }
+      } catch {
         callback();
-      });
+      }
     } else {
       callback();
     }

@@ -738,9 +738,10 @@ export default function Home() {
 
             <div className="grid-3x3">
               {currentSources.map((item, index) => (
-                <a 
+                <div 
                   key={item.id || index} 
-                  href={`?source=${item.id}`}
+                  role="link"
+                  tabIndex={0}
                   className="box code-card-glass" 
                   style={{ '--w': '100%', '--h': 'auto', '--r': '16px', '--tr': '15%', textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column', cursor: 'pointer' }}
                   onClick={(e) => {
@@ -751,6 +752,12 @@ export default function Home() {
                     e.preventDefault();
                     window.history.pushState({ sourceId: item.id }, '', `?source=${item.id}`);
                     window.dispatchEvent(new Event('popstate'));
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      window.history.pushState({ sourceId: item.id }, '', `?source=${item.id}`);
+                      window.dispatchEvent(new Event('popstate'));
+                    }
                   }}
                 >
                   <div className="circle-overlay"></div>
@@ -819,7 +826,7 @@ export default function Home() {
                       )}
                     </div>
                   </div>
-                </a>
+                </div>
               ))}
             </div>
 

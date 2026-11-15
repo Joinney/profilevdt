@@ -149,6 +149,10 @@ export default function SourceDetail({ theme, onBack }) {
                   poster={item.img}
                   src={item.video}
                   className="showcase-video"
+                  onError={() => {
+                    // Nếu video lỗi tải (ví dụ 401 hoặc link hạn chế), tự động chuyển sang hiển thị ảnh chụp màn hình
+                    setActiveMedia('image');
+                  }}
                 >
                   Trình duyệt của bạn không hỗ trợ phát video HTML5.
                 </video>
