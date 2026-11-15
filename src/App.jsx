@@ -162,7 +162,7 @@ export default function App() {
       case 'projects':
         return typeof Projects === 'function' ? <Projects /> : <div>Trang Dự Án đang cập nhật...</div>;
       case 'tools':
-        return typeof Tools === 'function' ? <Tools /> : <div>Trang Công Cụ đang cập nhật...</div>;
+        return typeof Tools === 'function' ? <Tools theme={theme} /> : <div>Trang Công Cụ đang cập nhật...</div>;
       case 'moments':
         return typeof Moments === 'function' ? <Moments theme={theme} /> : <div>Trang Khoảnh Khắc đang cập nhật...</div>;
       case 'source-detail':

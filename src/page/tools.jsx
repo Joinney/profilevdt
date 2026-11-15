@@ -1,631 +1,757 @@
 import React, { useState, useMemo } from 'react';
 
-const toolCategories = [
+// Danh sách dữ liệu công cụ chính xác từ voduytoan.netlify.app/congcu
+export const toolsData = [
   {
-    id: "frontend",
-    category: "Ngôn ngữ & Frontend",
-    icon: "fa-laptop-code",
-    tools: [
-      { name: "JavaScript / TypeScript", desc: "Ngôn ngữ phát triển logic web & ứng dụng", icon: "fab fa-js", color: "#f7df1e", level: "Thành thạo" },
-      { name: "React.js / Next.js", desc: "Xây dựng Single Page App & Server-Side Rendering", icon: "fab fa-react", color: "#61dafb", level: "Chuyên sâu" },
-      { name: "Tailwind CSS", desc: "Thiết kế UI tiện ích & giao diện Glassmorphism", icon: "fas fa-wind", color: "#38bdf8", level: "Thành thạo" },
-      { name: "React Native / Flutter", desc: "Lập trình ứng dụng di động đa nền tảng", icon: "fas fa-mobile-screen-button", color: "#45d3ff", level: "Khá" }
-    ]
+    id: 1,
+    title: "xóa ảnh vật thẻ",
+    category: "IMG",
+    date: "18/12/2025",
+    description: "Công cụ xóa vật thể và các chi tiết thừa trong ảnh thông minh bằng trí tuệ nhân tạo AI nhanh chóng và tiện lợi.",
+    image: "https://nbold.com/wp-content/uploads/2021/07/Untitled-design.png",
+    link: "https://vdt-xoa-vat-the.netlify.app/",
+    tags: ["IMG", "AI", "Editor"]
   },
   {
-    id: "backend",
-    category: "Backend & Cơ sở dữ liệu",
-    icon: "fa-server",
-    tools: [
-      { name: "Node.js / Express", desc: "Xây dựng RESTful API, WebSockets & Event-Driven", icon: "fab fa-node-js", color: "#22c55e", level: "Chuyên sâu" },
-      { name: "Go / Python / C#", desc: "Phát triển Microservices hiệu năng cao & Scripting", icon: "fas fa-code", color: "#06b6d4", level: "Khá" },
-      { name: "PostgreSQL & SQL Server", desc: "Hệ quản trị CSDL quan hệ, tối ưu truy vấn & Index", icon: "fas fa-database", color: "#3b82f6", level: "Thành thạo" },
-      { name: "MongoDB & Supabase", desc: "CSDL NoSQL phân tán & giải pháp Backend-as-a-Service", icon: "fas fa-leaf", color: "#10b981", level: "Thành thạo" },
-      { name: "Redis & RabbitMQ", desc: "Bộ nhớ đệm In-memory Caching & Message Broker", icon: "fas fa-bolt", color: "#ef4444", level: "Khá" }
-    ]
+    id: 2,
+    title: "Tạo Mã QR cho riêng bạn",
+    category: "QR",
+    date: "26/12/2025",
+    description: "Công cụ tạo mã QR nghệ thuật cá nhân hóa độc đáo, dễ dàng & sáng tạo với nhiều màu sắc và phong cách.",
+    image: "https://res.cloudinary.com/dwyzszawl/image/upload/v1766746976/B%E1%BA%A3n_sao_c%E1%BB%A7a_B%E1%BA%A3n_sao_c%E1%BB%A7a_b%C3%ACa_fb_x9eunx.png",
+    link: "https://vdt-qrcode.netlify.app/",
+    tags: ["QR", "Generator", "Custom"]
   },
   {
-    id: "devops",
-    category: "DevOps & Cloud Deployment",
-    icon: "fa-cloud",
-    tools: [
-      { name: "Docker & Docker Compose", desc: "Đóng gói Container & môi trường phát triển độc lập", icon: "fab fa-docker", color: "#0284c7", level: "Thành thạo" },
-      { name: "CI/CD & Git CLI", desc: "Tự động hóa luồng kiểm thử & triển khai GitHub", icon: "fab fa-git-alt", color: "#f97316", level: "Thành thạo" },
-      { name: "Vercel / Render / Cloudflare", desc: "Triển khai Serverless Functions, CDN & Edge Workers", icon: "fas fa-cloud-arrow-up", color: "#a855f7", level: "Thành thạo" }
-    ]
+    id: 3,
+    title: "Công Cụ Triển Khai Office",
+    category: "Office",
+    date: "08/08/2025",
+    description: "Công Cụ Hỗ Trợ Tải và Kích Hoạt Bản Quyền Office Mọi Phiên Bản Nhanh Chóng và Hoàn Toàn Miễn Phí.",
+    image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&q=80",
+    link: "https://trien-khai-office.netlify.app/",
+    tags: ["Office", "Windows", "Scripts"]
   },
   {
-    id: "game-ai",
-    category: "Game Dev, IoT & AI Tools",
-    icon: "fa-gamepad",
-    tools: [
-      { name: "Unity Engine & C#", desc: "Lập trình Game 2D đối kháng & Finite State Machine AI", icon: "fas fa-gamepad", color: "#e2e8f0", level: "Đam mê" },
-      { name: "ESP32 & IoT Microcontrollers", desc: "Phát triển hệ thống phần cứng cảm biến & điều khiển", icon: "fas fa-microchip", color: "#14b8a6", level: "Khá" },
-      { name: "VS Code & Claude Code", desc: "Môi trường lập trình chính & AI Assistant tăng tốc", icon: "fas fa-terminal", color: "#ec4899", level: "Hàng ngày" }
-    ]
+    id: 4,
+    title: "Công Cụ Vẽ Ảnh Python",
+    category: "Art",
+    date: "06/05/2025",
+    description: "Công Cụ Chuyển Đổi Hình Ảnh Thành Tranh Vẽ Bằng Ngôn Ngữ Lập Trình Python Cực Kỳ Độc Đáo.",
+    image: "https://res.cloudinary.com/dwyzszawl/image/upload/v1746498425/image_zfg9q8.png",
+    link: "https://tao-anh-python.netlify.app/",
+    tags: ["Art", "Python", "Creative"]
   }
 ];
 
-export default function Tools() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeCategory, setActiveCategory] = useState('all');
+export default function Tools({ theme }) {
+  const isLight = theme === 'light';
+  const [activeCategory, setActiveCategory] = useState('ALL');
 
-  // Lọc dữ liệu theo ô tìm kiếm và nhóm danh mục
-  const filteredCategories = useMemo(() => {
-    return toolCategories
-      .filter(cat => activeCategory === 'all' || cat.id === activeCategory)
-      .map(cat => ({
-        ...cat,
-        tools: cat.tools.filter(t => 
-          t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          t.desc.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-      }))
-      .filter(cat => cat.tools.length > 0);
-  }, [searchQuery, activeCategory]);
+  // Thống kê số lượng từng danh mục
+  const categories = useMemo(() => {
+    return [
+      { id: 'ALL', name: 'Tất cả', count: toolsData.length },
+      { id: 'Art', name: 'Art', count: toolsData.filter(t => t.category === 'Art').length },
+      { id: 'IMG', name: 'IMG', count: toolsData.filter(t => t.category === 'IMG').length },
+      { id: 'Office', name: 'Office', count: toolsData.filter(t => t.category === 'Office').length },
+      { id: 'QR', name: 'QR', count: toolsData.filter(t => t.category === 'QR').length }
+    ];
+  }, []);
+
+  // Lọc danh sách công cụ theo danh mục đã chọn
+  const filteredTools = useMemo(() => {
+    if (activeCategory === 'ALL') return toolsData;
+    return toolsData.filter(t => t.category.toLowerCase() === activeCategory.toLowerCase());
+  }, [activeCategory]);
+
+  const handleOpenTool = (url) => {
+    if (url) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+  };
 
   return (
-    <div className="tools-page-wrapper">
-      <div className="box source-section" style={{ '--w': '100%', '--h': 'auto', '--r': '26px', padding: '1.8rem' }}>
-        <div className="circle-overlay"></div>
-
-        {/* Thanh Header trang Công Cụ */}
-        <div className="tools-top-bar">
-          <div className="source-title">CÔNG CỤ & CÔNG NGHỆ SỬ DỤNG</div>
-
-          {/* Ô tìm kiếm tương tác */}
-          <div className="box search-mini-box tools-search-input" style={{ '--w': '240px', '--h': '38px', '--r': '9999px' }}>
+    <div className="tools-page-container">
+      {/* KHUNG BỐ CỤC 2 CỘT (SIDEBAR 3 CỘT + NỘI DUNG 9 CỘT) */}
+      <div className="tools-layout-grid">
+        {/* ========================================================= */}
+        {/* CỘT TRÁI: SIDEBAR                                        */}
+        {/* ========================================================= */}
+        <aside className="tools-sidebar">
+          {/* 1. THẺ PROFILE TEO BUILDING CODE */}
+          <div className="box tools-profile-card" style={{ '--w': '100%', '--h': 'auto', '--r': '24px', '--tr': '18%' }}>
             <div className="circle-overlay"></div>
-            <i className="fas fa-search" style={{ color: '#64748b', fontSize: '13px', zIndex: 10, marginRight: '8px' }}></i>
-            <input 
-              type="text" 
-              placeholder="Tìm công cụ, công nghệ..." 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            {searchQuery && (
-              <i 
-                className="fas fa-times" 
-                style={{ color: '#64748b', fontSize: '12px', zIndex: 10, cursor: 'pointer' }}
-                onClick={() => setSearchQuery('')}
-              ></i>
-            )}
-          </div>
-        </div>
 
-        {/* Bộ lọc theo nhóm danh mục */}
-        <div className="tools-filter-pills">
-          <button 
-            className={`box tool-filter-btn ${activeCategory === 'all' ? 'active' : ''}`}
-            style={{ '--w': 'auto', '--h': '36px', '--r': '9999px' }}
-            onClick={() => setActiveCategory('all')}
-          >
-            <div className="circle-overlay"></div>
-            <i className="fas fa-layer-group"></i>
-            <span>Tất cả ({toolCategories.reduce((acc, c) => acc + c.tools.length, 0)})</span>
-          </button>
-          {toolCategories.map(cat => (
-            <button 
-              key={cat.id}
-              className={`box tool-filter-btn ${activeCategory === cat.id ? 'active' : ''}`}
-              style={{ '--w': 'auto', '--h': '36px', '--r': '9999px' }}
-              onClick={() => setActiveCategory(cat.id)}
-            >
-              <div className="circle-overlay"></div>
-              <i className={`fas ${cat.icon}`}></i>
-              <span>{cat.category}</span>
-            </button>
-          ))}
-        </div>
+            <div className="profile-card-content">
+              {/* Avatar với vòng sáng online */}
+              <div className="avatar-frame">
+                <img 
+                  src="/teo.jpeg" 
+                  alt="Võ Duy Toàn" 
+                  onError={(e) => { e.target.src = '/teoproject.png'; }}
+                  className="avatar-img"
+                />
+                <span className="online-beacon" title="Trực tuyến"></span>
+              </div>
 
-        {/* Danh sách hiển thị theo từng nhóm */}
-        <div className="tools-groups-list">
-          {filteredCategories.length > 0 ? (
-            filteredCategories.map((cat, idx) => (
-              <div key={idx} className="tool-category-section">
-                <div className="tool-category-heading">
-                  <div className="tool-heading-icon">
-                    <i className={`fas ${cat.icon}`}></i>
-                  </div>
-                  <h3>{cat.category}</h3>
-                  <span className="tool-category-count">{cat.tools.length} công cụ</span>
+              {/* Tên & Huy hiệu */}
+              <h2 className="brand-title">Teo Building Code</h2>
+              <span className="special-badge">
+                <i className="fas fa-cube"></i> Các Công Cụ Đặc Sắc
+              </span>
+
+              {/* Liên kết mạng xã hội */}
+              <div className="social-links-row">
+                <a href="https://www.tiktok.com/@teohoclaptrinh" target="_blank" rel="noreferrer" className="social-pill" title="TikTok">
+                  <i className="fab fa-tiktok"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/zvoduytoanz/" target="_blank" rel="noreferrer" className="social-pill" title="LinkedIn">
+                  <i className="fab fa-linkedin-in"></i>
+                </a>
+                <a href="https://github.com/Joinney" target="_blank" rel="noreferrer" className="social-pill" title="GitHub">
+                  <i className="fab fa-github"></i>
+                </a>
+              </div>
+
+              {/* Khối thống kê 3 cột */}
+              <div className="stats-trio-row">
+                <div className="stat-unit">
+                  <span className="stat-number">{toolsData.length}</span>
+                  <span className="stat-label">Công cụ</span>
                 </div>
-
-                <div className="tools-cards-grid">
-                  {cat.tools.map((t, i) => (
-                    <div 
-                      key={i} 
-                      className="box tool-card-glass" 
-                      style={{ '--w': '100%', '--h': 'auto', '--r': '18px', '--tr': '18%' }}
-                    >
-                      <div className="circle-overlay"></div>
-                      <div className="tool-card-content">
-                        <div className="tool-icon-wrap" style={{ color: t.color }}>
-                          <i className={t.icon}></i>
-                        </div>
-                        <div className="tool-details">
-                          <div className="tool-name-row">
-                            <span className="tool-title-text">{t.name}</span>
-                            <span className="tool-level-badge">{t.level}</span>
-                          </div>
-                          <p className="tool-desc-text">{t.desc}</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                <div className="stat-unit">
+                  <span className="stat-number">4</span>
+                  <span className="stat-label">Danh mục</span>
+                </div>
+                <div className="stat-unit">
+                  <span className="stat-number">89</span>
+                  <span className="stat-label">Tags</span>
                 </div>
               </div>
-            ))
-          ) : (
-            <div className="tools-empty-state">
-              <i className="fas fa-search"></i>
-              <p>Không tìm thấy công cụ nào phù hợp với từ khóa "<strong>{searchQuery}</strong>"</p>
             </div>
-          )}
-        </div>
+          </div>
+
+          {/* 2. THẺ BỘ LỌC DANH MỤC */}
+          <div className="box tools-filter-card" style={{ '--w': '100%', '--h': 'auto', '--r': '24px', '--tr': '20%' }}>
+            <div className="circle-overlay"></div>
+
+            <div className="filter-card-content">
+              <h3 className="filter-card-heading">
+                <i className="fas fa-layer-group"></i> Bộ lọc danh mục
+              </h3>
+
+              <div className="filter-buttons-list">
+                {categories.map((cat) => {
+                  const isActive = activeCategory === cat.id;
+                  return (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      onClick={() => setActiveCategory(cat.id)}
+                      className={`filter-nav-btn ${isActive ? 'active' : ''}`}
+                    >
+                      <span className="cat-name">{cat.name}</span>
+                      <span className="cat-count-badge">{cat.count}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        {/* ========================================================= */}
+        {/* CỘT PHẢI: DANH SÁCH CÔNG CỤ (ALTERNATING SLANT CARDS)     */}
+        {/* ========================================================= */}
+        <main className="tools-main-column">
+          {/* Header trên danh sách */}
+          <div className="tools-section-header">
+            <h1 className="tools-section-title">
+              {activeCategory === 'ALL' ? 'Tất cả công cụ' : `Danh mục: ${activeCategory}`}
+            </h1>
+            <span className="tools-last-updated">
+              <i className="fas fa-clock"></i> Cập nhật lần cuối: 10/01/2026
+            </span>
+          </div>
+
+          {/* Danh sách thẻ công cụ */}
+          <div className="tools-cards-stream">
+            {filteredTools.map((tool, index) => {
+              const isEven = index % 2 === 0;
+
+              return (
+                <div
+                  key={tool.id}
+                  className={`box slant-tool-card ${isEven ? 'slant-even' : 'slant-odd'}`}
+                  style={{ '--w': '100%', '--h': 'auto', '--r': '22px', '--tr': '15%' }}
+                  onClick={() => handleOpenTool(tool.link)}
+                >
+                  <div className="circle-overlay"></div>
+
+                  <div className="slant-card-content">
+                    {/* KHỐI NỘI DUNG VĂN BẢN */}
+                    <div className="card-text-zone">
+                      <div className="card-top-meta">
+                        <span className="category-pill">{tool.category}</span>
+                        <span className="date-text">
+                          <i className="far fa-calendar-alt"></i> {tool.date}
+                        </span>
+                      </div>
+
+                      <h2 className="tool-title" title={tool.title}>
+                        {tool.title}
+                      </h2>
+
+                      <p className="tool-desc">
+                        {tool.description}
+                      </p>
+
+                      {/* Danh sách tags */}
+                      <div className="tool-tags-cluster">
+                        {tool.tags.map((tag, tIdx) => (
+                          <span key={tIdx} className="tool-tag-chip">
+                            #{tag}
+                          </span>
+                        ))}
+                      </div>
+
+                      {/* Nút hành động */}
+                      <div className="card-action-bar">
+                        <button 
+                          type="button" 
+                          className="open-tool-btn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleOpenTool(tool.link);
+                          }}
+                        >
+                          <span>more...</span>
+                          <i className="fas fa-arrow-right"></i>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* KHỐI HÌNH ẢNH CẮT VÁT (CLIP SLANT) */}
+                    <div className={`card-media-zone ${isEven ? 'clip-slant-left' : 'clip-slant-right'}`}>
+                      <img 
+                        src={tool.image} 
+                        alt={tool.title}
+                        onError={(e) => {
+                          e.target.src = 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&q=80';
+                        }}
+                        className="tool-cover-img"
+                      />
+                      <div className="media-glass-shine"></div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </main>
       </div>
 
+      {/* STYLES RIÊNG BIỆT DÀNH CHO TRANG CÔNG CỤ */}
       <style>{`
-        /* ========================================================= */
-        /* HỆ THỐNG KÍNH THỰC THỂ (GLASS SURFACE PRIMITIVE)          */
-        /* ========================================================= */
-        .box {
-          --w: 100%;
-          --h: auto;
-          --r: 28px;
-          --tr: 25%;
-          z-index: 10;
-          position: relative;
-          width: var(--w);
-          height: var(--h);
+        .tools-page-container {
+          width: 100%;
+          max-width: 1440px;
+          margin: 0 auto;
+          padding: 1rem 0.5rem 3rem 0.5rem;
+        }
+
+        .tools-layout-grid {
+          display: grid;
+          grid-template-columns: 320px 1fr;
+          gap: 2rem;
+          align-items: start;
+        }
+
+        /* ------------------------------------------------------------- */
+        /* CỘT TRÁI: SIDEBAR                                             */
+        /* ------------------------------------------------------------- */
+        .tools-sidebar {
           display: flex;
-          justify-content: center;
+          flex-direction: column;
+          gap: 1.5rem;
+          position: sticky;
+          top: 80px;
+        }
+
+        /* Thẻ Profile */
+        .tools-profile-card {
+          padding: 1.8rem 1.4rem !important;
+        }
+
+        .profile-card-content {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
           align-items: center;
-          border-radius: var(--r);
-          border: 1px double rgba(255, 255, 255, 0.16);
-
-          box-shadow:
-              inset 2px -2px 1px -1px rgba(255, 255, 255, 0.5),
-              inset -2px 2px 1px -1px rgba(255, 255, 255, 0.5),
-              inset 6px -6px 2px -6px rgba(255, 255, 255, 0.3),
-              inset -6px 6px 2px -6px rgba(255, 255, 255, 0.3),
-              inset 0 0 3px rgba(0, 0, 0, 0.95),
-              0 12px 35px rgba(0, 0, 0, 0.7);
-
-          background: rgba(10, 16, 30, 0.82);
-          backdrop-filter: blur(16px);
-          -webkit-backdrop-filter: blur(16px);
-          overflow: hidden;
-          transition: transform 0.2s ease, filter 0.2s ease, background-color 0.2s ease;
+          text-align: center;
+          z-index: 10;
         }
 
-        .box svg {
-          filter: drop-shadow(0 20px 3px rgba(0, 0, 0, 0.3));
+        .avatar-frame {
+          position: relative;
+          width: 96px;
+          height: 96px;
+          border-radius: 50%;
+          padding: 4px;
+          border: 2px solid rgba(56, 189, 248, 0.4);
+          box-shadow: 0 0 20px var(--accent-glow);
+          margin-bottom: 1rem;
         }
 
-        .box:before {
-          content: '';
-          position: absolute;
-          z-index: 1;
-          top: 35%;
-          left: 50%;
-          transform: translateX(-50%);
-          width: calc(100% - 16px);
-          height: calc(100% - 16px);
-          border-radius: var(--r);
-          border: 1px solid rgba(255, 255, 255, 0.18);
-          filter: blur(8px);
-          pointer-events: none;
-        }
-
-        .box:after {
-          z-index: 1;
-          content: '';
-          position: absolute;
-          inset: 0;
+        .avatar-img {
           width: 100%;
           height: 100%;
-          border-radius: var(--r);
-          filter: blur(2px);
-          background: linear-gradient(
-              45deg,
-              rgba(255, 255, 255, 0.22) 0%,
-              transparent var(--tr),
-              transparent calc(100% - var(--tr)),
-              rgba(255, 255, 255, 0.15) 100%
-          );
-          pointer-events: none;
+          border-radius: 50%;
+          object-fit: cover;
+          display: block;
         }
 
-        .box .circle-overlay {
+        .online-beacon {
           position: absolute;
-          z-index: 1;
-          inset: 4px;
-          border: 1px solid rgba(255, 255, 255, 0.18);
-          border-radius: var(--r);
-          filter: blur(1px);
-          pointer-events: none;
+          bottom: 3px;
+          right: 3px;
+          width: 15px;
+          height: 15px;
+          background: #10b981;
+          border: 2px solid #0f172a;
+          border-radius: 50%;
+          box-shadow: 0 0 10px #10b981;
+          animation: beaconPulse 2s infinite ease-in-out;
         }
 
-        .tools-page-wrapper {
-          width: 100%;
+        @keyframes beaconPulse {
+          0%, 100% { transform: scale(1); opacity: 1; }
+          50% { transform: scale(1.2); opacity: 0.75; }
         }
 
-        /* Khung Section Kính */
-        .source-section {
-          width: 100% !important;
-          padding: 2rem !important;
-          display: flex;
-          flex-direction: column;
-          gap: 1.5rem !important;
-          cursor: default;
+        .brand-title {
+          font-size: 1.3rem;
+          font-weight: 800;
+          color: var(--text-heading);
+          margin: 0 0 0.4rem 0;
         }
 
-        .source-title {
-          font-size: 1.25rem;
-          font-weight: 900;
-          color: #fff;
-          display: flex;
+        .special-badge {
+          display: inline-flex;
           align-items: center;
-          gap: 0.6rem;
-          letter-spacing: 0.5px;
-        }
-
-        .source-title:before {
-          content: '';
-          width: 4px;
-          height: 22px;
-          background: #38bdf8;
-          border-radius: 2px;
-        }
-
-        .search-mini-box {
-          width: 250px !important;
-          height: 38px !important;
-          padding: 0 1rem;
-          display: flex;
-          align-items: center;
-        }
-
-        .search-mini-box input {
-          background: transparent;
-          border: none;
-          outline: none;
-          font-size: 0.85rem;
-          width: 100%;
-          color: #fff;
-          z-index: 10;
-        }
-
-        /* Top Bar */
-        .tools-top-bar {
-          position: relative;
-          z-index: 10;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          width: 100%;
-          gap: 1rem;
-          flex-wrap: wrap;
-          margin-bottom: 0.5rem;
-        }
-
-        /* Filter Pills */
-        .tools-filter-pills {
-          position: relative;
-          z-index: 10;
-          display: flex;
-          gap: 0.6rem;
-          overflow-x: auto;
-          padding-bottom: 4px;
-          margin-bottom: 1.8rem;
-          scrollbar-width: none;
-        }
-
-        .tools-filter-pills::-webkit-scrollbar {
-          display: none;
-        }
-
-        .tool-filter-btn {
-          padding: 0 1.1rem;
-          font-size: 0.8rem;
+          gap: 6px;
+          font-size: 0.75rem;
           font-weight: 700;
-          color: #94a3b8;
-          gap: 0.5rem;
-          flex-shrink: 0;
-          cursor: pointer;
-        }
-        .tool-filter-btn i, .tool-filter-btn span { z-index: 10; }
-
-        .tool-filter-btn:hover {
-          color: #ffffff;
-          filter: brightness(1.08);
-          transform: translateY(-2px);
-        }
-
-        .tool-filter-btn.active {
-          color: #ffffff !important;
-          border-color: rgba(56, 189, 248, 0.5) !important;
-          background: rgba(56, 189, 248, 0.16) !important;
-        }
-
-        /* Nhóm danh mục */
-        .tools-groups-list {
-          position: relative;
-          z-index: 10;
-          display: flex;
-          flex-direction: column;
-          gap: 2rem;
-          width: 100%;
-        }
-
-        .tool-category-section {
-          display: flex;
-          flex-direction: column;
-          gap: 1rem;
-        }
-
-        .tool-category-heading {
-          display: flex;
-          align-items: center;
-          gap: 0.7rem;
-        }
-
-        .tool-heading-icon {
-          width: 32px;
-          height: 32px;
-          border-radius: 8px;
+          color: var(--accent-color);
           background: rgba(56, 189, 248, 0.12);
-          border: 1px solid rgba(56, 189, 248, 0.25);
+          border: 1px solid rgba(56, 189, 248, 0.3);
+          border-radius: 9999px;
+          padding: 4px 12px;
+          margin-bottom: 1.2rem;
+        }
+
+        .social-links-row {
+          display: flex;
+          gap: 0.75rem;
+          margin-bottom: 1.4rem;
+        }
+
+        .social-pill {
+          width: 38px;
+          height: 38px;
+          border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
-          color: #38bdf8;
-          font-size: 0.9rem;
+          color: var(--text-muted);
+          background: var(--chip-bg);
+          border: 1px solid var(--chip-border);
+          transition: transform 0.2s, color 0.2s, border-color 0.2s;
         }
 
-        .tool-category-heading h3 {
-          font-size: 1.05rem;
-          font-weight: 800;
-          color: #f1f5f9;
-          margin: 0;
+        .social-pill:hover {
+          transform: translateY(-3px);
+          color: var(--accent-color);
+          border-color: var(--accent-color);
+          box-shadow: 0 4px 12px var(--accent-glow);
+        }
+
+        /* Khối thống kê */
+        .stats-trio-row {
+          width: 100%;
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 0.5rem;
+          padding-top: 1.2rem;
+          border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        body.light-mode .stats-trio-row {
+          border-top: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .stat-unit {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.2rem;
+        }
+
+        .stat-number {
+          font-size: 1.25rem;
+          font-weight: 900;
+          color: var(--text-heading);
+        }
+
+        .stat-label {
+          font-size: 0.72rem;
+          color: var(--text-muted);
+          text-transform: uppercase;
+          font-weight: 600;
           letter-spacing: 0.3px;
         }
 
-        .tool-category-count {
-          font-size: 0.72rem;
-          color: #64748b;
+        /* Thẻ Bộ Lọc */
+        .tools-filter-card {
+          padding: 1.4rem !important;
+        }
+
+        .filter-card-content {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+          z-index: 10;
+        }
+
+        .filter-card-heading {
+          font-size: 1.05rem;
+          font-weight: 800;
+          color: var(--text-heading);
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          margin: 0;
+        }
+
+        .filter-card-heading i {
+          color: var(--accent-color);
+        }
+
+        .filter-buttons-list {
+          display: flex;
+          flex-direction: column;
+          gap: 0.45rem;
+        }
+
+        .filter-nav-btn {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0.65rem 1rem;
+          border-radius: 12px;
+          background: transparent;
+          border: 1px solid transparent;
+          color: var(--text-muted);
+          font-size: 0.88rem;
           font-weight: 600;
+          cursor: pointer;
+          transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s;
+        }
+
+        .filter-nav-btn:hover {
           background: rgba(255, 255, 255, 0.05);
+          color: var(--text-heading);
+          transform: translateX(3px);
+        }
+
+        body.light-mode .filter-nav-btn:hover {
+          background: rgba(0, 0, 0, 0.05);
+        }
+
+        .filter-nav-btn.active {
+          background: rgba(56, 189, 248, 0.16);
+          color: var(--accent-color);
+          border: 1px solid rgba(56, 189, 248, 0.35);
+          font-weight: 800;
+        }
+
+        body.light-mode .filter-nav-btn.active {
+          background: rgba(234, 88, 12, 0.14);
+          color: #ea580c;
+          border-color: rgba(234, 88, 12, 0.35);
+        }
+
+        .cat-count-badge {
+          font-size: 0.72rem;
           padding: 2px 8px;
           border-radius: 9999px;
+          background: rgba(255, 255, 255, 0.08);
+          border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Lưới thẻ công cụ */
-        .tools-cards-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-          gap: 1.1rem;
-          width: 100%;
-        }
-
-        .tool-card-glass {
-          padding: 1.1rem !important;
-          cursor: default;
-          justify-content: flex-start !important;
-          align-items: flex-start !important;
-          transition: transform 0.2s ease, filter 0.2s ease, border-color 0.2s ease;
-        }
-
-        .tool-card-glass:hover {
-          transform: translateY(-3px);
-          filter: brightness(1.1);
-          border-color: rgba(56, 189, 248, 0.4) !important;
-        }
-
-        .tool-card-content {
-          position: relative;
-          z-index: 10;
-          display: flex;
-          align-items: flex-start;
-          gap: 1rem;
-          width: 100%;
-        }
-
-        .tool-icon-wrap {
-          font-size: 1.85rem;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 44px;
-          height: 44px;
-          flex-shrink: 0;
-          background: rgba(255, 255, 255, 0.04);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: 12px;
-        }
-
-        .tool-details {
-          flex: 1;
+        /* ------------------------------------------------------------- */
+        /* CỘT PHẢI: NỘI DUNG CHÍNH                                      */
+        /* ------------------------------------------------------------- */
+        .tools-main-column {
           display: flex;
           flex-direction: column;
-          gap: 0.3rem;
-          overflow: hidden;
+          gap: 1.5rem;
         }
 
-        .tool-name-row {
+        .tools-section-header {
           display: flex;
+          align-items: center;
           justify-content: space-between;
-          align-items: center;
-          gap: 0.4rem;
+          flex-wrap: wrap;
+          gap: 0.8rem;
+          padding-bottom: 0.5rem;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        .tool-title-text {
-          font-size: 0.95rem;
-          font-weight: 700;
-          color: #ffffff;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
+        body.light-mode .tools-section-header {
+          border-bottom: 1px solid rgba(0, 0, 0, 0.08);
         }
 
-        .tool-level-badge {
-          font-size: 0.65rem;
-          font-weight: 700;
-          color: #38bdf8;
-          background: rgba(56, 189, 248, 0.12);
-          border: 1px solid rgba(56, 189, 248, 0.3);
-          padding: 2px 7px;
-          border-radius: 6px;
-          flex-shrink: 0;
-        }
-
-        .tool-desc-text {
-          font-size: 0.78rem;
-          line-height: 1.45;
-          color: #94a3b8;
+        .tools-section-title {
+          font-size: 1.8rem;
+          font-weight: 900;
+          color: var(--text-heading);
           margin: 0;
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
+          letter-spacing: -0.5px;
         }
 
-        /* Empty State */
-        .tools-empty-state {
+        .tools-last-updated {
+          font-size: 0.82rem;
+          color: var(--text-muted);
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+
+        .tools-cards-stream {
           display: flex;
           flex-direction: column;
-          align-items: center;
+          gap: 1.6rem;
+        }
+
+        /* Thẻ Công Cụ Đan Xen Slant Card */
+        .slant-tool-card {
+          padding: 0 !important;
+          cursor: pointer;
+          overflow: hidden;
+          transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+        }
+
+        .slant-tool-card:hover {
+          transform: translateY(-4px) scale(1.008);
+          box-shadow: 0 16px 36px var(--accent-glow) !important;
+        }
+
+        .slant-card-content {
+          width: 100%;
+          display: flex;
+          min-height: 240px;
+          z-index: 10;
+        }
+
+        /* Cấu trúc đảo chiều Even vs Odd */
+        .slant-even .slant-card-content {
+          flex-direction: row;
+        }
+
+        .slant-odd .slant-card-content {
+          flex-direction: row-reverse;
+        }
+
+        /* Phần Text */
+        .card-text-zone {
+          flex: 1.2;
+          padding: 1.8rem 2rem;
+          display: flex;
+          flex-direction: column;
           justify-content: center;
-          padding: 3rem 1rem;
-          gap: 1rem;
-          color: #64748b;
+          gap: 0.75rem;
+          z-index: 15;
         }
 
-        .tools-empty-state i {
-          font-size: 2.5rem;
-          color: #38bdf8;
-          opacity: 0.6;
+        .card-top-meta {
+          display: flex;
+          align-items: center;
+          gap: 0.8rem;
         }
 
-        .tools-empty-state p {
-          font-size: 0.92rem;
-          color: #94a3b8;
+        .category-pill {
+          background: rgba(56, 189, 248, 0.15);
+          color: var(--accent-color);
+          border: 1px solid rgba(56, 189, 248, 0.35);
+          border-radius: 9999px;
+          padding: 3px 10px;
+          font-size: 0.72rem;
+          font-weight: 800;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        body.light-mode .category-pill {
+          background: rgba(234, 88, 12, 0.12);
+          color: #ea580c;
+          border-color: rgba(234, 88, 12, 0.35);
+        }
+
+        .date-text {
+          font-size: 0.78rem;
+          color: var(--text-muted);
+          display: flex;
+          align-items: center;
+          gap: 5px;
+        }
+
+        .tool-title {
+          font-size: 1.35rem;
+          font-weight: 800;
+          color: var(--text-heading);
+          margin: 0;
+          line-height: 1.3;
+        }
+
+        .tool-desc {
+          font-size: 0.88rem;
+          color: var(--text-body);
+          line-height: 1.5;
           margin: 0;
         }
 
-        /* ========================================================= */
-        /* LIGHT MODE CỦA KÍNH THỰC THỂ                              */
-        /* ========================================================= */
-        body.light-mode .box {
-          border: 1px double rgba(51, 51, 51, 0.08) !important;
-          box-shadow:
-              inset 2px -2px 1px -1px rgba(255, 255, 255, 0.9),
-              inset -2px 2px 1px -1px rgba(255, 255, 255, 0.9),
-              inset 6px -6px 1px -6px rgba(255, 255, 255, 0.55),
-              inset -6px 6px 1px -6px rgba(255, 255, 255, 0.55),
-              inset 0 0 2px rgba(0, 0, 0, 0.8),
-              0 4px 8px rgba(0, 0, 0, 0.2) !important;
-          background: rgba(255, 255, 255, 0.04) !important;
-          backdrop-filter: blur(2px) !important;
-          -webkit-backdrop-filter: blur(2px) !important;
+        .tool-tags-cluster {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.4rem;
+          margin-top: 0.2rem;
         }
 
-        body.light-mode .box:before {
-          border: 1px solid rgba(0, 0, 0, 0.9) !important;
-          filter: blur(8px) !important;
+        .tool-tag-chip {
+          font-size: 0.72rem;
+          font-weight: 600;
+          color: var(--text-muted);
+          background: var(--chip-bg);
+          border: 1px solid var(--chip-border);
+          padding: 2px 8px;
+          border-radius: 6px;
         }
 
-        body.light-mode .box:after {
-          filter: blur(3px) !important;
-          background: linear-gradient(
-              45deg,
-              rgba(255, 255, 255, 0.8) 0%,
-              transparent var(--tr),
-              transparent calc(100% - var(--tr)),
-              rgba(255, 255, 255, 0.8) 100%
-          ) !important;
+        .card-action-bar {
+          margin-top: 0.5rem;
         }
 
-        body.light-mode .box .circle-overlay {
-          border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        .open-tool-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 6px 16px;
+          border-radius: 8px;
+          font-size: 0.8rem;
+          font-weight: 700;
+          color: var(--text-heading);
+          background: rgba(255, 255, 255, 0.08);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          cursor: pointer;
+          transition: background 0.2s, color 0.2s, transform 0.2s;
         }
 
-        body.light-mode .source-title,
-        body.light-mode .tool-category-heading h3,
-        body.light-mode .tool-title-text,
-        body.light-mode .search-mini-box input {
-          color: #0f172a !important;
-          filter: drop-shadow(0 20px 3px rgba(102, 102, 102, 0.15));
+        body.light-mode .open-tool-btn {
+          background: rgba(0, 0, 0, 0.05);
+          border: 1px solid rgba(0, 0, 0, 0.12);
         }
 
-        body.light-mode .source-title:before {
-          background: #ea580c !important;
-          box-shadow: 0 0 8px #ea580c !important;
+        .open-tool-btn:hover {
+          background: var(--accent-color);
+          color: #ffffff;
+          border-color: var(--accent-color);
+          transform: translateX(3px);
         }
 
-        body.light-mode .search-mini-box input::placeholder {
-          color: #94a3b8 !important;
+        /* Phần Media Cắt Vát */
+        .card-media-zone {
+          flex: 1;
+          position: relative;
+          overflow: hidden;
+          background: #000000;
         }
 
-        body.light-mode .tool-desc-text {
-          color: #334155 !important;
+        .tool-cover-img {
+          width: 100%;
+          height: 100%;
+          min-height: 240px;
+          object-fit: cover;
+          display: block;
+          transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        body.light-mode .tool-category-count {
-          color: #64748b !important;
-          background: rgba(0, 0, 0, 0.04) !important;
+        .slant-tool-card:hover .tool-cover-img {
+          transform: scale(1.08);
         }
 
-        body.light-mode .tool-filter-btn {
-          color: #64748b !important;
-        }
-        body.light-mode .tool-filter-btn:hover {
-          color: #0f172a !important;
-        }
-        body.light-mode .tool-filter-btn.active {
-          color: #ea580c !important;
-          border-color: rgba(234, 88, 12, 0.5) !important;
-          background: rgba(234, 88, 12, 0.12) !important;
-        }
-        body.light-mode .tool-filter-btn.active i,
-        body.light-mode .tool-filter-btn.active span {
-          color: #ea580c !important;
+        .media-glass-shine {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, transparent 60%);
+          pointer-events: none;
         }
 
-        body.light-mode .tool-heading-icon {
-          background: rgba(234, 88, 12, 0.12) !important;
-          border-color: rgba(234, 88, 12, 0.35) !important;
-          color: #ea580c !important;
-        }
-
-        body.light-mode .tool-level-badge {
-          color: #ea580c !important;
-          background: rgba(234, 88, 12, 0.12) !important;
-          border-color: rgba(234, 88, 12, 0.35) !important;
-        }
-
-        body.light-mode .tool-icon-wrap {
-          background: rgba(0, 0, 0, 0.03);
-          border-color: rgba(0, 0, 0, 0.08);
-        }
-
-        /* RESPONSIVE */
-        @media (max-width: 640px) {
-          .tools-top-bar {
-            flex-direction: column;
-            align-items: stretch;
+        /* Clip path vát chéo trên màn hình Desktop */
+        @media (min-width: 769px) {
+          .clip-slant-left {
+            clip-path: polygon(12% 0, 100% 0, 100% 100%, 0% 100%);
+            margin-left: -5%;
           }
-          .tools-search-input {
-            width: 100% !important;
+
+          .clip-slant-right {
+            clip-path: polygon(0 0, 100% 0, 88% 100%, 0% 100%);
+            margin-right: -5%;
           }
-          .tools-cards-grid {
+        }
+
+        /* ------------------------------------------------------------- */
+        /* RESPONSIVE MOBILE & TABLET                                    */
+        /* ------------------------------------------------------------- */
+        @media (max-width: 1024px) {
+          .tools-layout-grid {
+            grid-template-columns: 280px 1fr;
+            gap: 1.5rem;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .tools-layout-grid {
             grid-template-columns: 1fr;
-            gap: 0.8rem;
+            gap: 2rem;
           }
-          .source-section {
-            padding: 1.1rem !important;
-            gap: 1rem !important;
+
+          .tools-sidebar {
+            position: static;
+          }
+
+          .slant-card-content,
+          .slant-even .slant-card-content,
+          .slant-odd .slant-card-content {
+            flex-direction: column-reverse !important;
+          }
+
+          .card-media-zone {
+            width: 100%;
+            height: 200px;
+            clip-path: none !important;
+            margin: 0 !important;
+          }
+
+          .card-text-zone {
+            padding: 1.4rem;
+          }
+
+          .tools-section-title {
+            font-size: 1.4rem;
           }
         }
       `}</style>
