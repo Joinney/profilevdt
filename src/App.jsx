@@ -9,27 +9,38 @@ import About from './page/about';
 import Projects from './page/projects';
 import Tools from './page/tools';
 import Moments from './page/moments';
+import SourceDetail from './page/source-detail';
 
 import './style.css';
 
-const VALID_TABS = ['home', 'about', 'projects', 'tools', 'moments'];
+const VALID_TABS = ['home', 'about', 'projects', 'tools', 'moments', 'source-detail'];
 
 const TAB_TITLES = {
   home: 'Võ Duy Toàn | Trang Chủ',
   about: 'Võ Duy Toàn | Về Tôi',
   projects: 'Võ Duy Toàn | Dự Án',
   tools: 'Võ Duy Toàn | Công Cụ',
-  moments: 'Võ Duy Toàn | Khoảnh Khắc'
+  moments: 'Võ Duy Toàn | Khoảnh Khắc',
+  'source-detail': 'Võ Duy Toàn | Chi Tiết Mã Nguồn'
 };
 
 const getTabFromUrl = () => {
   if (typeof window === 'undefined') return 'home';
-  // 1. Kiểm tra Hash (chuẩn SPA trên mọi server tĩnh như GitHub Pages, Vercel: #about, #projects...)
+
+  // 0. Kiểm tra truy vấn chi tiết mã nguồn (?source=36 hoặc ?sourceId=36)
+  const params = new URLSearchParams(window.location.search);
+  if (params.has('source') || params.has('sourceId')) {
+    return 'source-detail';
+  }
+
+  // 1. Kiểm tra Hash (chuẩn SPA: #about, #projects, #source/36...)
   const hash = window.location.hash.replace(/^#\/?/, '').toLowerCase().trim();
+  if (hash.startsWith('source')) return 'source-detail';
   if (VALID_TABS.includes(hash)) return hash;
 
-  // 2. Kiểm tra Pathname nếu có (ví dụ: /about)
+  // 2. Kiểm tra Pathname nếu có (ví dụ: /about, /source-detail)
   const path = window.location.pathname.replace(/^\/|\/$/g, '').toLowerCase().trim();
+  if (path === 'source-detail' || path.startsWith('source')) return 'source-detail';
   if (VALID_TABS.includes(path)) return path;
 
   return 'home';
@@ -75,10 +86,19 @@ export default function App() {
     setActiveTabState(targetTab);
 
     if (updateUrl && typeof window !== 'undefined') {
-      const newHash = targetTab === 'home' ? '' : `#${targetTab}`;
-      const newUrl = window.location.pathname + (newHash ? newHash : '') + window.location.search;
-      if (window.location.hash !== newHash) {
-        window.history.pushState({ tab: targetTab }, '', newUrl);
+      if (targetTab === 'home') {
+        // Xóa query param source khi quay về trang chủ
+        const params = new URLSearchParams(window.location.search);
+        params.delete('source');
+        params.delete('sourceId');
+        const qStr = params.toString();
+        const newUrl = window.location.pathname + (qStr ? `?${qStr}` : '');
+        window.history.pushState({ tab: 'home' }, '', newUrl);
+      } else if (targetTab === 'source-detail') {
+        // Không ghi đè URL nếu đang ở trang chi tiết
+      } else {
+        const newHash = `#${targetTab}`;
+        window.history.pushState({ tab: targetTab }, '', window.location.pathname + newHash);
       }
     }
   };
@@ -97,6 +117,8 @@ export default function App() {
         return typeof Tools === 'function' ? <Tools /> : <div>Trang Công Cụ đang cập nhật...</div>;
       case 'moments':
         return typeof Moments === 'function' ? <Moments /> : <div>Trang Khoảnh Khắc đang cập nhật...</div>;
+      case 'source-detail':
+        return <SourceDetail theme={theme} onBack={() => changeTab('home')} />;
       case 'home':
       default:
         return <Home />;
