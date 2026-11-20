@@ -57,8 +57,13 @@ export default function Header({ activeTab, setActiveTab, theme, toggleTheme }) 
                 />
                 <img 
                   src="/avatar-frame.webp" 
-                  alt="Khung Avatar" 
-                  className="avatar-animated-frame" 
+                  alt="Khung Avatar Dark" 
+                  className="avatar-animated-frame avatar-frame-dark" 
+                />
+                <img 
+                  src="/avatar-frame-light.webp" 
+                  alt="Khung Avatar Light" 
+                  className="avatar-animated-frame avatar-frame-light" 
                 />
               </div>
               <span style={{ color: isLight ? '#0f172a' : '#ffffff' }}>Võ Duy Toàn</span>
@@ -169,8 +174,13 @@ export default function Header({ activeTab, setActiveTab, theme, toggleTheme }) 
                     />
                     <img 
                       src="/avatar-frame.webp" 
-                      alt="Khung Avatar" 
-                      className="avatar-animated-frame" 
+                      alt="Khung Avatar Dark" 
+                      className="avatar-animated-frame avatar-frame-dark" 
+                    />
+                    <img 
+                      src="/avatar-frame-light.webp" 
+                      alt="Khung Avatar Light" 
+                      className="avatar-animated-frame avatar-frame-light" 
                     />
                   </div>
                   <span>MENU ĐIỀU HƯỚNG</span>

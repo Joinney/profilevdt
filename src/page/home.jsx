@@ -699,8 +699,13 @@ export default function Home() {
                   </div>
                   <img 
                     src="/avatar-frame.webp" 
-                    alt="Khung Avatar" 
-                    className="avatar-animated-frame" 
+                    alt="Khung Avatar Dark" 
+                    className="avatar-animated-frame avatar-frame-dark" 
+                  />
+                  <img 
+                    src="/avatar-frame-light.webp" 
+                    alt="Khung Avatar Light" 
+                    className="avatar-animated-frame avatar-frame-light" 
                   />
                 </div>
                 <div>

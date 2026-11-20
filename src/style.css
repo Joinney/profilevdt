@@ -453,6 +453,24 @@ body.light-mode .aquarium-badge-overlay {
   filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.4));
 }
 
+/* Đổi khung viền theo chế độ Sáng / Tối */
+.avatar-frame-dark {
+  display: block;
+}
+
+.avatar-frame-light {
+  display: none !important;
+}
+
+body.light-mode .avatar-frame-dark {
+  display: none !important;
+}
+
+body.light-mode .avatar-frame-light {
+  display: block !important;
+  filter: drop-shadow(0 3px 10px rgba(0, 0, 0, 0.2)) drop-shadow(0 0 12px rgba(251, 146, 60, 0.3));
+}
+
 /* Header Avatar Wrap */
 .header-avatar-wrap {
   width: 36px;
