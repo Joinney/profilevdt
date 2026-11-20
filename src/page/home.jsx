@@ -2401,10 +2401,32 @@ export default function Home({ theme = 'dark' } = {}) {
           color: #0f172a !important;
         }
 
-        /* Responsive Tablet */
+        /* Responsive Tablet & Mobile: Đưa khung Nhân vật 3D nằm ngay dưới Bể nước hệ sinh thái */
         @media (max-width: 1150px) {
-          .layout-2col { grid-template-columns: 1fr; }
-          .hero-grid { grid-template-columns: 1fr; }
+          .layout-2col {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+          }
+          .col-main, .col-side {
+            display: contents;
+          }
+          .hero-grid {
+            order: 1;
+            grid-template-columns: 1fr;
+          }
+          .character-3d-glass {
+            order: 2;
+          }
+          .controls-row {
+            order: 3;
+          }
+          .source-section {
+            order: 4;
+          }
+          .uptime-glass {
+            order: 5;
+          }
         }
 
         @media (max-width: 768px) {
