@@ -604,14 +604,14 @@ export default function Projects() {
           width: 100%;
           display: flex;
           flex-direction: column;
-          gap: 2.2rem;
+          gap: 1.5rem;
         }
 
         /* --- PHẦN 1: VÒNG XOAY 3D --- */
         .projects-orbit-wrapper {
           position: relative;
           width: 100%;
-          min-height: 640px;
+          min-height: auto;
           display: flex;
           flex-direction: column;
           background: transparent !important;
@@ -1090,6 +1090,9 @@ export default function Projects() {
 
         /* RESPONSIVE */
         @media (max-width: 1024px) {
+          .projects-page-container {
+            gap: 1.25rem;
+          }
           .detail-inner-grid {
             grid-template-columns: 1fr;
             gap: 2rem;
@@ -1102,9 +1105,13 @@ export default function Projects() {
         }
 
         @media (max-width: 768px) {
+          .projects-page-container {
+            gap: 1rem;
+          }
           .orbit-container {
-            height: 480px;
+            height: 440px;
             margin-top: -15px;
+            margin-bottom: 0;
           }
           .center-avatar-clean {
             width: min(440px, 90vw);
@@ -1149,13 +1156,17 @@ export default function Projects() {
         }
 
         @media (max-width: 480px) {
+          .projects-page-container {
+            gap: 0.75rem;
+          }
           .orbit-container {
-            height: 440px;
-            margin-top: -10px;
+            height: 380px;
+            margin-top: -15px;
+            margin-bottom: 0;
           }
           .center-avatar-clean {
-            width: min(310px, 84vw);
-            height: min(310px, 84vw);
+            width: min(300px, 82vw);
+            height: min(300px, 82vw);
             top: 48%;
             left: 50%;
             transform: translate(-50%, -58%);
