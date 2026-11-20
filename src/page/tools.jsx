@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 
 // Danh sách dữ liệu công cụ chính xác từ voduytoan.netlify.app/congcu
 const toolsData = [
@@ -112,13 +112,18 @@ export default function Tools({ theme }) {
             <div className="circle-overlay"></div>
 
             <div className="profile-card-content">
-              {/* Avatar với vòng sáng online */}
-              <div className="avatar-frame">
+              {/* Avatar với vòng sáng online và khung hoạt họa */}
+              <div className="avatar-frame avatar-with-frame tools-avatar-wrap">
                 <img 
                   src="/tools/teone.jpeg" 
                   alt="Võ Duy Toàn" 
                   onError={(e) => { e.target.src = '/teo.jpeg'; }}
                   className="avatar-img"
+                />
+                <img 
+                  src="/avatar-frame.webp" 
+                  alt="Khung Avatar" 
+                  className="avatar-animated-frame" 
                 />
                 <span className="online-beacon" title="Trực tuyến"></span>
               </div>
@@ -353,6 +358,7 @@ export default function Tools({ theme }) {
           border-radius: 50%;
           box-shadow: 0 0 10px #10b981;
           animation: beaconPulse 2s infinite ease-in-out;
+          z-index: 12;
         }
 
         @keyframes beaconPulse {

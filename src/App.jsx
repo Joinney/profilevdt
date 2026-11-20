@@ -3,6 +3,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import LoadingScreen from './components/LoadingScreen';
 import SakuraPetals from './components/SakuraPetals';
+import WaterClickEffect from './components/WaterClickEffect';
 
 // Import các trang
 import Home from './page/home';
@@ -207,6 +208,9 @@ export default function App() {
 
       {/* Hiệu ứng cánh hoa anh đào rơi toàn màn hình */}
       <SakuraPetals />
+
+      {/* Hiệu ứng nhấp chuột lan tỏa sóng nước & giọt nước */}
+      <WaterClickEffect />
     </>
   );
 }

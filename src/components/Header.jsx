@@ -48,11 +48,19 @@ export default function Header({ activeTab, setActiveTab, theme, toggleTheme }) 
 
           <div className="header-inner">
             <a href="#" onClick={(e) => { e.preventDefault(); handleSelectTab('home'); }} className="brand-wrapper">
-              <img 
-                src="/teo.jpeg" 
-                alt="Avatar" 
-                onError={(e) => { e.target.src = 'https://via.placeholder.com/34'; }} 
-              />
+              <div className="avatar-with-frame header-avatar-wrap">
+                <img 
+                  src="/teo.jpeg" 
+                  alt="Avatar" 
+                  className="header-avatar-img"
+                  onError={(e) => { e.target.src = 'https://via.placeholder.com/34'; }} 
+                />
+                <img 
+                  src="/avatar-frame.webp" 
+                  alt="Khung Avatar" 
+                  className="avatar-animated-frame" 
+                />
+              </div>
               <span style={{ color: isLight ? '#0f172a' : '#ffffff' }}>Võ Duy Toàn</span>
             </a>
 
@@ -152,12 +160,17 @@ export default function Header({ activeTab, setActiveTab, theme, toggleTheme }) 
             <div className="drawer-inner-content">
               <div className="drawer-header" style={{ borderBottomColor: isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.1)' }}>
                 <div className="drawer-brand" style={{ color: isLight ? '#0f172a' : '#ffffff' }}>
-                  <div className="box drawer-avatar-mini" style={{ '--w': '34px', '--h': '34px', '--r': '9999px', '--tr': '20%' }}>
-                    <div className="circle-overlay"></div>
+                  <div className="avatar-with-frame header-avatar-wrap">
                     <img 
                       src="/teo.jpeg" 
                       alt="Avatar" 
+                      className="header-avatar-img"
                       onError={(e) => { e.target.src = 'https://via.placeholder.com/30'; }} 
+                    />
+                    <img 
+                      src="/avatar-frame.webp" 
+                      alt="Khung Avatar" 
+                      className="avatar-animated-frame" 
                     />
                   </div>
                   <span>MENU ĐIỀU HƯỚNG</span>
@@ -323,7 +336,7 @@ export default function Header({ activeTab, setActiveTab, theme, toggleTheme }) 
         .header-box { width: 100% !important; height: 60px !important; padding: 0 1.8rem; display: flex; justify-content: space-between; align-items: center; cursor: default; }
         .header-inner { position: relative; z-index: 10; width: 100%; display: flex; justify-content: space-between; align-items: center; }
         .brand-wrapper { text-decoration: none; display: flex; align-items: center; gap: 0.8rem; font-weight: 800; font-size: 1.15rem; cursor: pointer; }
-        .brand-wrapper img { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; background-color: #1e293b; }
+        .brand-wrapper img.header-avatar-img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; background-color: #1e293b; display: block; position: relative; z-index: 2; }
         .nav-links-box { display: flex; align-items: center; gap: 0.5rem; }
         .nav-tab-box { text-decoration: none; padding: 0 1.25rem !important; font-size: 0.85rem; cursor: pointer; border: none; }
         .nav-tab-box span { position: relative; z-index: 10; transition: color 0.2s ease; }
@@ -363,7 +376,7 @@ export default function Header({ activeTab, setActiveTab, theme, toggleTheme }) 
         @media (max-width: 640px) {
           .header-box { padding: 0 1rem !important; height: 54px !important; }
           .brand-wrapper { font-size: 1rem; gap: 0.5rem; }
-          .brand-wrapper img { width: 28px; height: 28px; }
+          .brand-wrapper img.header-avatar-img { width: 28px; height: 28px; }
         }
       `}</style>
     </>

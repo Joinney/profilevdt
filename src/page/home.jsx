@@ -272,6 +272,28 @@ export default function Home() {
     return () => clearInterval(timer);
   }, []);
 
+  // Hiệu ứng cuộn xuống: Tự động kích hoạt chuyển động mượt mà cho các card khi cuộn tới
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('card-in-view');
+        }
+      });
+    }, {
+      threshold: 0.04,
+      rootMargin: '0px 0px -25px 0px'
+    });
+
+    const cards = document.querySelectorAll('.card-scroll-motion');
+    cards.forEach(card => observer.observe(card));
+
+    return () => {
+      cards.forEach(card => observer.unobserve(card));
+      observer.disconnect();
+    };
+  }, [sourcePage, sourceCategory, sourceSearch]);
+
   // Mô phỏng bể nước vật lý thực thể thời gian thực
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -626,8 +648,21 @@ export default function Home() {
       if (index < springs.length - 1) splash(index + 1, 4);
     };
 
+    // Tương tác nhấp chuột tạo sóng nước trào mạnh mẽ
+    const handlePointerDown = (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const pointerX = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
+      const index = Math.floor((pointerX / width) * springs.length);
+      splash(index, 16);
+      if (index > 0) splash(index - 1, 10);
+      if (index < springs.length - 1) splash(index + 1, 10);
+      if (index > 1) splash(index - 2, 5);
+      if (index < springs.length - 2) splash(index + 2, 5);
+    };
+
     canvas.addEventListener('mousemove', handlePointerMove);
     canvas.addEventListener('touchmove', handlePointerMove, { passive: true });
+    canvas.addEventListener('pointerdown', handlePointerDown);
 
     return () => {
       window.removeEventListener('resize', handleResize);
@@ -635,6 +670,7 @@ export default function Home() {
       observer.disconnect();
       canvas.removeEventListener('mousemove', handlePointerMove);
       canvas.removeEventListener('touchmove', handlePointerMove);
+      canvas.removeEventListener('pointerdown', handlePointerDown);
       if (animationFrameId) {
         cancelAnimationFrame(animationFrameId);
       }
@@ -651,13 +687,20 @@ export default function Home() {
             <div className="box profile-card" style={{ '--w': '100%', '--h': 'auto', '--r': '24px', '--tr': '20%' }}>
               <div className="circle-overlay"></div>
               <div className="profile-content">
-                <div className="box avatar-box" style={{ '--w': '80px', '--h': '80px', '--r': '9999px', '--tr': '35%' }}>
-                  <div className="circle-overlay"></div>
+                <div className="avatar-with-frame">
+                  <div className="box avatar-box" style={{ '--w': '80px', '--h': '80px', '--r': '9999px', '--tr': '35%' }}>
+                    <div className="circle-overlay"></div>
+                    <img 
+                      src="/teo.jpeg" 
+                      alt="Avatar" 
+                      className="avatar-img" 
+                      onError={(e) => { e.target.src = 'https://via.placeholder.com/80'; }} 
+                    />
+                  </div>
                   <img 
-                    src="/teo.jpeg" 
-                    alt="Avatar" 
-                    className="avatar-img" 
-                    onError={(e) => { e.target.src = 'https://via.placeholder.com/80'; }} 
+                    src="/avatar-frame.webp" 
+                    alt="Khung Avatar" 
+                    className="avatar-animated-frame" 
                   />
                 </div>
                 <div>
@@ -794,8 +837,19 @@ export default function Home() {
                   key={item.id || index} 
                   role="link"
                   tabIndex={0}
-                  className="box code-card-glass" 
-                  style={{ '--w': '100%', '--h': 'auto', '--r': '16px', '--tr': '15%', textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column', cursor: 'pointer' }}
+                  className="box code-card-glass card-scroll-motion" 
+                  style={{ 
+                    '--w': '100%', 
+                    '--h': 'auto', 
+                    '--r': '16px', 
+                    '--tr': '15%', 
+                    '--card-delay': `${(index % 9) * 0.055}s`,
+                    textDecoration: 'none', 
+                    color: 'inherit', 
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    cursor: 'pointer' 
+                  }}
                   onClick={(e) => {
                     // Nếu bấm vào các nút hành động con (xem video, demo, tải) thì dừng điều hướng trang chi tiết
                     if (e.target.closest('.card-action-btn')) {
@@ -1173,7 +1227,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="box uptime-glass" style={{ '--w': '100%', '--h': 'auto', '--r': '20px', '--tr': '15%' }}>
+          <div className="box uptime-glass card-scroll-motion" style={{ '--w': '100%', '--h': 'auto', '--r': '20px', '--tr': '15%', '--card-delay': '0.1s' }}>
             <div className="circle-overlay"></div>
             <div className="uptime-title">THỜI GIAN VẬN HÀNH</div>
             <div className="uptime-value">365 <span style={{ fontSize: '0.8rem', fontWeight: 500, color: '#64748b' }}>Ngày</span></div>
@@ -1318,8 +1372,8 @@ export default function Home() {
         }
 
         .avatar-img {
-          width: calc(100% - 10px);
-          height: calc(100% - 10px);
+          width: 100%;
+          height: 100%;
           border-radius: 50%;
           object-fit: cover;
           z-index: 2;

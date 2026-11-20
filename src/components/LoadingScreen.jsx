@@ -70,11 +70,18 @@ export default function LoadingScreen({ onFinish, theme }) {
             <div className="portal-ring portal-ring-inner"></div>
             <div className="portal-glow-core"></div>
             
-            <div className="avatar-img-circle">
+            <div className="avatar-with-frame loading-avatar-wrap">
+              <div className="avatar-img-circle">
+                <img 
+                  src="/teo.jpeg" 
+                  alt="Võ Duy Toàn" 
+                  onError={(e) => { e.target.src = '/teoproject.png'; }}
+                />
+              </div>
               <img 
-                src="/teo.jpeg" 
-                alt="Võ Duy Toàn" 
-                onError={(e) => { e.target.src = '/teoproject.png'; }}
+                src="/avatar-frame.webp" 
+                alt="Khung Avatar" 
+                className="avatar-animated-frame" 
               />
             </div>
           </div>

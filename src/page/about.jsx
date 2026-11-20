@@ -43,13 +43,20 @@ export default function About() {
             <div className="circle-overlay"></div>
             
             <div className="about-hero-grid">
-              <div className="box about-avatar-box" style={{ '--w': '96px', '--h': '96px', '--r': '9999px', '--tr': '30%' }}>
-                <div className="circle-overlay"></div>
+              <div className="avatar-with-frame about-avatar-wrap">
+                <div className="box about-avatar-box" style={{ '--w': '96px', '--h': '96px', '--r': '9999px', '--tr': '30%' }}>
+                  <div className="circle-overlay"></div>
+                  <img 
+                    src="/teo.jpeg" 
+                    alt="Võ Duy Toàn" 
+                    className="avatar-img" 
+                    onError={(e) => { e.target.src = 'https://via.placeholder.com/96'; }} 
+                  />
+                </div>
                 <img 
-                  src="/teo.jpeg" 
-                  alt="Võ Duy Toàn" 
-                  className="avatar-img" 
-                  onError={(e) => { e.target.src = 'https://via.placeholder.com/96'; }} 
+                  src="/avatar-frame.webp" 
+                  alt="Khung Avatar" 
+                  className="avatar-animated-frame" 
                 />
               </div>
 
@@ -400,8 +407,8 @@ export default function About() {
         }
 
         .about-avatar-box .avatar-img {
-          width: calc(100% - 10px);
-          height: calc(100% - 10px);
+          width: 100%;
+          height: 100%;
           border-radius: 50%;
           object-fit: cover;
           z-index: 2;
