@@ -136,7 +136,7 @@ const projectList = [
       "Dễ cài đặt, chạy mượt mà không tốn tài nguyên"
     ],
     floatingTags: ["Python Core", "SQLite Database", "Retail Management"],
-    mockupImg: "https://images.unsplash.com/photo-1556742049-0a67c5574f73?w=900&q=80",
+    mockupImg: "https://images.unsplash.com/photo-1556740758-90de374c12ad?w=900&q=80",
     stats: "Retail Application",
     demoUrl: "https://github.com/Joinney/Python-shop-ban-hang-mini",
     githubUrl: "https://github.com/Joinney/Python-shop-ban-hang-mini"
@@ -228,9 +228,9 @@ export default function Projects() {
         : window.innerWidth;
 
       if (containerWidth <= 380) {
-        setRadii({ rx: 135, ry: 55 });
+        setRadii({ rx: 140, ry: 60 });
       } else if (containerWidth < 480) {
-        setRadii({ rx: 170, ry: 75 });
+        setRadii({ rx: 165, ry: 75 });
       } else if (containerWidth < 768) {
         setRadii({ rx: 240, ry: 95 });
       } else if (containerWidth < 1150) {
@@ -297,7 +297,8 @@ export default function Projects() {
           className="orbit-container"
           style={{
             '--rx': `${radii.rx}px`,
-            '--ry': `${radii.ry}px`
+            '--ry': `${radii.ry}px`,
+            '--orbit-offset-y': `${radii.rx < 200 ? 50 : (radii.rx < 350 ? 25 : 0)}px`
           }}
         >
           <div className="orbit-ellipse-line"></div>
@@ -314,23 +315,30 @@ export default function Projects() {
             const currentAngleDeg = cardAngles[index] || 0;
             const currentAngleRad = (currentAngleDeg * Math.PI) / 180;
 
+            const isMobile = radii.rx < 200;
+            const isTablet = radii.rx < 350;
+            const yOffset = isMobile ? 50 : (isTablet ? 25 : 0);
+
             const x = Math.cos(currentAngleRad) * radii.rx;
-            const y = Math.sin(currentAngleRad) * radii.ry;
+            const y = Math.sin(currentAngleRad) * radii.ry + yOffset;
 
             const isCurrentPaused = pausedCardId === item.id;
             const isCurrentActive = activeDetailIndex === index;
 
+            const baseScale = isMobile ? 0.74 : (isTablet ? 0.8 : 0.82);
+            const scaleBoost = isMobile ? 0.14 : (isTablet ? 0.22 : 0.3);
+
             const scale = isCurrentPaused 
-              ? 1.06 
-              : 0.82 + ((y + radii.ry) / (radii.ry * 2 || 1)) * 0.3;
+              ? (isMobile ? 0.92 : 1.06) 
+              : baseScale + (((y - yOffset) + radii.ry) / (radii.ry * 2 || 1)) * scaleBoost;
 
             const opacity = isCurrentPaused 
               ? 1 
-              : 0.92 + ((y + radii.ry) / (radii.ry * 2 || 1)) * 0.08;
+              : 0.92 + (((y - yOffset) + radii.ry) / (radii.ry * 2 || 1)) * 0.08;
 
             const zIndex = isCurrentPaused 
               ? 700 
-              : Math.round(150 + (y / (radii.ry || 1)) * 100);
+              : Math.round(150 + ((y - yOffset) / (radii.ry || 1)) * 100);
 
             return (
               <div
@@ -660,17 +668,22 @@ export default function Projects() {
 
         .orbit-ellipse-line {
           position: absolute;
+          top: calc(50% + var(--orbit-offset-y, 0px));
+          left: 50%;
+          transform: translate(-50%, -50%) rotateX(65deg);
           width: calc(var(--rx, 550px) * 2);
           height: calc(var(--ry, 160px) * 2);
           border: 2px dashed var(--orbit-line);
           border-radius: 50%;
           pointer-events: none;
-          transform: rotateX(65deg);
           transition: width 0.3s ease, height 0.3s ease;
         }
 
         .center-avatar-clean {
           position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
           z-index: 150;
           width: min(680px, 92vw);
           height: min(680px, 92vw);
@@ -1088,12 +1101,94 @@ export default function Projects() {
           .float-pos-3 { left: 10px; bottom: 15px; }
         }
 
+        @media (max-width: 768px) {
+          .orbit-container {
+            height: 480px;
+            margin-top: -15px;
+          }
+          .center-avatar-clean {
+            width: min(440px, 90vw);
+            height: min(440px, 90vw);
+          }
+          .project-card-glass {
+            --w: 150px !important;
+            width: 150px !important;
+            padding: 7px !important;
+            border-radius: 14px !important;
+          }
+          .project-card-glass .card-thumb {
+            height: 72px !important;
+            margin-bottom: 5px !important;
+            border-radius: 8px !important;
+          }
+          .project-title {
+            font-size: 0.8rem !important;
+            margin: 2px 0 !important;
+          }
+          .project-desc {
+            display: none !important;
+          }
+          .project-techs {
+            gap: 3px !important;
+          }
+          .project-techs .tag-badge {
+            font-size: 0.58rem !important;
+            padding: 1px 5px !important;
+          }
+          .project-techs .tag-badge:nth-child(n+3) {
+            display: none !important;
+          }
+        }
+
         @media (max-width: 640px) {
           .detail-project-title { font-size: 1.5rem; }
           .detail-features-grid { grid-template-columns: 1fr; }
           .mockup-display-card { height: 280px; }
           .floating-tag-badge { display: none; }
           .detail-action-buttons { flex-direction: column; }
+        }
+
+        @media (max-width: 480px) {
+          .orbit-container {
+            height: 440px;
+            margin-top: -10px;
+          }
+          .center-avatar-clean {
+            width: min(310px, 84vw);
+            height: min(310px, 84vw);
+            top: 48%;
+            left: 50%;
+            transform: translate(-50%, -58%);
+          }
+          .project-card-glass {
+            --w: 104px !important;
+            width: 104px !important;
+            padding: 5px !important;
+            border-radius: 12px !important;
+          }
+          .project-card-glass .card-thumb {
+            height: 48px !important;
+            margin-bottom: 3px !important;
+            border-radius: 6px !important;
+          }
+          .project-title {
+            font-size: 0.66rem !important;
+            margin: 1px 0 !important;
+            line-height: 1.2 !important;
+          }
+          .project-desc {
+            display: none !important;
+          }
+          .project-techs {
+            gap: 2px !important;
+          }
+          .project-techs .tag-badge {
+            font-size: 0.48rem !important;
+            padding: 1px 4px !important;
+          }
+          .project-techs .tag-badge:nth-child(n+3) {
+            display: none !important;
+          }
         }
 
         /* ========================================================= */
