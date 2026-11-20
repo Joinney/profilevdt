@@ -502,3 +502,102 @@ body.light-mode .avatar-frame-light {
   width: 132%;
   height: 132%;
 }
+
+/* ========================================================= */
+/* 3D CHARACTER CHAMBER CANVAS                               */
+/* ========================================================= */
+.character-3d-canvas-container {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: grab;
+  touch-action: none;
+}
+
+.character-3d-canvas-container:active {
+  cursor: grabbing;
+}
+
+.character-3d-canvas-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+  outline: none;
+  display: block;
+}
+
+/* Loading HUD khi tải mô hình GLB */
+.character-3d-loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(3, 7, 18, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  pointer-events: none;
+}
+
+.cyber-loader-spinner {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px dashed rgba(56, 189, 248, 0.3);
+  border-top-color: #38bdf8;
+  border-right-color: #06b6d4;
+  animation: spinCyberLoader 1.2s linear infinite;
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
+}
+
+@keyframes spinCyberLoader {
+  to { transform: rotate(360deg); }
+}
+
+.cyber-loader-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  font-family: monospace, sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 1px;
+  color: #38bdf8;
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+}
+
+.cyber-loader-text strong {
+  font-size: 0.95rem;
+  color: #ffffff;
+}
+
+.cyber-loader-bar {
+  width: 130px;
+  height: 4px;
+  background: rgba(56, 189, 248, 0.15);
+  border-radius: 9999px;
+  overflow: hidden;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.cyber-loader-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #0284c7, #38bdf8);
+  box-shadow: 0 0 8px #38bdf8;
+  transition: width 0.2s ease;
+}
+
+.character-model-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 8;
+}

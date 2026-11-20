@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { sourceCodes } from '../data/sourceCodes';
+import Character3DCanvas from '../components/Character3DCanvas';
 
 // Danh sách logo ảnh thật các công nghệ / ngôn ngữ chuẩn Devicon SVG (68+ công nghệ toàn diện & đa dạng)
 const techLogoSources = [
@@ -86,7 +87,7 @@ const techLogoSources = [
   { name: 'Bash', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bash/bash-original.svg' }
 ];
 
-export default function Home() {
+export default function Home({ theme = 'dark' } = {}) {
   const [time, setTime] = useState('');
   const canvasRef = useRef(null);
 
@@ -226,6 +227,7 @@ export default function Home() {
   const [modelAngle, setModelAngle] = useState(0);
   const [modelTiltX, setModelTiltX] = useState(0);
   const [isAutoSpin, setIsAutoSpin] = useState(true);
+  const [resetTrigger, setResetTrigger] = useState(0);
   const isDraggingModel = useRef(false);
   const startDragX = useRef(0);
   const startDragY = useRef(0);
@@ -1045,14 +1047,7 @@ export default function Home() {
             {/* Sân khấu Hologram Cyber Chamber 3D */}
             <div 
               className="character-3d-stage cyber-chamber"
-              onMouseDown={handleStagePointerDown}
-              onMouseMove={handleStagePointerMove}
-              onMouseUp={handleStagePointerUp}
-              onMouseLeave={handleStagePointerUp}
-              onTouchStart={handleStagePointerDown}
-              onTouchMove={handleStagePointerMove}
-              onTouchEnd={handleStagePointerUp}
-              title="Kéo hoặc rê chuột để chỉnh góc phối cảnh 3D"
+              title="Kéo chuột hoặc vuốt để xoay 3D 360°, cuộn chuột để phóng to/thu nhỏ"
             >
               {/* 4 Góc Khung HUD Corner Brackets */}
               <div className="hud-corner-bracket hud-cb-tl"></div>
@@ -1178,22 +1173,13 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Nhân vật 3D Đứng Ở Giữa Trong Suốt (Avatar 3D Không Nền) */}
-              <div 
-                className="character-model-wrapper"
-                style={{
-                  transform: (modelAngle || modelTiltX)
-                    ? `perspective(600px) rotateY(${modelAngle}deg) rotateX(${modelTiltX}deg)`
-                    : 'none'
-                }}
-              >
-                <img 
-                  src="/teo_hd_clean.gif?v=20261030_soft_glow" 
-                  alt="Võ Duy Toàn 3D Avatar" 
-                  className="character-model-img"
-                  onError={(e) => { e.target.src = '/teo3d.gif'; }} 
-                />
-              </div>
+              {/* Nhân vật 3D Model GLB PBR Thực Thể */}
+              <Character3DCanvas 
+                isAutoSpin={isAutoSpin}
+                onAngleChange={setModelAngle}
+                resetTrigger={resetTrigger}
+                theme={theme}
+              />
 
               {/* Capsule Tag Bo Tròn Ở Góc Dưới Trái */}
               <div className="hud-capsule-tag">
@@ -1218,7 +1204,7 @@ export default function Home() {
               <button 
                 className="box character-ctrl-btn"
                 style={{ '--w': 'auto', '--h': '32px', '--r': '9999px' }}
-                onClick={() => { setModelAngle(0); setModelTiltX(0); setIsAutoSpin(false); }}
+                onClick={() => { setResetTrigger(prev => prev + 1); setIsAutoSpin(false); }}
                 title="Khôi phục góc nhìn chính diện"
               >
                 <div className="circle-overlay"></div>

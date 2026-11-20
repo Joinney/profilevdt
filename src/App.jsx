@@ -171,7 +171,7 @@ export default function App() {
         return <SourceDetail theme={theme} onBack={() => changeTab('home')} />;
       case 'home':
       default:
-        return <Home />;
+        return <Home theme={theme} />;
     }
   };
 
