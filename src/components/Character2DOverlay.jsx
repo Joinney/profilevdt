@@ -129,7 +129,7 @@ export default function Character2DOverlay({ theme = 'dark' }) {
       const s = stateRef.current;
       const key = e.code;
 
-      if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(key)) {
+      if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(key) || e.key === ' ') {
         e.preventDefault();
       }
 
@@ -166,7 +166,7 @@ export default function Character2DOverlay({ theme = 'dark' }) {
             s.frameIndex = 0;
           }
         }
-      } else if (key === 'Space' || key === 'ArrowUp' || key === 'KeyW') {
+      } else if (key === 'Space' || e.key === ' ' || key === 'ArrowUp' || key === 'KeyW') {
         s.isSitting = false;
         e.preventDefault();
         triggerJump();
@@ -190,7 +190,7 @@ export default function Character2DOverlay({ theme = 'dark' }) {
       const s = stateRef.current;
       const key = e.code;
 
-      if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(key)) {
+      if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(key) || e.key === ' ') {
         e.preventDefault();
       }
 
