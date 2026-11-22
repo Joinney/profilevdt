@@ -4,6 +4,7 @@ import Footer from './components/Footer';
 import LoadingScreen from './components/LoadingScreen';
 import SakuraPetals from './components/SakuraPetals';
 import WaterClickEffect from './components/WaterClickEffect';
+import Character2DOverlay from './components/Character2DOverlay';
 
 // Import các trang
 import Home from './page/home';
@@ -211,6 +212,9 @@ export default function App() {
 
       {/* Hiệu ứng nhấp chuột lan tỏa sóng nước & giọt nước */}
       <WaterClickEffect />
+
+      {/* Nhân vật 2D tương tác điều khiển bằng phím */}
+      <Character2DOverlay theme={theme} />
     </>
   );
 }
