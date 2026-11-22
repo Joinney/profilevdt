@@ -1,14 +1,14 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 
 const ACTION_CONFIG = {
-  dung: { path: '/2dteovdt/dung/dung.png', loop: true, name: 'Đứng yên' },
-  di: { path: '/2dteovdt/di/di.png', loop: true, name: 'Đi bộ' },
-  chay: { path: '/2dteovdt/chay/chay.png', loop: true, name: 'Chạy nhanh' },
-  nhay: { path: '/2dteovdt/nhay/nhay.png', loop: false, name: 'Nhảy cao' },
-  danh: { path: '/2dteovdt/danh/danh.png', loop: false, name: 'Tấn công' },
-  ngoixuong: { path: '/2dteovdt/ngoixuong/ngoi_xuong.png', loop: true, name: 'Ngồi xuống' },
-  xinchao: { path: '/2dteovdt/xinchao/xinchao.png', loop: false, name: 'Xin chào' },
-  noichuyen: { path: '/2dteovdt/noichuyen/noichuyen.png', loop: false, name: 'Trò chuyện' },
+  dung: { path: '/2dteovdt/dung/dung.png', loop: true, name: 'Đứng yên', scale: 1.0, feetY: 474 },
+  di: { path: '/2dteovdt/di/di.png', loop: true, name: 'Đi bộ', scale: 0.83, feetY: 504 },
+  chay: { path: '/2dteovdt/chay/chay.png', loop: true, name: 'Chạy nhanh', scale: 0.70, feetY: 482 },
+  nhay: { path: '/2dteovdt/nhay/nhay.png', loop: false, name: 'Nhảy cao', scale: 1.0, feetY: 474 },
+  danh: { path: '/2dteovdt/danh/danh.png', loop: false, name: 'Tấn công', scale: 0.71, feetY: 477 },
+  ngoixuong: { path: '/2dteovdt/ngoixuong/ngoi_xuong.png', loop: true, name: 'Ngồi xuống', scale: 0.92, feetY: 476 },
+  xinchao: { path: '/2dteovdt/xinchao/xinchao.png', loop: false, name: 'Xin chào', scale: 1.0, feetY: 473 },
+  noichuyen: { path: '/2dteovdt/noichuyen/noichuyen.png', loop: false, name: 'Trò chuyện', scale: 1.0, feetY: 473 },
 };
 
 const QUOTES = [
@@ -264,6 +264,7 @@ export default function Character2DOverlay({ theme = 'dark' }) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       const action = s.currentAction || 'dung';
+      const config = ACTION_CONFIG[action] || ACTION_CONFIG['dung'];
       const img = imagesRef.current[action] || imagesRef.current['dung'];
 
       if (img && img.complete) {
@@ -272,6 +273,16 @@ export default function Character2DOverlay({ theme = 'dark' }) {
         const sx = col * 512;
         const sy = row * 512;
 
+        // Chuẩn hóa tỷ lệ và căn chuẩn mặt đất (ground anchor) để các động tác bằng kích thước nhau
+        const groundY = canvas.height * (474 / 512);
+        const scale = config.scale || 1.0;
+        const feetY = config.feetY || 474;
+
+        const drawW = canvas.width * scale;
+        const drawH = canvas.height * scale;
+        const drawX = (canvas.width - drawW) / 2;
+        const drawY = groundY - drawH * (feetY / 512);
+
         ctx.save();
         // Sprite gốc quay mặt sang trái, nên khi hướng sang phải (!s.facingLeft) cần lật ảnh sang phải
         if (!s.facingLeft) {
@@ -279,7 +290,7 @@ export default function Character2DOverlay({ theme = 'dark' }) {
           ctx.scale(-1, 1);
         }
 
-        ctx.drawImage(img, sx, sy, 512, 512, 0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, sx, sy, 512, 512, drawX, drawY, drawW, drawH);
         ctx.restore();
       }
 
