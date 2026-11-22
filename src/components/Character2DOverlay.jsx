@@ -273,7 +273,8 @@ export default function Character2DOverlay({ theme = 'dark' }) {
         const sy = row * 512;
 
         ctx.save();
-        if (s.facingLeft) {
+        // Sprite gốc quay mặt sang trái, nên khi hướng sang phải (!s.facingLeft) cần lật ảnh sang phải
+        if (!s.facingLeft) {
           ctx.translate(canvas.width, 0);
           ctx.scale(-1, 1);
         }
