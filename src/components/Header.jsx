@@ -12,7 +12,9 @@ export default function Header({
   showKeyGuide = false,
   setShowKeyGuide,
   showTouchPad = false,
-  setShowTouchPad
+  setShowTouchPad,
+  autoRoamEnabled = true,
+  setAutoRoamEnabled
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -278,6 +280,25 @@ export default function Header({
                             className={`settings-switch ${showTouchPad ? 'active' : ''}`}
                             onClick={() => setShowTouchPad(prev => !prev)}
                             title={showTouchPad ? 'Tắt tay cầm ảo' : 'Bật tay cầm ảo'}
+                          >
+                            <span className="settings-switch-thumb"></span>
+                          </button>
+                        </div>
+
+                        {/* Chế độ tự do dạo chơi (Auto Roam khi rảnh tay) */}
+                        <div className="settings-item settings-subitem">
+                          <div className="settings-item-info">
+                            <span style={{ fontSize: '1rem', width: '18px', textAlign: 'center', display: 'inline-block' }}>🚶</span>
+                            <div>
+                              <div className="settings-item-title">Tự do dạo chơi (Auto Roam)</div>
+                              <div className="settings-item-desc">Tự đi lại & tương tác khi rảnh tay</div>
+                            </div>
+                          </div>
+                          <button 
+                            type="button"
+                            className={`settings-switch ${autoRoamEnabled ? 'active' : ''}`}
+                            onClick={() => setAutoRoamEnabled(prev => !prev)}
+                            title={autoRoamEnabled ? 'Tắt tự do dạo chơi' : 'Bật tự do dạo chơi'}
                           >
                             <span className="settings-switch-thumb"></span>
                           </button>

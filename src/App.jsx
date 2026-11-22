@@ -77,6 +77,12 @@ export default function App() {
     return saved === 'true';
   });
 
+  const [autoRoamEnabled, setAutoRoamEnabled] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    const saved = localStorage.getItem('auto_roam_enabled');
+    return saved !== null ? saved === 'true' : true;
+  });
+
   useEffect(() => {
     localStorage.setItem('sakura_enabled', sakuraEnabled);
   }, [sakuraEnabled]);
@@ -88,6 +94,10 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('touchpad_enabled', showTouchPad);
   }, [showTouchPad]);
+
+  useEffect(() => {
+    localStorage.setItem('auto_roam_enabled', autoRoamEnabled);
+  }, [autoRoamEnabled]);
 
   const triggerLaser = () => {
     setIsPageSwitching(false);
@@ -232,6 +242,8 @@ export default function App() {
           setShowKeyGuide={setShowKeyGuide}
           showTouchPad={showTouchPad}
           setShowTouchPad={setShowTouchPad}
+          autoRoamEnabled={autoRoamEnabled}
+          setAutoRoamEnabled={setAutoRoamEnabled}
         />
         
         <main style={{ minHeight: '80vh', padding: '20px 0', position: 'relative' }}>
@@ -263,6 +275,8 @@ export default function App() {
         setShowKeyGuide={setShowKeyGuide}
         showTouchPad={showTouchPad}
         setShowTouchPad={setShowTouchPad}
+        autoRoamEnabled={autoRoamEnabled}
+        setAutoRoamEnabled={setAutoRoamEnabled}
       />
     </>
   );

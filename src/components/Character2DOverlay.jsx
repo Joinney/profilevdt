@@ -28,11 +28,18 @@ export default function Character2DOverlay({
   showKeyGuide = false,
   setShowKeyGuide,
   showTouchPad = false,
-  setShowTouchPad
+  setShowTouchPad,
+  autoRoamEnabled = true,
+  setAutoRoamEnabled
 }) {
   const canvasRef = useRef(null);
   const imagesRef = useRef({});
   const loadedCountRef = useRef(0);
+  const autoRoamRef = useRef(autoRoamEnabled);
+
+  useEffect(() => {
+    autoRoamRef.current = autoRoamEnabled;
+  }, [autoRoamEnabled]);
 
   const [internalVisible, setInternalVisible] = useState(true);
   const visible = typeof setIsVisible === 'function' ? isVisible : internalVisible;
@@ -61,6 +68,10 @@ export default function Character2DOverlay({
     lastFrameTime: 0,
     moveStartTime: 0,
     touchSprint: false,
+    lastUserInteraction: performance.now(),
+    autoState: 'idle', // 'idle', 'walking', 'paused', 'action', 'sitting'
+    autoTargetX: null,
+    autoNextDecisionTime: performance.now() + 3500,
     keys: {
       left: false,
       right: false,
@@ -246,15 +257,108 @@ export default function Character2DOverlay({
       const containerWidth = window.innerWidth;
       const charWidth = 120;
 
-      // 4.1. Cập nhật vị trí di chuyển ngang
-      if (!s.isSitting && s.lockedAction !== 'ngoixuong') {
-        const isMoving = (s.keys.left && !s.keys.right) || (s.keys.right && !s.keys.left);
-        const moveDuration = isMoving && s.moveStartTime ? (now - s.moveStartTime) : 0;
-        
-        // Chạy nhanh khi: giữ Shift, hoặc nút chạy cảm ứng bật, hoặc giữ phím di chuyển liên tục >= 350ms
-        const isRunning = isMoving && (s.keys.shift || s.touchSprint || moveDuration >= 350);
-        
-        // Tốc độ: Đi bộ thong thả 1.8px/frame (~108px/s); Chạy nhanh 3.6px/frame (~216px/s)
+      // 4.0. Trí thông minh tự do dạo chơi (Auto Roam khi rảnh tay)
+      const isUserMoving = (s.keys.left && !s.keys.right) || (s.keys.right && !s.keys.left);
+      const isUserControlling = isUserMoving || s.keys.shift || s.keys.crouch || s.isJumping;
+
+      if (isUserControlling) {
+        s.lastUserInteraction = now;
+        s.autoTargetX = null;
+        s.autoState = 'idle';
+        s.autoNextDecisionTime = now + 4000;
+      }
+
+      const idleDuration = now - (s.lastUserInteraction || 0);
+      const isAutoRoaming = autoRoamRef.current && !isUserControlling && !s.lockedAction && (idleDuration >= 3500);
+
+      if (isAutoRoaming) {
+        // Đã đến lúc đưa ra quyết định hành vi dạo chơi mới
+        if (!s.autoNextDecisionTime || now >= s.autoNextDecisionTime) {
+          if (s.isSitting) {
+            // Đang ngồi nghỉ -> đứng dậy tiếp tục dạo chơi
+            s.isSitting = false;
+            s.currentAction = 'dung';
+            s.frameIndex = 0;
+            s.autoState = 'paused';
+            s.autoNextDecisionTime = now + 1500;
+          } else {
+            const rand = Math.random();
+            if (rand < 0.60) {
+              // 60%: Đi dạo đến một vị trí ngẫu nhiên trên màn hình
+              const minX = 40;
+              const maxX = Math.max(120, containerWidth - charWidth - 40);
+              let targetX = minX + Math.random() * (maxX - minX);
+              if (Math.abs(targetX - s.x) < 80) {
+                targetX = targetX > s.x ? Math.min(maxX, s.x + 160) : Math.max(minX, s.x - 160);
+              }
+              s.autoTargetX = targetX;
+              s.autoState = 'walking';
+              s.autoNextDecisionTime = now + 10000;
+            } else if (rand < 0.78) {
+              // 18%: Dừng chân đứng ngắm nhìn xung quanh
+              s.autoState = 'paused';
+              s.autoTargetX = null;
+              s.currentAction = 'dung';
+              s.autoNextDecisionTime = now + (2500 + Math.random() * 2500);
+            } else if (rand < 0.86) {
+              // 8%: Vẫy tay chào người dùng thân thiện
+              s.autoState = 'action';
+              s.autoTargetX = null;
+              const autoQuotes = [
+                'Chào bạn nhé! Chúc bạn lướt web thật vui! 👋✨',
+                'Hôm nay bạn thấy các dự án của Toàn thế nào? 💡',
+                'Tự do dạo chơi một chút cho khỏe khoắn nào! 🚶‍♂️🌿',
+                'Bạn có thể dùng phím A, D, W, S để điều khiển mình bất cứ lúc nào nhé! 🎮'
+              ];
+              triggerAction('xinchao', autoQuotes[Math.floor(Math.random() * autoQuotes.length)]);
+              s.autoNextDecisionTime = now + 4000;
+            } else if (rand < 0.93) {
+              // 7%: Nhảy một cú bồng bềnh vui nhộn
+              s.autoState = 'action';
+              s.autoTargetX = null;
+              triggerJump();
+              s.autoNextDecisionTime = now + 2500;
+            } else {
+              // 7%: Ngồi nghỉ chân thư giãn 3 - 5 giây
+              s.autoState = 'sitting';
+              s.autoTargetX = null;
+              s.isSitting = true;
+              s.currentAction = 'ngoixuong';
+              s.frameIndex = 0;
+              s.autoNextDecisionTime = now + (3500 + Math.random() * 2000);
+            }
+          }
+        }
+
+        // Thực thi bước chân nếu đang walking
+        if (s.autoState === 'walking' && s.autoTargetX !== null && !s.isSitting && !s.isJumping) {
+          const dist = s.autoTargetX - s.x;
+          if (Math.abs(dist) <= 2) {
+            s.x = s.autoTargetX;
+            s.autoTargetX = null;
+            s.autoState = 'paused';
+            s.currentAction = 'dung';
+            s.autoNextDecisionTime = now + (2000 + Math.random() * 2500);
+          } else {
+            const autoSpeed = 1.6;
+            if (dist > 0) {
+              s.x = Math.min(containerWidth - charWidth - 10, s.x + autoSpeed);
+              s.facingLeft = false;
+            } else {
+              s.x = Math.max(10, s.x - autoSpeed);
+              s.facingLeft = true;
+            }
+            if (!s.lockedAction) {
+              s.currentAction = 'di';
+            }
+          }
+        }
+      }
+
+      // 4.1. Cập nhật vị trí di chuyển ngang bởi người dùng
+      if (isUserMoving && !s.isSitting && s.lockedAction !== 'ngoixuong') {
+        const moveDuration = s.moveStartTime ? (now - s.moveStartTime) : 0;
+        const isRunning = s.keys.shift || s.touchSprint || moveDuration >= 350;
         const speed = isRunning ? 3.6 : 1.8;
 
         if (s.keys.left && !s.keys.right) {
@@ -269,10 +373,10 @@ export default function Character2DOverlay({
           if (!s.isJumping && !s.lockedAction) {
             s.currentAction = isRunning ? 'chay' : 'di';
           }
-        } else if (!s.isJumping && !s.lockedAction && !s.isSitting) {
-          s.currentAction = 'dung';
-          s.moveStartTime = 0;
         }
+      } else if (!isAutoRoaming && !isUserMoving && !s.isJumping && !s.lockedAction && !s.isSitting) {
+        s.currentAction = 'dung';
+        s.moveStartTime = 0;
       }
 
       // 4.2. Cập nhật vật lý nhảy
@@ -476,6 +580,9 @@ export default function Character2DOverlay({
                 className="touch-btn"
                 onPointerDown={() => {
                   const s = stateRef.current;
+                  s.lastUserInteraction = performance.now();
+                  s.autoTargetX = null;
+                  s.autoState = 'idle';
                   s.isSitting = false;
                   s.keys.left = true;
                   s.facingLeft = true;
@@ -483,11 +590,13 @@ export default function Character2DOverlay({
                 }}
                 onPointerUp={() => {
                   const s = stateRef.current;
+                  s.lastUserInteraction = performance.now();
                   s.keys.left = false;
                   if (!s.keys.right) s.moveStartTime = 0;
                 }}
                 onPointerLeave={() => {
                   const s = stateRef.current;
+                  s.lastUserInteraction = performance.now();
                   s.keys.left = false;
                   if (!s.keys.right) s.moveStartTime = 0;
                 }}
@@ -499,6 +608,9 @@ export default function Character2DOverlay({
                 className="touch-btn"
                 onPointerDown={() => {
                   const s = stateRef.current;
+                  s.lastUserInteraction = performance.now();
+                  s.autoTargetX = null;
+                  s.autoState = 'idle';
                   s.isSitting = false;
                   s.keys.right = true;
                   s.facingLeft = false;
@@ -506,11 +618,13 @@ export default function Character2DOverlay({
                 }}
                 onPointerUp={() => {
                   const s = stateRef.current;
+                  s.lastUserInteraction = performance.now();
                   s.keys.right = false;
                   if (!s.keys.left) s.moveStartTime = 0;
                 }}
                 onPointerLeave={() => {
                   const s = stateRef.current;
+                  s.lastUserInteraction = performance.now();
                   s.keys.right = false;
                   if (!s.keys.left) s.moveStartTime = 0;
                 }}
@@ -525,6 +639,8 @@ export default function Character2DOverlay({
               <button
                 className={`touch-btn ${touchSprint ? 'active' : ''}`}
                 onClick={() => {
+                  const s = stateRef.current;
+                  s.lastUserInteraction = performance.now();
                   setTouchSprint(prev => {
                     const next = !prev;
                     stateRef.current.touchSprint = next;
@@ -538,7 +654,11 @@ export default function Character2DOverlay({
               <button
                 className="touch-btn"
                 onClick={() => {
-                  stateRef.current.isSitting = false;
+                  const s = stateRef.current;
+                  s.lastUserInteraction = performance.now();
+                  s.autoTargetX = null;
+                  s.autoState = 'idle';
+                  s.isSitting = false;
                   triggerJump();
                 }}
                 title="Nhảy lên"
@@ -549,6 +669,9 @@ export default function Character2DOverlay({
                 className="touch-btn"
                 onClick={() => {
                   const s = stateRef.current;
+                  s.lastUserInteraction = performance.now();
+                  s.autoTargetX = null;
+                  s.autoState = 'idle';
                   if (s.isSitting || s.currentAction === 'ngoixuong') {
                     s.isSitting = false;
                     s.currentAction = 'dung';
@@ -566,7 +689,11 @@ export default function Character2DOverlay({
               <button
                 className="touch-btn touch-btn-action"
                 onClick={() => {
-                  stateRef.current.isSitting = false;
+                  const s = stateRef.current;
+                  s.lastUserInteraction = performance.now();
+                  s.autoTargetX = null;
+                  s.autoState = 'idle';
+                  s.isSitting = false;
                   triggerAction('danh', 'Hi-ya! Một cú đấm sấm sét! 🥊💥');
                 }}
                 title="Đấm"
@@ -576,7 +703,11 @@ export default function Character2DOverlay({
               <button
                 className="touch-btn touch-btn-action"
                 onClick={() => {
-                  stateRef.current.isSitting = false;
+                  const s = stateRef.current;
+                  s.lastUserInteraction = performance.now();
+                  s.autoTargetX = null;
+                  s.autoState = 'idle';
+                  s.isSitting = false;
                   triggerAction('xinchao', 'Xin chào bạn nhé! Chúc ngày mới vui vẻ! 👋✨');
                 }}
                 title="Vẫy tay chào"
@@ -586,7 +717,11 @@ export default function Character2DOverlay({
               <button
                 className="touch-btn touch-btn-action"
                 onClick={() => {
-                  stateRef.current.isSitting = false;
+                  const s = stateRef.current;
+                  s.lastUserInteraction = performance.now();
+                  s.autoTargetX = null;
+                  s.autoState = 'idle';
+                  s.isSitting = false;
                   const q = QUOTES[Math.floor(Math.random() * QUOTES.length)];
                   triggerAction('noichuyen', q);
                 }}
