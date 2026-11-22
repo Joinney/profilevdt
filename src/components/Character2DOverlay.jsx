@@ -1,22 +1,22 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 
 const ACTION_CONFIG = {
-  dung: { path: '/2dteovdt/dung/dung.png', loop: true, name: 'Đứng yên', scale: 1.0, feetY: 474 },
-  di: { path: '/2dteovdt/di/di.png', loop: true, name: 'Đi bộ', scale: 0.83, feetY: 504 },
-  chay: { path: '/2dteovdt/chay/chay.png', loop: true, name: 'Chạy nhanh', scale: 0.70, feetY: 482 },
-  nhay: { path: '/2dteovdt/nhay/nhay.png', loop: false, name: 'Nhảy cao', scale: 1.0, feetY: 474 },
-  danh: { path: '/2dteovdt/danh/danh.png', loop: false, name: 'Tấn công', scale: 0.71, feetY: 477 },
-  ngoixuong: { path: '/2dteovdt/ngoixuong/ngoi_xuong.png', loop: true, name: 'Ngồi xuống', scale: 0.92, feetY: 476 },
-  xinchao: { path: '/2dteovdt/xinchao/xinchao.png', loop: false, name: 'Xin chào', scale: 1.0, feetY: 473 },
-  noichuyen: { path: '/2dteovdt/noichuyen/noichuyen.png', loop: false, name: 'Trò chuyện', scale: 1.0, feetY: 473 },
+  dung: { path: '/2dteovdt/dung/dung.png', loop: true, name: 'Đứng yên', scale: 1.0, feetY: 473 },
+  di: { path: '/2dteovdt/di/di.png', loop: true, name: 'Đi bộ', scale: 0.86, feetY: 502 },
+  chay: { path: '/2dteovdt/chay/chay.png', loop: true, name: 'Chạy nhanh', scale: 0.97, feetY: 477 },
+  nhay: { path: '/2dteovdt/nhay/nhay.png', loop: false, name: 'Nhảy cao', scale: 1.04, feetY: 466 },
+  danh: { path: '/2dteovdt/danh/danh.png', loop: false, name: 'Tấn công', scale: 1.00, feetY: 475 },
+  ngoixuong: { path: '/2dteovdt/ngoixuong/ngoi_xuong.png', loop: true, name: 'Ngồi xuống', scale: 1.00, feetY: 476 },
+  xinchao: { path: '/2dteovdt/xinchao/xinchao.png', loop: false, name: 'Xin chào', scale: 1.00, feetY: 472 },
+  noichuyen: { path: '/2dteovdt/noichuyen/noichuyen.png', loop: false, name: 'Trò chuyện', scale: 1.00, feetY: 472 },
 };
 
 const QUOTES = [
   'Chào bạn! Mình là Tèo 2D, rất vui được đồng hành cùng bạn! 👋',
-  'Bạn có thể dùng các phím A, D, W, S, J, H, T để điều khiển mình nhé! 🎮',
+  'Nhấn nhẹ phím A/D để đi bộ, nhấn giữ hoặc Shift để chạy nhanh nhé! 🏃💨',
   'Full-Stack & Software Engineer - Yêu thích thiết kế Glassmorphism & AI! ✨',
-  'Giữ phím Shift + A/D để chạy nhanh hết tốc lực nào! ⚡',
-  'Bấm phím Space hoặc W để cùng mình nhảy lên nhé! 🚀',
+  'Bấm phím Space hoặc W để cùng mình nhảy lên bồng bềnh nhé! 🚀',
+  'Phím S để ngồi thư giãn, phím J để tung cú đấm tràn đầy năng lượng! 🥊',
   'Hãy khám phá các dự án công nghệ tuyệt vời trên website nhé! 💡',
   'Chúc bạn một ngày học tập và làm việc ngập tràn niềm vui! 🌟'
 ];
@@ -30,6 +30,7 @@ export default function Character2DOverlay({ theme = 'dark' }) {
   const [isVisible, setIsVisible] = useState(true);
   const [showKeyGuide, setShowKeyGuide] = useState(false);
   const [showTouchPad, setShowTouchPad] = useState(false);
+  const [touchSprint, setTouchSprint] = useState(false);
   const [speechText, setSpeechText] = useState('Chào bạn! Dùng phím A, D, W, S, J, H, T để điều khiển mình nhé! 🎮');
   const [showSpeech, setShowSpeech] = useState(true);
 
@@ -44,6 +45,8 @@ export default function Character2DOverlay({ theme = 'dark' }) {
     currentAction: 'dung',
     frameIndex: 0,
     lastFrameTime: 0,
+    moveStartTime: 0,
+    touchSprint: false,
     keys: {
       left: false,
       right: false,
@@ -96,15 +99,16 @@ export default function Character2DOverlay({ theme = 'dark' }) {
     }
   }, [triggerSpeech]);
 
-  // Kích hoạt nhảy
+  // Kích hoạt nhảy (êm ái, bồng bềnh ~1 giây trên không)
   const triggerJump = useCallback(() => {
     const s = stateRef.current;
     if (s.isJumping) return;
     s.isJumping = true;
-    s.vy = -13.5; // Lực nhảy
+    s.vy = -8.5; // Lực nhảy êm ái
     if (!s.lockedAction) {
       s.currentAction = 'nhay';
       s.frameIndex = 0;
+      s.lastFrameTime = performance.now();
     }
   }, []);
 
@@ -129,16 +133,25 @@ export default function Character2DOverlay({ theme = 'dark' }) {
         e.preventDefault();
       }
 
+      // Nhận diện phím Shift (hoặc e.shiftKey)
+      if (e.shiftKey || key === 'ShiftLeft' || key === 'ShiftRight') {
+        s.keys.shift = true;
+      }
+
       if (key === 'ArrowLeft' || key === 'KeyA') {
         s.isSitting = false;
-        s.keys.left = true;
+        if (!s.keys.left) {
+          s.keys.left = true;
+          s.moveStartTime = performance.now();
+        }
         s.facingLeft = true;
       } else if (key === 'ArrowRight' || key === 'KeyD') {
         s.isSitting = false;
-        s.keys.right = true;
+        if (!s.keys.right) {
+          s.keys.right = true;
+          s.moveStartTime = performance.now();
+        }
         s.facingLeft = false;
-      } else if (key === 'ShiftLeft' || key === 'ShiftRight') {
-        s.keys.shift = true;
       } else if (key === 'ArrowDown' || key === 'KeyS') {
         if (!s.isJumping && !s.lockedAction) {
           if (s.isSitting || s.currentAction === 'ngoixuong') {
@@ -181,12 +194,19 @@ export default function Character2DOverlay({ theme = 'dark' }) {
         e.preventDefault();
       }
 
+      if (!e.shiftKey) {
+        s.keys.shift = false;
+      }
+      if (key === 'ShiftLeft' || key === 'ShiftRight') {
+        s.keys.shift = false;
+      }
+
       if (key === 'ArrowLeft' || key === 'KeyA') {
         s.keys.left = false;
+        if (!s.keys.right) s.moveStartTime = 0;
       } else if (key === 'ArrowRight' || key === 'KeyD') {
         s.keys.right = false;
-      } else if (key === 'ShiftLeft' || key === 'ShiftRight') {
-        s.keys.shift = false;
+        if (!s.keys.left) s.moveStartTime = 0;
       }
     };
 
@@ -214,41 +234,56 @@ export default function Character2DOverlay({ theme = 'dark' }) {
 
       // 4.1. Cập nhật vị trí di chuyển ngang
       if (!s.isSitting && s.lockedAction !== 'ngoixuong') {
-        const speed = s.keys.shift ? 6.5 : 3.5;
+        const isMoving = (s.keys.left && !s.keys.right) || (s.keys.right && !s.keys.left);
+        const moveDuration = isMoving && s.moveStartTime ? (now - s.moveStartTime) : 0;
+        
+        // Chạy nhanh khi: giữ Shift, hoặc nút chạy cảm ứng bật, hoặc giữ phím di chuyển liên tục >= 350ms
+        const isRunning = isMoving && (s.keys.shift || s.touchSprint || moveDuration >= 350);
+        
+        // Tốc độ: Đi bộ thong thả 1.8px/frame (~108px/s); Chạy nhanh 3.6px/frame (~216px/s)
+        const speed = isRunning ? 3.6 : 1.8;
+
         if (s.keys.left && !s.keys.right) {
           s.x = Math.max(10, s.x - speed);
           s.facingLeft = true;
           if (!s.isJumping && !s.lockedAction) {
-            s.currentAction = s.keys.shift ? 'chay' : 'di';
+            s.currentAction = isRunning ? 'chay' : 'di';
           }
         } else if (s.keys.right && !s.keys.left) {
           s.x = Math.min(containerWidth - charWidth - 10, s.x + speed);
           s.facingLeft = false;
           if (!s.isJumping && !s.lockedAction) {
-            s.currentAction = s.keys.shift ? 'chay' : 'di';
+            s.currentAction = isRunning ? 'chay' : 'di';
           }
         } else if (!s.isJumping && !s.lockedAction && !s.isSitting) {
           s.currentAction = 'dung';
+          s.moveStartTime = 0;
         }
       }
 
       // 4.2. Cập nhật vật lý nhảy
       if (s.isJumping) {
         s.y += s.vy;
-        s.vy += 0.65; // Trọng lực
+        s.vy += 0.28; // Trọng lực nhẹ nhàng, thời gian trên không ~1.0 giây
         if (s.y >= 0) {
           s.y = 0;
           s.vy = 0;
           s.isJumping = false;
           if (!s.lockedAction) {
-            s.currentAction = s.keys.left || s.keys.right ? (s.keys.shift ? 'chay' : 'di') : 'dung';
+            const isMoving = (s.keys.left && !s.keys.right) || (s.keys.right && !s.keys.left);
+            const moveDuration = isMoving && s.moveStartTime ? (now - s.moveStartTime) : 0;
+            const isRunning = isMoving && (s.keys.shift || s.touchSprint || moveDuration >= 350);
+            s.currentAction = isMoving ? (isRunning ? 'chay' : 'di') : 'dung';
             s.frameIndex = 0;
           }
         }
       }
 
-      // 4.3. Cập nhật frame hoạt họa (80ms/frame, 25 frame)
-      const frameDuration = s.currentAction === 'chay' ? 55 : 80;
+      // 4.3. Cập nhật frame hoạt họa
+      // Nhảy 25 frame trong ~1000ms => 40ms/frame
+      // Chạy nhanh dứt khoát => 52ms/frame
+      // Đi bộ thong thả nhịp nhàng => 80ms/frame
+      const frameDuration = s.currentAction === 'nhay' ? 40 : (s.currentAction === 'chay' ? 52 : 80);
       if (!s.lastFrameTime || now - s.lastFrameTime >= frameDuration) {
         s.lastFrameTime = now;
 
@@ -269,7 +304,9 @@ export default function Character2DOverlay({ theme = 'dark' }) {
                 s.currentAction = 'ngoixuong';
                 s.frameIndex = 24;
               } else if (s.keys.left || s.keys.right) {
-                s.currentAction = s.keys.shift ? 'chay' : 'di';
+                const moveDuration = s.moveStartTime ? (now - s.moveStartTime) : 0;
+                const isRunning = s.keys.shift || s.touchSprint || moveDuration >= 350;
+                s.currentAction = isRunning ? 'chay' : 'di';
               } else {
                 s.currentAction = 'dung';
               }
@@ -417,31 +454,31 @@ export default function Character2DOverlay({ theme = 'dark' }) {
               <div className="keyguide-row">
                 <span className="key-badge">A / ◄</span>
                 <span className="key-badge">D / ►</span>
-                <span className="key-desc">Đi bộ trái / phải</span>
+                <span className="key-desc">Đi bộ (nhấn nhẹ) / Chạy (giữ phím)</span>
               </div>
               <div className="keyguide-row">
                 <span className="key-badge">Shift + A / D</span>
-                <span className="key-desc">Chạy nhanh tốc lực</span>
+                <span className="key-desc">Chạy nhanh tốc lực tức thì ⚡</span>
               </div>
               <div className="keyguide-row">
                 <span className="key-badge">Space / W / ▲</span>
-                <span className="key-desc">Nhảy cao</span>
+                <span className="key-desc">Nhảy cao bồng bềnh êm ái</span>
               </div>
               <div className="keyguide-row">
                 <span className="key-badge">S / ▼</span>
-                <span className="key-desc">Ngồi xuống</span>
+                <span className="key-desc">Ngồi xuống (giữ tư thế / đứng dậy)</span>
               </div>
               <div className="keyguide-row">
                 <span className="key-badge">J / F</span>
-                <span className="key-desc">Đấm / Tấn công</span>
+                <span className="key-desc">Đấm / Tấn công 🥊</span>
               </div>
               <div className="keyguide-row">
                 <span className="key-badge">H</span>
-                <span className="key-desc">Vẫy tay xin chào</span>
+                <span className="key-desc">Vẫy tay xin chào 👋</span>
               </div>
               <div className="keyguide-row">
                 <span className="key-badge">T</span>
-                <span className="key-desc">Trò chuyện phát biểu</span>
+                <span className="key-desc">Trò chuyện phát biểu 💬</span>
               </div>
             </div>
           </div>
@@ -457,26 +494,46 @@ export default function Character2DOverlay({ theme = 'dark' }) {
               <button
                 className="touch-btn"
                 onPointerDown={() => {
-                  stateRef.current.isSitting = false;
-                  stateRef.current.keys.left = true;
-                  stateRef.current.facingLeft = true;
+                  const s = stateRef.current;
+                  s.isSitting = false;
+                  s.keys.left = true;
+                  s.facingLeft = true;
+                  if (!s.moveStartTime) s.moveStartTime = performance.now();
                 }}
-                onPointerUp={() => { stateRef.current.keys.left = false; }}
-                onPointerLeave={() => { stateRef.current.keys.left = false; }}
-                title="Đi trái"
+                onPointerUp={() => {
+                  const s = stateRef.current;
+                  s.keys.left = false;
+                  if (!s.keys.right) s.moveStartTime = 0;
+                }}
+                onPointerLeave={() => {
+                  const s = stateRef.current;
+                  s.keys.left = false;
+                  if (!s.keys.right) s.moveStartTime = 0;
+                }}
+                title="Đi trái (giữ để chạy)"
               >
                 ◀
               </button>
               <button
                 className="touch-btn"
                 onPointerDown={() => {
-                  stateRef.current.isSitting = false;
-                  stateRef.current.keys.right = true;
-                  stateRef.current.facingLeft = false;
+                  const s = stateRef.current;
+                  s.isSitting = false;
+                  s.keys.right = true;
+                  s.facingLeft = false;
+                  if (!s.moveStartTime) s.moveStartTime = performance.now();
                 }}
-                onPointerUp={() => { stateRef.current.keys.right = false; }}
-                onPointerLeave={() => { stateRef.current.keys.right = false; }}
-                title="Đi phải"
+                onPointerUp={() => {
+                  const s = stateRef.current;
+                  s.keys.right = false;
+                  if (!s.keys.left) s.moveStartTime = 0;
+                }}
+                onPointerLeave={() => {
+                  const s = stateRef.current;
+                  s.keys.right = false;
+                  if (!s.keys.left) s.moveStartTime = 0;
+                }}
+                title="Đi phải (giữ để chạy)"
               >
                 ▶
               </button>
@@ -485,11 +542,15 @@ export default function Character2DOverlay({ theme = 'dark' }) {
             {/* Phím hành động */}
             <div className="touch-group">
               <button
-                className={`touch-btn ${stateRef.current.keys.shift ? 'active' : ''}`}
+                className={`touch-btn ${touchSprint ? 'active' : ''}`}
                 onClick={() => {
-                  stateRef.current.keys.shift = !stateRef.current.keys.shift;
+                  setTouchSprint(prev => {
+                    const next = !prev;
+                    stateRef.current.touchSprint = next;
+                    return next;
+                  });
                 }}
-                title="Chạy nhanh"
+                title="Chạy nhanh (Bật/Tắt)"
               >
                 🏃
               </button>
