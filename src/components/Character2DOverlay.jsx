@@ -39,6 +39,7 @@ export default function Character2DOverlay({ theme = 'dark' }) {
     y: 0, // Độ cao nhảy (0 là mặt đất, âm là bay lên)
     vy: 0, // Vận tốc nhảy
     isJumping: false,
+    isSitting: false,
     facingLeft: false,
     currentAction: 'dung',
     frameIndex: 0,
@@ -129,28 +130,43 @@ export default function Character2DOverlay({ theme = 'dark' }) {
       }
 
       if (key === 'ArrowLeft' || key === 'KeyA') {
+        s.isSitting = false;
         s.keys.left = true;
         s.facingLeft = true;
       } else if (key === 'ArrowRight' || key === 'KeyD') {
+        s.isSitting = false;
         s.keys.right = true;
         s.facingLeft = false;
       } else if (key === 'ShiftLeft' || key === 'ShiftRight') {
         s.keys.shift = true;
       } else if (key === 'ArrowDown' || key === 'KeyS') {
-        s.keys.crouch = true;
         if (!s.isJumping && !s.lockedAction) {
-          s.currentAction = 'ngoixuong';
+          if (s.isSitting || s.currentAction === 'ngoixuong') {
+            // Đang ngồi mà bấm S -> đứng lên
+            s.isSitting = false;
+            s.currentAction = 'dung';
+            s.frameIndex = 0;
+          } else {
+            // Ngồi xuống và dừng lại giữ nguyên tư thế ngồi
+            s.isSitting = true;
+            s.currentAction = 'ngoixuong';
+            s.frameIndex = 0;
+          }
         }
       } else if (key === 'Space' || key === 'ArrowUp' || key === 'KeyW') {
+        s.isSitting = false;
         e.preventDefault();
         triggerJump();
       } else if (key === 'KeyJ' || key === 'KeyF' || key === 'KeyZ') {
+        s.isSitting = false;
         e.preventDefault();
         triggerAction('danh', 'Hi-ya! Đấm một cú tràn đầy năng lượng! 🥊💥');
       } else if (key === 'KeyH' || key === 'KeyE') {
+        s.isSitting = false;
         e.preventDefault();
         triggerAction('xinchao', 'Xin chào mọi người! Chúc bạn ngày mới tốt lành! 👋✨');
       } else if (key === 'KeyT' || key === 'KeyC') {
+        s.isSitting = false;
         e.preventDefault();
         const randomQuote = QUOTES[Math.floor(Math.random() * QUOTES.length)];
         triggerAction('noichuyen', randomQuote);
@@ -171,12 +187,6 @@ export default function Character2DOverlay({ theme = 'dark' }) {
         s.keys.right = false;
       } else if (key === 'ShiftLeft' || key === 'ShiftRight') {
         s.keys.shift = false;
-      } else if (key === 'ArrowDown' || key === 'KeyS') {
-        s.keys.crouch = false;
-        if (s.currentAction === 'ngoixuong') {
-          s.currentAction = 'dung';
-          s.frameIndex = 0;
-        }
       }
     };
 
@@ -203,7 +213,7 @@ export default function Character2DOverlay({ theme = 'dark' }) {
       const charWidth = 120;
 
       // 4.1. Cập nhật vị trí di chuyển ngang
-      if (!s.keys.crouch && s.lockedAction !== 'ngoixuong') {
+      if (!s.isSitting && s.lockedAction !== 'ngoixuong') {
         const speed = s.keys.shift ? 6.5 : 3.5;
         if (s.keys.left && !s.keys.right) {
           s.x = Math.max(10, s.x - speed);
@@ -217,7 +227,7 @@ export default function Character2DOverlay({ theme = 'dark' }) {
           if (!s.isJumping && !s.lockedAction) {
             s.currentAction = s.keys.shift ? 'chay' : 'di';
           }
-        } else if (!s.isJumping && !s.lockedAction && !s.keys.crouch) {
+        } else if (!s.isJumping && !s.lockedAction && !s.isSitting) {
           s.currentAction = 'dung';
         }
       }
@@ -241,21 +251,31 @@ export default function Character2DOverlay({ theme = 'dark' }) {
       const frameDuration = s.currentAction === 'chay' ? 55 : 80;
       if (!s.lastFrameTime || now - s.lastFrameTime >= frameDuration) {
         s.lastFrameTime = now;
-        s.frameIndex += 1;
 
-        if (s.frameIndex >= 25) {
-          if (s.lockedAction) {
-            s.lockedAction = null;
-            s.frameIndex = 0;
-            if (s.keys.crouch) {
-              s.currentAction = 'ngoixuong';
-            } else if (s.keys.left || s.keys.right) {
-              s.currentAction = s.keys.shift ? 'chay' : 'di';
-            } else {
-              s.currentAction = 'dung';
-            }
+        if (s.currentAction === 'ngoixuong') {
+          // Khi ngồi xuống: chuyển từ đứng xuống ngồi và DỪNG LẠI GIỮ NGUYÊN tư thế ngồi ở frame 24
+          if (s.frameIndex < 24) {
+            s.frameIndex += 1;
           } else {
-            s.frameIndex = 0;
+            s.frameIndex = 24;
+          }
+        } else {
+          s.frameIndex += 1;
+          if (s.frameIndex >= 25) {
+            if (s.lockedAction) {
+              s.lockedAction = null;
+              s.frameIndex = 0;
+              if (s.isSitting) {
+                s.currentAction = 'ngoixuong';
+                s.frameIndex = 24;
+              } else if (s.keys.left || s.keys.right) {
+                s.currentAction = s.keys.shift ? 'chay' : 'di';
+              } else {
+                s.currentAction = 'dung';
+              }
+            } else {
+              s.frameIndex = 0;
+            }
           }
         }
       }
@@ -436,7 +456,11 @@ export default function Character2DOverlay({ theme = 'dark' }) {
             <div className="touch-group">
               <button
                 className="touch-btn"
-                onPointerDown={() => { stateRef.current.keys.left = true; stateRef.current.facingLeft = true; }}
+                onPointerDown={() => {
+                  stateRef.current.isSitting = false;
+                  stateRef.current.keys.left = true;
+                  stateRef.current.facingLeft = true;
+                }}
                 onPointerUp={() => { stateRef.current.keys.left = false; }}
                 onPointerLeave={() => { stateRef.current.keys.left = false; }}
                 title="Đi trái"
@@ -445,7 +469,11 @@ export default function Character2DOverlay({ theme = 'dark' }) {
               </button>
               <button
                 className="touch-btn"
-                onPointerDown={() => { stateRef.current.keys.right = true; stateRef.current.facingLeft = false; }}
+                onPointerDown={() => {
+                  stateRef.current.isSitting = false;
+                  stateRef.current.keys.right = true;
+                  stateRef.current.facingLeft = false;
+                }}
                 onPointerUp={() => { stateRef.current.keys.right = false; }}
                 onPointerLeave={() => { stateRef.current.keys.right = false; }}
                 title="Đi phải"
@@ -467,39 +495,48 @@ export default function Character2DOverlay({ theme = 'dark' }) {
               </button>
               <button
                 className="touch-btn"
-                onClick={triggerJump}
+                onClick={() => {
+                  stateRef.current.isSitting = false;
+                  triggerJump();
+                }}
                 title="Nhảy lên"
               >
                 ▲
               </button>
               <button
                 className="touch-btn"
-                onPointerDown={() => {
-                  stateRef.current.keys.crouch = true;
-                  stateRef.current.currentAction = 'ngoixuong';
+                onClick={() => {
+                  const s = stateRef.current;
+                  if (s.isSitting || s.currentAction === 'ngoixuong') {
+                    s.isSitting = false;
+                    s.currentAction = 'dung';
+                    s.frameIndex = 0;
+                  } else {
+                    s.isSitting = true;
+                    s.currentAction = 'ngoixuong';
+                    s.frameIndex = 0;
+                  }
                 }}
-                onPointerUp={() => {
-                  stateRef.current.keys.crouch = false;
-                  stateRef.current.currentAction = 'dung';
-                }}
-                onPointerLeave={() => {
-                  stateRef.current.keys.crouch = false;
-                  stateRef.current.currentAction = 'dung';
-                }}
-                title="Ngồi xuống"
+                title="Ngồi xuống / Đứng lên"
               >
                 ▼
               </button>
               <button
                 className="touch-btn touch-btn-action"
-                onClick={() => triggerAction('danh', 'Hi-ya! Một cú đấm sấm sét! 🥊💥')}
+                onClick={() => {
+                  stateRef.current.isSitting = false;
+                  triggerAction('danh', 'Hi-ya! Một cú đấm sấm sét! 🥊💥');
+                }}
                 title="Đấm"
               >
                 🥊
               </button>
               <button
                 className="touch-btn touch-btn-action"
-                onClick={() => triggerAction('xinchao', 'Xin chào bạn nhé! Chúc ngày mới vui vẻ! 👋✨')}
+                onClick={() => {
+                  stateRef.current.isSitting = false;
+                  triggerAction('xinchao', 'Xin chào bạn nhé! Chúc ngày mới vui vẻ! 👋✨');
+                }}
                 title="Vẫy tay chào"
               >
                 👋
@@ -507,6 +544,7 @@ export default function Character2DOverlay({ theme = 'dark' }) {
               <button
                 className="touch-btn touch-btn-action"
                 onClick={() => {
+                  stateRef.current.isSitting = false;
                   const q = QUOTES[Math.floor(Math.random() * QUOTES.length)];
                   triggerAction('noichuyen', q);
                 }}
