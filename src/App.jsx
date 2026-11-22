@@ -56,6 +56,39 @@ export default function App() {
   const [isPageSwitching, setIsPageSwitching] = useState(false);
   const laserTimerRef = useRef(null);
 
+  // Trạng thái cài đặt trải nghiệm người dùng
+  const [sakuraEnabled, setSakuraEnabled] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    const saved = localStorage.getItem('sakura_enabled');
+    return saved !== null ? saved === 'true' : true;
+  });
+
+  const [teo2dEnabled, setTeo2dEnabled] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    const saved = localStorage.getItem('teo2d_enabled');
+    return saved !== null ? saved === 'true' : true;
+  });
+
+  const [showKeyGuide, setShowKeyGuide] = useState(false);
+
+  const [showTouchPad, setShowTouchPad] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    const saved = localStorage.getItem('touchpad_enabled');
+    return saved === 'true';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('sakura_enabled', sakuraEnabled);
+  }, [sakuraEnabled]);
+
+  useEffect(() => {
+    localStorage.setItem('teo2d_enabled', teo2dEnabled);
+  }, [teo2dEnabled]);
+
+  useEffect(() => {
+    localStorage.setItem('touchpad_enabled', showTouchPad);
+  }, [showTouchPad]);
+
   const triggerLaser = () => {
     setIsPageSwitching(false);
     if (laserTimerRef.current) clearTimeout(laserTimerRef.current);
@@ -191,6 +224,14 @@ export default function App() {
           setActiveTab={changeTab} 
           theme={theme} 
           toggleTheme={toggleTheme} 
+          sakuraEnabled={sakuraEnabled}
+          setSakuraEnabled={setSakuraEnabled}
+          teo2dEnabled={teo2dEnabled}
+          setTeo2dEnabled={setTeo2dEnabled}
+          showKeyGuide={showKeyGuide}
+          setShowKeyGuide={setShowKeyGuide}
+          showTouchPad={showTouchPad}
+          setShowTouchPad={setShowTouchPad}
         />
         
         <main style={{ minHeight: '80vh', padding: '20px 0', position: 'relative' }}>
@@ -208,13 +249,21 @@ export default function App() {
       </div>
 
       {/* Hiệu ứng cánh hoa anh đào rơi toàn màn hình */}
-      <SakuraPetals />
+      <SakuraPetals isEnabled={sakuraEnabled} />
 
       {/* Hiệu ứng nhấp chuột lan tỏa sóng nước & giọt nước */}
       <WaterClickEffect />
 
       {/* Nhân vật 2D tương tác điều khiển bằng phím */}
-      <Character2DOverlay theme={theme} />
+      <Character2DOverlay 
+        theme={theme} 
+        isVisible={teo2dEnabled}
+        setIsVisible={setTeo2dEnabled}
+        showKeyGuide={showKeyGuide}
+        setShowKeyGuide={setShowKeyGuide}
+        showTouchPad={showTouchPad}
+        setShowTouchPad={setShowTouchPad}
+      />
     </>
   );
 }

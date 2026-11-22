@@ -1,7 +1,21 @@
 import React, { useState, useEffect } from 'react';
 
-export default function Header({ activeTab, setActiveTab, theme, toggleTheme }) {
+export default function Header({ 
+  activeTab, 
+  setActiveTab, 
+  theme, 
+  toggleTheme,
+  sakuraEnabled = true,
+  setSakuraEnabled,
+  teo2dEnabled = true,
+  setTeo2dEnabled,
+  showKeyGuide = false,
+  setShowKeyGuide,
+  showTouchPad = false,
+  setShowTouchPad
+}) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   useEffect(() => {
     if (isMenuOpen) {
@@ -127,6 +141,26 @@ export default function Header({ activeTab, setActiveTab, theme, toggleTheme }) 
                 ></i>
               </div>
 
+              {/* Nút bánh răng cài đặt */}
+              <div 
+                className={`box settings-toggle-box ${isSettingsOpen ? 'active' : ''}`} 
+                onClick={() => setIsSettingsOpen(prev => !prev)}
+                style={{ '--w': '38px', '--h': '38px', '--r': '9999px', '--tr': '20%', cursor: 'pointer' }} 
+                title="Cài đặt trải nghiệm"
+              >
+                <div className="circle-overlay"></div>
+                <i 
+                  className="fas fa-gear" 
+                  style={{ 
+                    color: isSettingsOpen ? (isLight ? '#ea580c' : '#38bdf8') : (isLight ? '#64748b' : '#94a3b8'), 
+                    zIndex: 10, 
+                    position: 'relative',
+                    transition: 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s',
+                    transform: isSettingsOpen ? 'rotate(90deg)' : 'rotate(0deg)'
+                  }}
+                ></i>
+              </div>
+
               <button 
                 className="mobile-menu-btn"
                 onClick={() => setIsMenuOpen(true)}
@@ -138,6 +172,143 @@ export default function Header({ activeTab, setActiveTab, theme, toggleTheme }) 
             </div>
           </div>
         </div>
+
+        {/* MODAL / DROPDOWN CÀI ĐẶT TRẢI NGHIỆM */}
+        {isSettingsOpen && (
+          <>
+            <div 
+              className="settings-backdrop"
+              onClick={() => setIsSettingsOpen(false)}
+            />
+            <div className="settings-popup-wrapper">
+              <div 
+                className="box settings-glass-card" 
+                style={{ 
+                  '--w': '330px', 
+                  '--h': 'auto', 
+                  '--r': '22px', 
+                  '--tr': '20%' 
+                }}
+              >
+                <div className="circle-overlay"></div>
+                
+                <div className="settings-inner">
+                  {/* Tiêu đề */}
+                  <div className="settings-header">
+                    <div className="settings-title-group">
+                      <i className="fas fa-gear" style={{ color: isLight ? '#ea580c' : '#38bdf8' }}></i>
+                      <span>CÀI ĐẶT TRẢI NGHIỆM</span>
+                    </div>
+                    <button 
+                      className="settings-close-btn"
+                      onClick={() => setIsSettingsOpen(false)}
+                      title="Đóng cài đặt"
+                    >
+                      &times;
+                    </button>
+                  </div>
+
+                  <div className="settings-body">
+                    {/* Mục 1: Cánh hoa anh đào rơi */}
+                    <div className="settings-item">
+                      <div className="settings-item-info">
+                        <span className="settings-item-icon">🌸</span>
+                        <div>
+                          <div className="settings-item-title">Hoa anh đào rơi</div>
+                          <div className="settings-item-desc">Hiệu ứng cánh hoa bay bổng</div>
+                        </div>
+                      </div>
+                      <button 
+                        type="button"
+                        className={`settings-switch ${sakuraEnabled ? 'active' : ''}`}
+                        onClick={() => setSakuraEnabled(prev => !prev)}
+                        title={sakuraEnabled ? 'Tắt hoa rơi' : 'Bật hoa rơi'}
+                      >
+                        <span className="settings-switch-thumb"></span>
+                      </button>
+                    </div>
+
+                    {/* Mục 2: Nhân vật Tèo 2D */}
+                    <div className="settings-item">
+                      <div className="settings-item-info">
+                        <span className="settings-item-icon">🤖</span>
+                        <div>
+                          <div className="settings-item-title">Bạn đồng hành Tèo 2D</div>
+                          <div className="settings-item-desc">Nhân vật di chuyển tương tác</div>
+                        </div>
+                      </div>
+                      <button 
+                        type="button"
+                        className={`settings-switch ${teo2dEnabled ? 'active' : ''}`}
+                        onClick={() => setTeo2dEnabled(prev => !prev)}
+                        title={teo2dEnabled ? 'Tắt Tèo 2D' : 'Bật Tèo 2D'}
+                      >
+                        <span className="settings-switch-thumb"></span>
+                      </button>
+                    </div>
+
+                    {/* Các tùy chọn phụ của Tèo 2D khi đang Bật */}
+                    {teo2dEnabled && (
+                      <div className="settings-subgroup">
+                        <button
+                          type="button"
+                          className="settings-action-row"
+                          onClick={() => {
+                            setShowKeyGuide(true);
+                            setIsSettingsOpen(false);
+                          }}
+                        >
+                          <div className="settings-action-left">
+                            <i className="fas fa-keyboard"></i>
+                            <span>Phím điều khiển Tèo</span>
+                          </div>
+                          <span className="settings-action-badge">Xem phím <i className="fas fa-chevron-right" style={{ fontSize: '0.65rem' }}></i></span>
+                        </button>
+
+                        <div className="settings-item settings-subitem">
+                          <div className="settings-item-info">
+                            <i className="fas fa-gamepad" style={{ color: isLight ? '#ea580c' : '#38bdf8', fontSize: '0.95rem' }}></i>
+                            <div>
+                              <div className="settings-item-title">Tay cầm điều khiển ảo</div>
+                              <div className="settings-item-desc">Dành cho cảm ứng điện thoại</div>
+                            </div>
+                          </div>
+                          <button 
+                            type="button"
+                            className={`settings-switch ${showTouchPad ? 'active' : ''}`}
+                            onClick={() => setShowTouchPad(prev => !prev)}
+                            title={showTouchPad ? 'Tắt tay cầm ảo' : 'Bật tay cầm ảo'}
+                          >
+                            <span className="settings-switch-thumb"></span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Mục 3: Giao diện Sáng / Tối */}
+                    <div className="settings-item">
+                      <div className="settings-item-info">
+                        <span className="settings-item-icon">{isLight ? '☀️' : '🌙'}</span>
+                        <div>
+                          <div className="settings-item-title">Chế độ giao diện</div>
+                          <div className="settings-item-desc">{isLight ? 'Giao diện Sáng (Light)' : 'Giao diện Tối (Dark)'}</div>
+                        </div>
+                      </div>
+                      <button 
+                        type="button"
+                        className={`settings-switch ${!isLight ? 'active' : ''}`}
+                        onClick={toggleTheme}
+                        title="Đổi giao diện Sáng / Tối"
+                      >
+                        <span className="settings-switch-thumb"></span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
 
         {/* Backdrop Mobile */}
         <div 
@@ -229,6 +400,36 @@ export default function Header({ activeTab, setActiveTab, theme, toggleTheme }) 
                   );
                 })}
               </nav>
+
+              <div style={{ marginTop: 'auto', paddingTop: '0.8rem', paddingBottom: '0.5rem' }}>
+                <button
+                  type="button"
+                  className="box drawer-settings-btn"
+                  style={{
+                    '--w': '100%',
+                    '--h': '44px',
+                    '--r': '9999px',
+                    '--tr': '15%',
+                    border: 'none',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.65rem',
+                    fontSize: '0.86rem',
+                    fontWeight: 700,
+                    color: isLight ? '#0f172a' : '#ffffff'
+                  }}
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    setIsSettingsOpen(true);
+                  }}
+                >
+                  <div className="circle-overlay"></div>
+                  <i className="fas fa-gear" style={{ color: isLight ? '#ea580c' : '#38bdf8', zIndex: 10 }}></i>
+                  <span style={{ zIndex: 10 }}>Cài đặt trải nghiệm</span>
+                </button>
+              </div>
 
               <div className="drawer-footer" style={{ borderTopColor: isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.08)', color: '#94a3b8' }}>
                 <span>© 2026 Võ Duy Toàn</span>
@@ -358,9 +559,250 @@ export default function Header({ activeTab, setActiveTab, theme, toggleTheme }) 
           filter: blur(3px); pointer-events: none; z-index: 1;
         }
 
-        .header-actions { display: flex; align-items: center; gap: 0.9rem; }
+        .header-actions { display: flex; align-items: center; gap: 0.75rem; }
         .header-action-btn { width: 36px; height: 36px; border-radius: 50%; background: transparent; border: none; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
-        .theme-toggle-box { cursor: pointer; }
+        .theme-toggle-box, .settings-toggle-box { cursor: pointer; }
+
+        /* NÚT VÀ POPUP CÀI ĐẶT TRẢI NGHIỆM */
+        .settings-backdrop {
+          position: fixed;
+          inset: 0;
+          z-index: 10004;
+          background: rgba(3, 7, 18, 0.45);
+          backdrop-filter: blur(4px);
+          -webkit-backdrop-filter: blur(4px);
+          animation: fadeInBackdrop 0.2s ease forwards;
+        }
+
+        @keyframes fadeInBackdrop {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+
+        .settings-popup-wrapper {
+          position: fixed;
+          top: 76px;
+          right: 24px;
+          z-index: 10005;
+          animation: settingsPopupIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes settingsPopupIn {
+          from { opacity: 0; transform: translateY(-10px) scale(0.95); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .settings-glass-card {
+          padding: 1.15rem !important;
+          box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6) !important;
+        }
+
+        .settings-inner {
+          position: relative;
+          z-index: 10;
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+          width: 100%;
+        }
+
+        .settings-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding-bottom: 0.75rem;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        body.light-mode .settings-header {
+          border-bottom-color: rgba(0, 0, 0, 0.08);
+        }
+
+        .settings-title-group {
+          display: flex;
+          align-items: center;
+          gap: 0.55rem;
+          font-weight: 800;
+          font-size: 0.82rem;
+          letter-spacing: 0.5px;
+          color: var(--text-heading);
+        }
+
+        .settings-close-btn {
+          background: transparent;
+          border: none;
+          color: #94a3b8;
+          font-size: 1.25rem;
+          cursor: pointer;
+          line-height: 1;
+          padding: 2px 6px;
+          border-radius: 6px;
+          transition: color 0.15s ease;
+        }
+
+        .settings-close-btn:hover {
+          color: #ef4444;
+        }
+
+        .settings-body {
+          display: flex;
+          flex-direction: column;
+          gap: 0.75rem;
+        }
+
+        .settings-item {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 0.75rem;
+          padding: 0.45rem 0.25rem;
+        }
+
+        .settings-item-info {
+          display: flex;
+          align-items: center;
+          gap: 0.65rem;
+        }
+
+        .settings-item-icon {
+          font-size: 1.15rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 26px;
+        }
+
+        .settings-item-title {
+          font-size: 0.82rem;
+          font-weight: 700;
+          color: var(--text-heading);
+          line-height: 1.2;
+        }
+
+        .settings-item-desc {
+          font-size: 0.68rem;
+          color: #94a3b8;
+          margin-top: 2px;
+        }
+
+        body.light-mode .settings-item-desc {
+          color: #64748b;
+        }
+
+        .settings-subgroup {
+          margin-left: 1.8rem;
+          padding-left: 0.6rem;
+          border-left: 2px dashed rgba(56, 189, 248, 0.35);
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        body.light-mode .settings-subgroup {
+          border-left-color: rgba(234, 88, 12, 0.35);
+        }
+
+        .settings-subitem {
+          padding: 0.2rem 0;
+        }
+
+        .settings-action-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          width: 100%;
+          padding: 0.45rem 0.6rem;
+          border-radius: 10px;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          color: var(--text-heading);
+          font-size: 0.76rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        body.light-mode .settings-action-row {
+          background: rgba(0, 0, 0, 0.03);
+          border-color: rgba(0, 0, 0, 0.08);
+        }
+
+        .settings-action-row:hover {
+          background: rgba(56, 189, 248, 0.15);
+          border-color: #38bdf8;
+          color: #38bdf8;
+        }
+
+        body.light-mode .settings-action-row:hover {
+          background: rgba(234, 88, 12, 0.12);
+          border-color: #ea580c;
+          color: #ea580c;
+        }
+
+        .settings-action-left {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .settings-action-badge {
+          font-size: 0.65rem;
+          color: #38bdf8;
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+        }
+
+        body.light-mode .settings-action-badge {
+          color: #ea580c;
+        }
+
+        /* TOGGLE SWITCH CÔNG TẮC GẠT */
+        .settings-switch {
+          width: 44px;
+          height: 24px;
+          border-radius: 9999px;
+          background: rgba(255, 255, 255, 0.15);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          position: relative;
+          cursor: pointer;
+          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+          padding: 2px;
+          display: flex;
+          align-items: center;
+          flex-shrink: 0;
+        }
+
+        .settings-switch.active {
+          background: linear-gradient(135deg, #0284c7, #38bdf8);
+          border-color: #38bdf8;
+          box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+        }
+
+        body.light-mode .settings-switch {
+          background: rgba(0, 0, 0, 0.12);
+          border-color: rgba(0, 0, 0, 0.15);
+        }
+
+        body.light-mode .settings-switch.active {
+          background: linear-gradient(135deg, #ea580c, #f97316);
+          border-color: #ea580c;
+          box-shadow: 0 0 10px rgba(234, 88, 12, 0.35);
+        }
+
+        .settings-switch-thumb {
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          background: #ffffff;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
+          transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+          transform: translateX(0);
+        }
+
+        .settings-switch.active .settings-switch-thumb {
+          transform: translateX(20px);
+        }
 
         .mobile-menu-btn, .mobile-backdrop, .mobile-sidebar-drawer { display: none !important; }
 
@@ -384,6 +826,18 @@ export default function Header({ activeTab, setActiveTab, theme, toggleTheme }) 
         }
 
         @media (max-width: 640px) {
+          .settings-popup-wrapper {
+            top: 66px;
+            right: 12px;
+            left: 12px;
+            display: flex;
+            justify-content: center;
+          }
+          .settings-glass-card {
+            --w: 100% !important;
+            width: 100% !important;
+            max-width: 360px !important;
+          }
           .header-box { padding: 0 1rem !important; height: 54px !important; }
           .brand-wrapper { font-size: 1rem; gap: 0.5rem; }
           .brand-wrapper img.header-avatar-img { width: 28px; height: 28px; }

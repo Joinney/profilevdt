@@ -21,15 +21,29 @@ const QUOTES = [
   'Chúc bạn một ngày học tập và làm việc ngập tràn niềm vui! 🌟'
 ];
 
-export default function Character2DOverlay({ theme = 'dark' }) {
+export default function Character2DOverlay({ 
+  theme = 'dark',
+  isVisible = true,
+  setIsVisible,
+  showKeyGuide = false,
+  setShowKeyGuide,
+  showTouchPad = false,
+  setShowTouchPad
+}) {
   const canvasRef = useRef(null);
   const imagesRef = useRef({});
   const loadedCountRef = useRef(0);
 
-  // Trạng thái nhân vật
-  const [isVisible, setIsVisible] = useState(true);
-  const [showKeyGuide, setShowKeyGuide] = useState(false);
-  const [showTouchPad, setShowTouchPad] = useState(false);
+  const [internalVisible, setInternalVisible] = useState(true);
+  const visible = typeof setIsVisible === 'function' ? isVisible : internalVisible;
+
+  const [internalKeyGuide, setInternalKeyGuide] = useState(false);
+  const isKeyGuide = typeof setShowKeyGuide === 'function' ? showKeyGuide : internalKeyGuide;
+  const setKeyGuide = typeof setShowKeyGuide === 'function' ? setShowKeyGuide : setInternalKeyGuide;
+
+  const [internalTouchPad, setInternalTouchPad] = useState(false);
+  const isTouchPad = typeof setShowTouchPad === 'function' ? showTouchPad : internalTouchPad;
+
   const [touchSprint, setTouchSprint] = useState(false);
   const [speechText, setSpeechText] = useState('Chào bạn! Dùng phím A, D, W, S, J, H, T để điều khiển mình nhé! 🎮');
   const [showSpeech, setShowSpeech] = useState(true);
@@ -365,7 +379,7 @@ export default function Character2DOverlay({ theme = 'dark' }) {
   return (
     <>
       {/* VÙNG NHÂN VẬT 2D DI CHUYỂN TRÊN MÀN HÌNH */}
-      {isVisible && (
+      {visible && (
         <div id="teo-2d-sprite-wrap" className="teo-2d-companion">
           {/* Bong bóng hội thoại */}
           {showSpeech && (
@@ -406,86 +420,53 @@ export default function Character2DOverlay({ theme = 'dark' }) {
         </div>
       )}
 
-      {/* THANH ĐIỀU KHIỂN & HƯỚNG DẪN NỔI (BOTTOM DOCK) */}
-      <div className="teo-dock-panel">
-        <div className="box teo-control-pill" style={{ '--w': 'auto', '--h': '38px', '--r': '9999px' }}>
+      {/* BẢNG HƯỚNG DẪN PHÍM BẤM */}
+      {isKeyGuide && (
+        <div className="box teo-keyguide-popup" style={{ '--w': '310px', '--h': 'auto', '--r': '20px' }}>
           <div className="circle-overlay"></div>
-          
-          <button
-            className="teo-pill-btn teo-avatar-badge"
-            onClick={() => setIsVisible(prev => !prev)}
-            title={isVisible ? 'Ẩn nhân vật 2D' : 'Hiện nhân vật 2D'}
-          >
-            <span className="teo-badge-dot"></span>
-            <span>{isVisible ? 'Tèo 2D: Bật' : 'Tèo 2D: Tắt'}</span>
-          </button>
+          <div className="keyguide-header">
+            <span className="keyguide-title">
+              <i className="fas fa-gamepad"></i> PHÍM ĐIỀU KHIỂN TÈO 2D
+            </span>
+            <button className="keyguide-close" onClick={() => setKeyGuide(false)}>&times;</button>
+          </div>
 
-          <button
-            className={`teo-pill-btn ${showKeyGuide ? 'active' : ''}`}
-            onClick={() => setShowKeyGuide(prev => !prev)}
-            title="Xem phím điều khiển nhân vật"
-          >
-            <i className="fas fa-keyboard"></i>
-            <span className="hide-on-xs">Phím điều khiển</span>
-          </button>
-
-          <button
-            className={`teo-pill-btn ${showTouchPad ? 'active' : ''}`}
-            onClick={() => setShowTouchPad(prev => !prev)}
-            title="Bật/Tắt tay cầm ảo trên màn hình"
-          >
-            <i className="fas fa-gamepad"></i>
-            <span className="hide-on-xs">Tay cầm ảo</span>
-          </button>
-        </div>
-
-        {/* BẢNG HƯỚNG DẪN PHÍM BẤM */}
-        {showKeyGuide && (
-          <div className="box teo-keyguide-popup" style={{ '--w': '310px', '--h': 'auto', '--r': '20px' }}>
-            <div className="circle-overlay"></div>
-            <div className="keyguide-header">
-              <span className="keyguide-title">
-                <i className="fas fa-gamepad"></i> PHÍM ĐIỀU KHIỂN TÈO 2D
-              </span>
-              <button className="keyguide-close" onClick={() => setShowKeyGuide(false)}>&times;</button>
+          <div className="keyguide-list">
+            <div className="keyguide-row">
+              <span className="key-badge">A / ◄</span>
+              <span className="key-badge">D / ►</span>
+              <span className="key-desc">Đi bộ (nhấn nhẹ) / Chạy (giữ phím)</span>
             </div>
-
-            <div className="keyguide-list">
-              <div className="keyguide-row">
-                <span className="key-badge">A / ◄</span>
-                <span className="key-badge">D / ►</span>
-                <span className="key-desc">Đi bộ (nhấn nhẹ) / Chạy (giữ phím)</span>
-              </div>
-              <div className="keyguide-row">
-                <span className="key-badge">Shift + A / D</span>
-                <span className="key-desc">Chạy nhanh tốc lực tức thì ⚡</span>
-              </div>
-              <div className="keyguide-row">
-                <span className="key-badge">Space / W / ▲</span>
-                <span className="key-desc">Nhảy cao bồng bềnh êm ái</span>
-              </div>
-              <div className="keyguide-row">
-                <span className="key-badge">S / ▼</span>
-                <span className="key-desc">Ngồi xuống (giữ tư thế / đứng dậy)</span>
-              </div>
-              <div className="keyguide-row">
-                <span className="key-badge">J / F</span>
-                <span className="key-desc">Đấm / Tấn công 🥊</span>
-              </div>
-              <div className="keyguide-row">
-                <span className="key-badge">H</span>
-                <span className="key-desc">Vẫy tay xin chào 👋</span>
-              </div>
-              <div className="keyguide-row">
-                <span className="key-badge">T</span>
-                <span className="key-desc">Trò chuyện phát biểu 💬</span>
-              </div>
+            <div className="keyguide-row">
+              <span className="key-badge">Shift + A / D</span>
+              <span className="key-desc">Chạy nhanh tốc lực tức thì ⚡</span>
+            </div>
+            <div className="keyguide-row">
+              <span className="key-badge">Space / W / ▲</span>
+              <span className="key-desc">Nhảy cao bồng bềnh êm ái</span>
+            </div>
+            <div className="keyguide-row">
+              <span className="key-badge">S / ▼</span>
+              <span className="key-desc">Ngồi xuống (giữ tư thế / đứng dậy)</span>
+            </div>
+            <div className="keyguide-row">
+              <span className="key-badge">J / F</span>
+              <span className="key-desc">Đấm / Tấn công 🥊</span>
+            </div>
+            <div className="keyguide-row">
+              <span className="key-badge">H</span>
+              <span className="key-desc">Vẫy tay xin chào 👋</span>
+            </div>
+            <div className="keyguide-row">
+              <span className="key-badge">T</span>
+              <span className="key-desc">Trò chuyện phát biểu 💬</span>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* BÀN PHÍM ẢO / TOUCH PAD CHO ĐIỆN THOẠI & CHUỘT */}
-        {showTouchPad && isVisible && (
+      {/* BÀN PHÍM ẢO / TOUCH PAD CHO ĐIỆN THOẠI & CHUỘT */}
+      {isTouchPad && visible && (
           <div className="box teo-touchpad-dock" style={{ '--w': 'auto', '--h': 'auto', '--r': '22px' }}>
             <div className="circle-overlay"></div>
             
@@ -616,7 +597,6 @@ export default function Character2DOverlay({ theme = 'dark' }) {
             </div>
           </div>
         )}
-      </div>
 
       <style>{`
         /* KHỐI NHÂN VẬT 2D DI CHUYỂN */
@@ -717,70 +697,12 @@ export default function Character2DOverlay({ theme = 'dark' }) {
           100% { transform: translateX(-50%) scale(1); opacity: 1; }
         }
 
-        /* THANH ĐIỀU KHIỂN & HƯỚNG DẪN NỔI */
-        .teo-dock-panel {
-          position: fixed;
-          bottom: 20px;
-          right: 24px;
-          z-index: 1000;
-          display: flex;
-          flex-direction: column;
-          align-items: flex-end;
-          gap: 10px;
-          pointer-events: auto;
-        }
-
-        .teo-control-pill {
-          padding: 4px 8px;
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
-        }
-
-        .teo-pill-btn {
-          background: transparent;
-          border: none;
-          color: var(--text-heading);
-          font-size: 0.78rem;
-          font-weight: 600;
-          cursor: pointer;
-          padding: 4px 10px;
-          border-radius: 9999px;
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          transition: all 0.2s ease;
-          position: relative;
-          z-index: 2;
-        }
-
-        .teo-pill-btn:hover {
-          background: rgba(56, 189, 248, 0.18);
-          color: #38bdf8;
-        }
-
-        .teo-pill-btn.active {
-          background: rgba(56, 189, 248, 0.25);
-          color: #38bdf8;
-        }
-
-        .teo-badge-dot {
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          background: #10b981;
-          box-shadow: 0 0 8px #10b981;
-          animation: dotBlink 1.5s infinite;
-        }
-
-        @keyframes dotBlink {
-          0%, 100% { opacity: 1; transform: scale(1); }
-          50% { opacity: 0.5; transform: scale(0.8); }
-        }
-
         /* POPUP HƯỚNG DẪN PHÍM BẤM */
         .teo-keyguide-popup {
+          position: fixed;
+          bottom: 30px;
+          right: 30px;
+          z-index: 10003;
           padding: 14px 18px;
           display: flex;
           flex-direction: column;
@@ -894,9 +816,12 @@ export default function Character2DOverlay({ theme = 'dark' }) {
           .hide-on-xs {
             display: none;
           }
-          .teo-dock-panel {
+          .teo-keyguide-popup {
             right: 12px;
-            bottom: 12px;
+            left: 12px;
+            bottom: 16px;
+            --w: auto !important;
+            width: auto !important;
           }
           .teo-sprite-canvas {
             width: 100px;
