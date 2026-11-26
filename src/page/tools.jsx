@@ -3,6 +3,17 @@ import React, { useState, useMemo, useEffect } from 'react';
 // Danh sách dữ liệu công cụ chính xác từ voduytoan.netlify.app/congcu
 const toolsData = [
   {
+    id: 7,
+    title: "SpineVDT — Ghép & Xuất Ảnh Động Spine 4.2",
+    category: "IMG",
+    date: "26/11/2026",
+    description: "Công cụ web (Node.js + Spine WebGL 4.2 + FFmpeg) giúp xem trước, chỉnh khung trực quan, ghép ảnh đại diện/avatar và xuất ảnh động GIF, APNG, WebM, MP4 trong suốt từ bộ file Spine (.json, .skel, .atlas, .png).",
+    image: "/tools/spine-vdt.jpg",
+    fallbackImage: "https://raw.githubusercontent.com/Joinney/SpineVDT/main/docs/banner.jpg",
+    link: "https://github.com/Joinney/SpineVDT",
+    tags: ["Spine 4.2", "WebGL", "GIF", "APNG", "FFmpeg"]
+  },
+  {
     id: 6,
     title: "AI Canvas Studio - Canvas Video AI TMĐT",
     category: "Video",
@@ -209,7 +220,7 @@ export default function Tools({ theme }) {
               {activeCategory === 'ALL' ? 'Tất cả công cụ' : `Danh mục: ${activeCategory}`}
             </h1>
             <span className="tools-last-updated">
-              <i className="fas fa-clock"></i> Cập nhật lần cuối: 10/01/2026
+              <i className="fas fa-clock"></i> Cập nhật lần cuối: 26/11/2026
             </span>
           </div>
 
